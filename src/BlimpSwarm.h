@@ -7,7 +7,7 @@
 
 
 #include "robot/RobotFactory.h"
-
+#include "comm/LowLevelComm.h"
 
 #endif //BLIMPSWARM_BLIMPSWARM_H
 

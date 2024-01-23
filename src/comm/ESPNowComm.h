@@ -1,0 +1,164 @@
+
+#ifndef ESPNOWCOMM_H
+#define ESPNOWCOMM_H
+
+
+#include "LowLevelComm.h"
+
+#include "WiFi.h"
+#include <esp_now.h> // This is the arduino library for ESP-NOW
+#include "util/data_types.h"
+
+
+
+// Receiver side data structures
+const int NUM_CONTROL_PARAMS = 13; // Number of parameters used for control
+volatile int CHANNEL = 1;  // FIXME: this should be a Parameter
+volatile bool esp_ready;
+volatile bool esp_sensor_ready;
+volatile bool verbose = true;  //FIXME: this should be a parameter
+volatile unsigned long esp_time_now;
+
+
+ControlInput ESPNOW_Input;
+ReceivedData ESPNOW_ReceivedData;
+
+int delayMS = 1000;
+//bool isPeerAlreadyAdded(const uint8_t *mac_addr);
+
+
+// Callback when data is received
+void OnDataRecv(const uint8_t *mac_addr, const uint8_t *data, int data_len)
+{
+    char macStr[18];
+    if (verbose) {
+        snprintf(macStr, sizeof(macStr), "%02x:%02x:%02x:%02x:%02x:%02x",
+                 mac_addr[0], mac_addr[1], mac_addr[2], mac_addr[3], mac_addr[4], mac_addr[5]);
+    }
+    if (data_len == sizeof(ControlInput)){
+        ControlInput *incomingData = (ControlInput *)data;
+
+        if (incomingData->channel == -1) // Check if the data is P2P
+        {
+            if (verbose) {
+                Serial.print("Packet from: ");
+                Serial.println(macStr);
+                Serial.print("Control params: ");
+                for (int i = 0; i < NUM_CONTROL_PARAMS; i++)
+                {
+                    Serial.print(incomingData->params[i]);
+                    if (i < NUM_CONTROL_PARAMS - 1)
+                    {
+                        Serial.print(", ");
+                    }
+                }
+                Serial.println("\tListening from P2P");
+            }
+            esp_time_now = millis();
+            esp_ready = false;
+            memcpy(&ESPNOW_Input, incomingData, sizeof(ESPNOW_Input));
+            esp_ready = true;
+        }else if (incomingData->channel == CHANNEL){ // Check if the data is broadcast
+            if (verbose) {
+                Serial.print("Packet from: ");
+                Serial.println(macStr);
+                Serial.print("Control params: ");
+                for (int i = 0; i < NUM_CONTROL_PARAMS; i++)
+                {
+                    Serial.print(incomingData->params[i]);
+                    if (i < NUM_CONTROL_PARAMS - 1)
+                    {
+                        Serial.print(", ");
+                    }
+                }
+                Serial.print("\tListening on channel: ");
+                Serial.println(incomingData->channel);
+            }
+            esp_time_now = millis();
+            esp_ready = false;
+            memcpy(&ESPNOW_Input, incomingData, sizeof(ESPNOW_Input));
+            esp_ready = true;
+        }
+        else
+        {
+            Serial.println("Data received on an unexpected channel. Ignoring.");
+        }
+    }
+    else if (data_len == sizeof(ReceivedData))
+    {
+        ReceivedData *incomingSensorData = (ReceivedData *)data;
+        // Process the ReceivedData as needed
+        memcpy(&ESPNOW_ReceivedData, incomingSensorData, sizeof(ESPNOW_ReceivedData));
+        esp_sensor_ready = true;
+    }
+    else {
+        Serial.println("Received data of unexpected size. Ignoring.");
+    }
+}
+
+
+void OnDataSent(const uint8_t *mac_addr, esp_now_send_status_t status) {
+    if (verbose)
+    {
+        Serial.print(" Status: ");
+        Serial.println(status == ESP_NOW_SEND_SUCCESS ? "Delivery Success" : "Delivery Fail");
+    }
+}
+
+
+
+
+
+
+class ESPNowComm : public LowLevelComm {
+public:
+    ESPNowComm() {
+        for (int x = 0; x < 13; x++) {
+            ESPNOW_Input.params[x] = 0;
+        }
+        esp_ready = false;
+    }
+
+    void init() override{
+        // Set device as a Wi-Fi Station
+        WiFi.mode(WIFI_STA);
+        Serial.print("ESP Board MAC Address:  ");
+        Serial.println(WiFi.macAddress());
+
+        if (esp_now_init() != ESP_OK)
+        {
+            Serial.println("Error initializing ESP-NOW");
+            return;
+        }else{
+            Serial.println("ESP-NOW initialized");
+        }
+        //esp_now_set_self_role(ESP_NOW_ROLE_COMBO);
+
+        // Register for a callback function that will be called when data is received
+        esp_now_register_recv_cb(OnDataRecv);
+//        esp_now_register_send_cb(OnDataSent);
+
+        esp_time_now = millis();
+
+    }
+
+
+    void sendData(const uint8_t* data, unsigned int length) override {
+        // Send data using ESP-NOW
+        // Example: esp_now_send(broadcastAddress, (uint8_t *)data, length);
+    }
+
+    void receiveData(const uint8_t* data, unsigned int length) override {
+        // In ESP-NOW, data reception is usually handled via callbacks
+        // Setup the receive callback in the constructor or a separate setup method
+    }
+
+
+};
+
+
+
+
+
+
+#endif // ESPNOWCOMM_H
