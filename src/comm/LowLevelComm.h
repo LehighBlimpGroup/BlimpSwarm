@@ -5,6 +5,7 @@
 #ifndef BLIMPSWARM_LOWLEVELCOMM_H
 #define BLIMPSWARM_LOWLEVELCOMM_H
 
+#include "util/data_types.h"
 
 
 class LowLevelComm {
@@ -16,10 +17,17 @@ public:
     virtual void sendData(const uint8_t* data, unsigned int length) = 0;
 
     // Pure virtual function to receive data
-    virtual void receiveData(const uint8_t* data, unsigned int length) = 0;
+    virtual ControlInput receiveLongData() = 0;
+    // True if new data arrived
+    virtual bool newLongData() = 0;
 
-    // Pure virtual function to receive data
-//    virtual bool newData() = 0;
+
+    virtual ReceivedData receiveShortData() = 0;
+    virtual bool newShortData() = 0;
+
+
+
+
 };
 
 

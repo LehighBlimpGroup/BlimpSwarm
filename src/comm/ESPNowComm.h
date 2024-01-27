@@ -13,10 +13,10 @@
 
 // Receiver side data structures
 const int NUM_CONTROL_PARAMS = 13; // Number of parameters used for control
-volatile int CHANNEL = 1;  // FIXME: this should be a Parameter
+volatile int BROADCAST = 1;
 volatile bool esp_ready;
 volatile bool esp_sensor_ready;
-volatile bool verbose = true;  //FIXME: this should be a parameter
+volatile bool verbose = false;  //FIXME: this should be a parameter
 volatile unsigned long esp_time_now;
 
 
@@ -35,11 +35,14 @@ void OnDataRecv(const uint8_t *mac_addr, const uint8_t *data, int data_len)
         snprintf(macStr, sizeof(macStr), "%02x:%02x:%02x:%02x:%02x:%02x",
                  mac_addr[0], mac_addr[1], mac_addr[2], mac_addr[3], mac_addr[4], mac_addr[5]);
     }
+
+
+    // Identify the package type Control_input, or data by the package size
     if (data_len == sizeof(ControlInput)){
         ControlInput *incomingData = (ControlInput *)data;
 
-        if (incomingData->channel == -1) // Check if the data is P2P
-        {
+        if (incomingData->channel == -1){ // Check if the data is P2P
+            // Print received info
             if (verbose) {
                 Serial.print("Packet from: ");
                 Serial.println(macStr);
@@ -54,11 +57,15 @@ void OnDataRecv(const uint8_t *mac_addr, const uint8_t *data, int data_len)
                 }
                 Serial.println("\tListening from P2P");
             }
+
+            // Store received data in ESPNOW_Input
             esp_time_now = millis();
-            esp_ready = false;
+            esp_ready = false;  // FIXME unnecessary?
             memcpy(&ESPNOW_Input, incomingData, sizeof(ESPNOW_Input));
             esp_ready = true;
-        }else if (incomingData->channel == CHANNEL){ // Check if the data is broadcast
+
+        }else if (incomingData->channel == BROADCAST){ // Check if the data is broadcast
+            // FIXME: this code seems the same as the code in the previous if
             if (verbose) {
                 Serial.print("Packet from: ");
                 Serial.println(macStr);
@@ -74,6 +81,8 @@ void OnDataRecv(const uint8_t *mac_addr, const uint8_t *data, int data_len)
                 Serial.print("\tListening on channel: ");
                 Serial.println(incomingData->channel);
             }
+
+            // Store received data in ESPNOW_Input
             esp_time_now = millis();
             esp_ready = false;
             memcpy(&ESPNOW_Input, incomingData, sizeof(ESPNOW_Input));
@@ -83,11 +92,9 @@ void OnDataRecv(const uint8_t *mac_addr, const uint8_t *data, int data_len)
         {
             Serial.println("Data received on an unexpected channel. Ignoring.");
         }
-    }
-    else if (data_len == sizeof(ReceivedData))
-    {
+    } else if (data_len == sizeof(ReceivedData)) {
+        // Store received data in ESPNOW_ReceivedData
         ReceivedData *incomingSensorData = (ReceivedData *)data;
-        // Process the ReceivedData as needed
         memcpy(&ESPNOW_ReceivedData, incomingSensorData, sizeof(ESPNOW_ReceivedData));
         esp_sensor_ready = true;
     }
@@ -148,11 +155,25 @@ public:
         // Example: esp_now_send(broadcastAddress, (uint8_t *)data, length);
     }
 
-    void receiveData(const uint8_t* data, unsigned int length) override {
-        // In ESP-NOW, data reception is usually handled via callbacks
-        // Setup the receive callback in the constructor or a separate setup method
+    ControlInput receiveLongData()  override {
+        esp_ready = false;
+        return ESPNOW_Input;
     }
 
+    bool newLongData() override{
+        return esp_ready;
+    }
+
+
+    ReceivedData receiveShortData()  override {
+        esp_sensor_ready = false;
+        return ESPNOW_ReceivedData;
+    }
+
+
+    bool newShortData() override{
+        return esp_sensor_ready;
+    }
 
 };
 
