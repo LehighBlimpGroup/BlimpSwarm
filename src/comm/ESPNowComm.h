@@ -16,7 +16,7 @@ const int NUM_CONTROL_PARAMS = 13; // Number of parameters used for control
 volatile int BROADCAST = 1;
 volatile bool esp_ready;
 volatile bool esp_sensor_ready;
-volatile bool verbose = false;  //FIXME: this should be a parameter
+volatile bool verbose = true;  //FIXME: this should be a parameter
 volatile unsigned long esp_time_now;
 
 
@@ -150,9 +150,10 @@ public:
     }
 
 
-    void sendData(const uint8_t* data, unsigned int length) override {
+    void sendData(const uint8_t mac_addr[6], const uint8_t* data, unsigned int length) override {
         // Send data using ESP-NOW
         // Example: esp_now_send(broadcastAddress, (uint8_t *)data, length);
+        esp_err_t result = esp_now_send(mac_addr, (uint8_t *) data, length);
     }
 
     ControlInput receiveLongData()  override {

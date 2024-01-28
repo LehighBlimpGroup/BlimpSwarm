@@ -14,7 +14,7 @@ public:
     virtual void init() = 0;
 
     // Pure virtual function to send data
-    virtual void sendData(const uint8_t* data, unsigned int length) = 0;
+    virtual void sendData(const uint8_t mac_addr[6], const uint8_t* data, unsigned int length) = 0;
 
     // Pure virtual function to receive data
     virtual ControlInput receiveLongData() = 0;
