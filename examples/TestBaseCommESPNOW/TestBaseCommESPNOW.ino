@@ -1,9 +1,13 @@
 #include "BlimpSwarm.h"
-#include "comm/ESPNowComm.h"
+#include "comm/LLC_ESPNow.h"
 #include <Arduino.h>
 
 //ESPNowComm espNowComm;
-LowLevelComm* espNowComm = new ESPNowComm();
+LowLevelComm* espNowComm = new LLC_ESPNow();
+
+
+
+uint8_t receivedData[MAX_DATA_SIZE]; int receivedDataLength;
 
 void setup() {
     // Start the serial communication
@@ -36,30 +40,25 @@ void loop() {
 
 
     // New long data arrived?
-    if (espNowComm->newLongData()){
-        Serial.print("New long data arrived: ");
+    if (espNowComm->newData()){
 
-        ControlInput incomingData = espNowComm->receiveLongData();
 
-        Serial.print("Control params: ");
-        for (int i = 0; i < NUM_CONTROL_PARAMS; i++)
-        {
-            Serial.print(incomingData.params[i]);
-            if (i < NUM_CONTROL_PARAMS - 1)
-            {
-                Serial.print(", ");
-            }
+
+        espNowComm->receiveData(receivedData, receivedDataLength);
+
+        //receivedData.insert(receivedData.end(), data, data + length);
+
+        Serial.print("Data arrived ");
+        Serial.print(receivedDataLength);
+        Serial.print(": ");
+        for(int i = 0; i < receivedDataLength; ++i) {
+            Serial.print(receivedData[i], HEX); // Print each byte in hexadecimal
+            Serial.print(" "); // Print a space between bytes for readability
         }
         Serial.println();
     }
 
 
-    // New short data arrived?
-    if (espNowComm->newShortData()){
-        Serial.print("Short data arrived: ");
-
-        ReceivedData incomingData = espNowComm->receiveShortData();
-    }
 
   sleep(1);
 }
