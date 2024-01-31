@@ -188,7 +188,7 @@ public:
 
         // Register for a callback function that will be called when data is received
         esp_now_register_recv_cb(OnDataRecv);
-//        esp_now_register_send_cb(OnDataSent);
+        esp_now_register_send_cb(OnDataSent);
 
         esp_time_now = millis();
 
@@ -197,14 +197,14 @@ public:
 
     void sendData(const uint8_t mac_addr[6], const uint8_t* data, unsigned int length) override {
         // Send data using ESP-NOW
-        // Example: esp_now_send(broadcastAddress, (uint8_t *)data, length);
         esp_err_t result = esp_now_send(mac_addr, (uint8_t *) data, length);
     }
 
     void receiveData(uint8_t receivedData[MAX_DATA_SIZE], int& length)  override {
         new_data_received = false;
 
-        for(int i = 0; i < length; ++i) {
+        // Copy the received new_data into the parameter receivedData
+        for(int i = 0; i < length; ++i) { //TODO use memcpy instead?
             receivedData[i] = new_data[i];
         }
 

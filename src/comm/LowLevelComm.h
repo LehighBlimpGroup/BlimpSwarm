@@ -4,8 +4,7 @@
 
 #ifndef BLIMPSWARM_LOWLEVELCOMM_H
 #define BLIMPSWARM_LOWLEVELCOMM_H
-
-#include "util/data_types.h"
+#include <Arduino.h>
 
 static const int MAX_DATA_SIZE = 100;
 

@@ -79,15 +79,17 @@
 //} feedback_t;
 
 
+
+
 typedef struct ControlInput {
-    float params[13];
+    float params[13]; //FIXME magic number
     int channel;
 } ControlInput;
 
 
 typedef struct ReceivedData {
     int flag;
-    float values[6];
+    float values[6];  //FIXME magic number
 } ReceivedData;
 
 //
