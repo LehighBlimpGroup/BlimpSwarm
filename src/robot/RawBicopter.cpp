@@ -18,6 +18,19 @@ bool RawBicopter::actuate(const float actuators[], int size) {
     return true; // Placeholder return value
 }
 
+void RawBicopter::getPreferences() {
+    
+    // Implementation for reading values from non-volatile storage (NVS)
+    // must manually enter keys and default values for every variable.
+    Preferences preferences; //initialize the preferences 
+    preferences.begin("params", true); //true means read-only
+    
+    // example : value = preferences.getInt("value", default_value); //(value is an int) (default_value is manually set)
+    
+
+    preferences.end();
+}
+
 //void RawBicopter::testActuators(float actuationCmd[4]) {
 //    int servo_delta = 1;
 //    int motor_delta = 10;

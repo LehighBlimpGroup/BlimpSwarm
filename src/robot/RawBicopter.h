@@ -7,11 +7,13 @@
 
 
 #include "Robot.h"
+#include <Preferences.h>
 
 class RawBicopter : public Robot {
 public:
     int sense(float sensors[MAX_SENSORS]) override;
     bool actuate(const float actuators[], int size) override;
+    void getPreferences() override;
     //void testActuators(float actuationCmd[4]) override;
 };
 

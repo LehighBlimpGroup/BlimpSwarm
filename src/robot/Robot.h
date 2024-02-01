@@ -21,6 +21,11 @@ public:
     // Takes an array of actuator commands and its size
     virtual bool actuate(const float actuators[], int size) = 0;
 
+    
+    // Pure virtual function for variable settings
+    // reads from Preferences library to initialize variables
+    virtual void getPreferences();
+
 
     virtual ~Robot() {}
 };
