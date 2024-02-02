@@ -52,10 +52,22 @@ void loop() {
         removePeer(peerAddr);
       }
     } else if (type == 'C') { // Control command
-      ControlParams params;
-      if (Serial.readBytes((char*)&params, CONTROL_PARAMS_SIZE) == CONTROL_PARAMS_SIZE) {
-        // Broadcast the control parameters to all peers
-        esp_now_send(NULL, (uint8_t*)&params, CONTROL_PARAMS_SIZE); // NULL address for broadcasting
+      if (Serial.readBytes(peerAddr, MAC_ADDRESS_SIZE) == MAC_ADDRESS_SIZE) {
+        ControlParams params;
+        if (Serial.readBytes((char*)&params, CONTROL_PARAMS_SIZE) == CONTROL_PARAMS_SIZE) {
+          esp_now_send(peerAddr, (uint8_t*)&params, CONTROL_PARAMS_SIZE);
+        }
+        Serial.println("Sent Controls!");
+      }
+    } else if (type == 'D') { // Preference to save
+      if (Serial.readBytes(peerAddr, MAC_ADDRESS_SIZE) == MAC_ADDRESS_SIZE) {
+        static uint8_t buffer[250]; // Adjust based on your expected maximum message size
+        size_t bytesToRead = Serial.available(); // Determine how many bytes we have for the preference data
+        bytesToRead = min(bytesToRead, sizeof(buffer)); // Ensure we don't read more than the buffer size
+        
+        size_t bytesRead = Serial.readBytes(buffer, bytesToRead); // Read the preference data into the buffer
+        esp_now_send(peerAddr, buffer, bytesRead); // Send the preference data to the specified peer
+        Serial.println("Sent Preferences!");
       }
     }
   }
@@ -81,15 +93,15 @@ void removePeer(const uint8_t *peerAddr) {
 }
 
 void onDataSend(const uint8_t *mac, esp_now_send_status_t status) {
-  char ackMessage[32]; // Buffer for the acknowledgement message
-  if (status == ESP_NOW_SEND_SUCCESS) {
-    snprintf(ackMessage, sizeof(ackMessage), "Send OK to %02x:%02x:%02x:%02x:%02x:%02x\n",
-             mac[0], mac[1], mac[2], mac[3], mac[4], mac[5]);
-  } else {
-    snprintf(ackMessage, sizeof(ackMessage), "Send FAIL to %02x:%02x:%02x:%02x:%02x:%02x\n",
-             mac[0], mac[1], mac[2], mac[3], mac[4], mac[5]);
-  }
-  Serial.write(ackMessage);
+  // char ackMessage[32]; // Buffer for the acknowledgement message
+  // if (status == ESP_NOW_SEND_SUCCESS) {
+  //   snprintf(ackMessage, sizeof(ackMessage), "Send OK to %02x:%02x:%02x:%02x:%02x:%02x\n",
+  //            mac[0], mac[1], mac[2], mac[3], mac[4], mac[5]);
+  // } else {
+  //   snprintf(ackMessage, sizeof(ackMessage), "Send FAIL to %02x:%02x:%02x:%02x:%02x:%02x\n",
+  //            mac[0], mac[1], mac[2], mac[3], mac[4], mac[5]);
+  // }
+  // Serial.write(ackMessage);
 }
 
 void onDataReceive(const uint8_t *mac, const uint8_t *incomingData, int len) {
