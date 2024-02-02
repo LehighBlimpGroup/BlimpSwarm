@@ -24,8 +24,8 @@ void RawBicopter::getPreferences() {
     // must manually enter keys and default values for every variable.
     Preferences preferences; //initialize the preferences 
     preferences.begin("params", true); //true means read-only
-    
-    // example : value = preferences.getInt("value", default_value); //(value is an int) (default_value is manually set)
+
+    value = preferences.getInt("value", default_value); //(value is an int) (default_value is manually set)
     
 
     preferences.end();

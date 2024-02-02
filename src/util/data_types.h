@@ -80,6 +80,13 @@
 
 
 
+enum DataType : uint8_t {
+    DataType_Int = 0x01,
+    DataType_Float = 0x02,
+    DataType_String = 0x03,
+    DataType_Bool = 0x04,
+    // Add more datatypes as needed
+};
 
 typedef struct ControlInput {
     float params[13]; //FIXME magic number

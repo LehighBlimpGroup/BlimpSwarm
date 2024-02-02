@@ -8,6 +8,7 @@
 #include <cstdint>
 #include "LowLevelComm.h"
 #include "util/data_types.h"
+#include "util/ParamManager.h"
 
 class BaseCommunicator {
 public:
@@ -30,6 +31,7 @@ public:
     bool isNewMsgCmd();
 
     // Send all params to the base station
+    ParamManager paramManager;
 //    bool sendParams(); //TODO
 
 private:

@@ -8,17 +8,12 @@
 
 #include <Preferences.h>
 #include <Arduino.h>
+#include "util/data_types.h"
 
 // Other robot types would be included here
 
 class ParamManager {
     private:
-        enum DataType : uint8_t {
-            DataType_Int = 0x01,
-            DataType_Float = 0x02,
-            DataType_String = 0x03,
-            // Add more datatypes as needed
-        };
         Preferences preferences;
 
         String readString(const uint8_t *data, int &index, uint8_t length);

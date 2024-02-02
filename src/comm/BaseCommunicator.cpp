@@ -53,6 +53,9 @@ bool BaseCommunicator::readNewMessages(){
 
 
         //TODO different types of messages
+        if (receivedData[0] == 0){
+            paramManager.parseAndSetPreference(receivedData, receivedDataLength);
+        }
         if (receivedDataLength== sizeof(ControlInput)){
             msgCmd = (ControlInput *) receivedData;
             newMsgCmd = true;
