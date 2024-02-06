@@ -52,23 +52,23 @@ int createMessageString(uint8_t* buffer, const char* key, const char* value) {
     return offset; // Total message length
 }
 
-void setup() {
-    Serial.begin(115200);
-    uint8_t messageBuffer[MAX_MESSAGE_SIZE]; // Pre-allocated buffer for message creation
+// void setup() {
+//     Serial.begin(115200);
+//     uint8_t messageBuffer[MAX_MESSAGE_SIZE]; // Pre-allocated buffer for message creation
 
-    // Creating an int message
-    int messageLength = createMessageInt(messageBuffer, "temp", 25);
-    // Send or process the message...
-    // For demonstration, printing the message bytes
-    for (int i = 0; i < messageLength; ++i) {
-        Serial.print(messageBuffer[i], HEX);
-        Serial.print(" ");
-    }
-    Serial.println();
+//     // Creating an int message
+//     int messageLength = createMessageInt(messageBuffer, "temp", 25);
+//     // Send or process the message...
+//     // For demonstration, printing the message bytes
+//     for (int i = 0; i < messageLength; ++i) {
+//         Serial.print(messageBuffer[i], HEX);
+//         Serial.print(" ");
+//     }
+//     Serial.println();
 
-    // Repeat for float and string messages as needed
-}
+//     // Repeat for float and string messages as needed
+// }
 
-void loop() {
-  // Empty loop
-}
+// void loop() {
+//   // Empty loop
+// }
