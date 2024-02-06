@@ -9,6 +9,11 @@
 
 
 class Robot {
+private:
+    // Pure virtual function for variable settings
+    // reads from Preferences library to initialize variables
+    virtual void getPreferences();
+
 public:
     // Assume a fixed maximum size for the arrays
     static const int MAX_SENSORS = 10;
@@ -22,9 +27,6 @@ public:
     virtual bool actuate(const float actuators[], int size) = 0;
 
     
-    // Pure virtual function for variable settings
-    // reads from Preferences library to initialize variables
-    virtual void getPreferences();
 
 
     virtual ~Robot() {}

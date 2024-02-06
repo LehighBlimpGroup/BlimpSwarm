@@ -37,7 +37,7 @@ void ParamManager::parseAndSetPreference(const uint8_t* data, int data_len) {
         if (currentValue != newValue) {
             preferences.putString(key.c_str(), newValue);
         }
-    } else if (datatype == DataType_Float) {
+    } else if (datatype == DataType_Bool) {
         if (data_len >= index + sizeof(bool)) {
             bool newValue = *(reinterpret_cast<const bool*>(&data[index]));
             bool currentValue = preferences.getBool(key.c_str(), 0);

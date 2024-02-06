@@ -31,7 +31,7 @@ class SerialController:
         mac_bytes = bytes(int(x, 16) for x in mac_address.split(':'))
         data = struct.pack('<6B13f', *mac_bytes, *params)  # Prefix data with MAC address
         self.serial.write(b'C' + data)  # 'C' indicates a control command
-        print(f"Control parameters sent to {mac_address}.")
+        # print(f"Control parameters sent to {mac_address}.")
         self.wait_for_acknowledgement()
 
     def send_preference(self, peer_mac, value_type, key, value):
@@ -62,7 +62,7 @@ class SerialController:
             if incoming == "":
                 print("Timeout or no data received.")
                 return False
-            print("Received from Arduino:", incoming)
+            # print("Received from Arduino:", incoming)
             return True
         except serial.SerialException as e:
             print("Serial communication error:", e)
@@ -74,7 +74,7 @@ class SerialController:
 
 # Example usage
 if __name__ == "__main__":
-    port = 'COM5'  # Adjust as necessary for your setup
+    port = 'COM6'  # Adjust as necessary for your setup
     controller = SerialController(port, timeout=.1)  # 5-second timeout
 
     try:
@@ -85,6 +85,12 @@ if __name__ == "__main__":
         # Example: Send control parameters
         mac_address = 'FF:FF:FF:FF:FF:FF'  # Example target peer MAC address
         params = (1.0, 0.5, -1.2, 2.5, 0.0, 1.1, -0.9, 2.2, 3.3, 4.4, 5.5, -2.2, 0.1)
+        controller.send_control_params(mac_address, params)
+        m1 = 0
+        m2 = 0
+        s1 = 0
+        s2 = 0
+        params = (1.0, m1, m2, s1, s2, 0,0,0,0,0,0,0,0)
         controller.send_control_params(mac_address, params)
         controller.send_preference(mac_address, DataType_Int, "control", 25)
         

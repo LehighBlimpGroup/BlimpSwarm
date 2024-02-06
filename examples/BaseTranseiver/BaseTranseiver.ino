@@ -23,8 +23,8 @@ void removePeer(const uint8_t *peerAddr);
 void setup() {
   Serial.begin(115200);
   WiFi.mode(WIFI_STA);
-  // delay(200);
-  Serial.print("ESP Board MAC Address:  ");
+  delay(200);
+  Serial.print("Transmitter ESP Board MAC Address:  ");
   Serial.print(WiFi.macAddress());
 
   esp_now_deinit();
@@ -81,9 +81,9 @@ void addPeer(const uint8_t *peerAddr) {
 
   if (esp_now_add_peer(&peerInfo) != ESP_OK) {
     Serial.println("Failed to add peer");
+  } else {
+    Serial.print("Added peer successfully.");
   }
-  Serial.print("Added peer successfully.");
-  
 }
 
 void removePeer(const uint8_t *peerAddr) {
