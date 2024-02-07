@@ -55,6 +55,7 @@ void OnDataRecv(const uint8_t *mac_addr, const uint8_t *data, int data_len){
 
     // Time of the last received package
     esp_time_now = millis();
+    
     // Flag for received data
     new_data_received = true;
 
@@ -201,16 +202,15 @@ public:
     }
 
     void receiveData(uint8_t receivedData[MAX_DATA_SIZE], int& length)  override {
-        new_data_received = false;
-
+        // uint8_t new_data_temp[length] = new_data;
         // Copy the received new_data into the parameter receivedData
-        for(int i = 0; i < length; ++i) { //TODO use memcpy instead?
+        length = new_data_len;
+        int safeLength = min(length, MAX_DATA_SIZE);
+        for(int i = 0; i < safeLength; ++i) { //TODO use memcpy instead?
             receivedData[i] = new_data[i];
         }
+        new_data_received = false;
 
-
-
-        length = new_data_len;
     }
 
     bool newData() override{

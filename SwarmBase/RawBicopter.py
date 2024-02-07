@@ -2,7 +2,7 @@
 
 import RawBicopterInterface
 
-DroneMacAddress = "48:27:E2:E6:E1:00" #insert your blimp's mac address here (you can get it by running your arduino and looking at the serial monitor for your flying drone)
+DroneMacAddress = "DC:54:75:D7:B3:E8" #insert your blimp's mac address here (you can get it by running your arduino and looking at the serial monitor for your flying drone)
 BaseStationAddress = "" # you do not need this, just make sure your DroneMacAddress is not your base station mac address
 port = "COM6" # may look like "COM5" or "/dev/tty.usbmodem14301", look in arduino for the port that your specific transeiver is connected to
 #note: make sure that your serial monitor is OFF on your base station in arduino or else you will get "access is denied" error

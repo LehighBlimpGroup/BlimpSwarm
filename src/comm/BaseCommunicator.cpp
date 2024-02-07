@@ -51,12 +51,11 @@ bool BaseCommunicator::readNewMessages(){
         // Check if the message is a command
         comm->receiveData(receivedData, receivedDataLength);
 
-
         //TODO different types of messages
         if (receivedData[0] == 0){
             paramManager.parseAndSetPreference(receivedData, receivedDataLength);
         }
-        if (receivedDataLength== sizeof(ControlInput)){
+        if (receivedDataLength == sizeof(ControlInput)){
             msgCmd = (ControlInput *) receivedData;
             newMsgCmd = true;
         }else if(receivedDataLength== sizeof(ControlInput)){

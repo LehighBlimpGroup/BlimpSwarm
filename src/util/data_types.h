@@ -90,7 +90,6 @@ enum DataType : uint8_t {
 
 typedef struct ControlInput {
     float params[13]; //FIXME magic number
-    int channel;
 } ControlInput;
 
 
