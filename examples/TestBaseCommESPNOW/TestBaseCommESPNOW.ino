@@ -7,8 +7,7 @@
 #include "util/data_types.h"
 
 
-
-//ESPNowComm espNowComm;
+// Communication managers
 LowLevelComm* espNowComm = new LLC_ESPNow();
 BaseCommunicator* baseComm = new BaseCommunicator(espNowComm);
 
@@ -20,36 +19,25 @@ uint8_t receivedMsg[MAX_DATA_SIZE]; int receivedDataLen;
 void setup() {
     // Start the serial communication
     Serial.begin(115200);
-
     Serial.println("Start ESPNOW");
-    
 
-
-    espNowComm->init();  //fixme this should be in the communicator
-    //LowLevelComm* espNowComm = new ESPNowComm();
-
-
+    // Configure base station
     baseComm->setMainBaseStation(mac_addr);
-
 }
 
 void loop() {
-
-
-
-
-    ReceivedData* responseData = new ReceivedData();
-    responseData->values[0] = 1;
-    responseData->values[1] = 2;
-    responseData->values[2] = 4;
-    responseData->values[3] = 8;
-
+    // Create package to send to the base station
+    ReceivedData* msg = new ReceivedData();
+    msg->values[0] = 1;
+    msg->values[1] = 2;
+    msg->values[2] = 4;
+    msg->values[3] = 8;
 
 
     // Send a package
-    espNowComm->sendData(mac_addr, (uint8_t *) responseData, sizeof(ReceivedData));
+    espNowComm->sendData(mac_addr, (uint8_t *) msg, sizeof(ReceivedData));
     // Same command but using the communicator
-    baseComm->sendMeasurements(responseData);
+    baseComm->sendMeasurements(msg);
 
 
     // Test basecomm class
@@ -71,14 +59,10 @@ void loop() {
     }
 
 
-    // New long data arrived?
+    // New message arrived?
     if (espNowComm->newData()){
-
-
-
         espNowComm->receiveData(receivedMsg, receivedDataLen);
 
-        //receivedData.insert(receivedData.end(), data, data + length);
 
         Serial.print("Data arrived ");
         Serial.print(receivedDataLen);
