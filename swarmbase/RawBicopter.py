@@ -2,6 +2,7 @@
 
 from comm.Serial import SerialController
 from joystick.JoystickManager import JoystickManager
+import time
 
 ##### Insert your robot's MAC ADDRESS here ####
 ## (you can get it by running your arduino and looking at the serial monitor for your flying drone) ##
@@ -50,6 +51,7 @@ if __name__ == "__main__":
 
             # Send through serial port
             serial.send_control_params(ROBOT_MAC, (m1, m2, s1, s2, led, 0, 0, 0, 0, 0, 0, 0, 0))
+            time.sleep(.02)
             
     except KeyboardInterrupt:
         print("Stopping!")

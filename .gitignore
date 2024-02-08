@@ -30,3 +30,5 @@
 *.exe
 *.out
 *.app
+SwarmBase/RawBicopterEddie.py
+.pyc

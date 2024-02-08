@@ -54,14 +54,18 @@ void setup() {
   servo1.setPeriodHertz(50); // Standard 50hz servo
   servo2.setPeriodHertz(50); // Standard 50hz servo
 
-  int servo_min = 500;
-  int servo_max = 2500;  //FIXME set it somewhere else
+  int servo_min = 550;
+  int servo_max = 2450;  //FIXME set it somewhere else
 
   servo1.attach(SERVO1, servo_min, servo_max);
   servo2.attach(SERVO2, servo_min, servo_max);
   pinMode(THRUST1, OUTPUT);
   pinMode(THRUST2, OUTPUT);
-
+  thrust1.attach(THRUST1, 1000, 2000);
+  thrust2.attach(THRUST2, 1000, 2000);
+  thrust1.setPeriodHertz(55);
+  thrust2.setPeriodHertz(58);
+  escarm(thrust1, thrust2);
   // User LED
   pinMode(LED_BUILTIN, OUTPUT);
 
@@ -123,3 +127,58 @@ void loop() {
     sleep(.01);
 }
 
+
+// Enter arming sequence for ESC
+void escarm(Servo &thrust1, Servo &thrust2)
+{
+  // ESC arming sequence for BLHeli S
+  thrust1.writeMicroseconds(1000);
+  delay(10);
+  thrust2.writeMicroseconds(1000);
+  delay(10);
+
+  // Sweep up
+  for (int i = 1050; i < 1500; i++)
+  {
+    thrust1.writeMicroseconds(i);
+    delay(3);
+    thrust2.writeMicroseconds(i);
+    delay(3);
+  }
+  // Sweep down
+  for (int i = 1050; i > 1100; i--)
+  {
+    thrust1.writeMicroseconds(i);
+    delay(3);
+    thrust2.writeMicroseconds(i);
+    delay(3);
+  }
+  // Back to minimum value
+  thrust1.writeMicroseconds(1000);
+  delay(100);
+  thrust2.writeMicroseconds(1000);
+  delay(10);
+}
+
+// Enter arming sequence for ESC
+void calibrate_esc(Servo &thrust1, Servo &thrust2)
+{
+   delay(1000);
+  Serial.println("Calibrating ESCs....");
+  // ESC arming sequence for BLHeli S
+  thrust1.writeMicroseconds(2000);
+  delay(10);
+  thrust2.writeMicroseconds(2000);
+  delay(15000);
+
+
+  // Back to minimum value
+  thrust1.writeMicroseconds(1000);
+  delay(10);
+  thrust2.writeMicroseconds(1000);
+  delay(10);
+
+
+
+  Serial.println("Calibration completed");
+}
