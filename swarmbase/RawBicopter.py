@@ -1,7 +1,7 @@
 
 
-from swarmbase.comm.Serial import SerialController
-from swarmbase.joystick.JoystickManager import JoystickManager
+from comm.Serial import SerialController
+from joystick.JoystickManager import JoystickManager
 
 ##### Insert your robot's MAC ADDRESS here ####
 ## (you can get it by running your arduino and looking at the serial monitor for your flying drone) ##
@@ -14,7 +14,7 @@ PORT = "/dev/ttyUSB0"
 
 
 # For debug purposes
-PRINT_JOYSTICK = True
+PRINT_JOYSTICK = False
 
 
 BaseStationAddress = "" # you do not need this, just make sure your DroneMacAddress is not your base station mac address
