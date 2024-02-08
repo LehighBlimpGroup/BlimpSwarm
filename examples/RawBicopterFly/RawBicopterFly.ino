@@ -22,7 +22,10 @@ Robot* myRobot = nullptr;
 LowLevelComm* espNowComm = nullptr;
 BaseCommunicator* baseComm = nullptr;
 
-float actuationCommands[] = {0.0, 0.0, 0.0, 0.0};
+// Control input from base station
+ControlInput cmd;
+
+
 void setup() {
   Serial.begin(115200);
   espNowComm = new LLC_ESPNow();
@@ -59,6 +62,9 @@ void setup() {
   pinMode(THRUST1, OUTPUT);
   pinMode(THRUST2, OUTPUT);
 
+  // User LED
+  pinMode(LED_BUILTIN, OUTPUT);
+
   // init sensors with new parameters
 
   espNowComm->init();  //fixme this should be in the communicator
@@ -80,45 +86,40 @@ void loop() {
     if (baseComm->readNewMessages()) {
 
         if (baseComm->isNewMsgCmd()){
-          ControlInput cmdMsg = baseComm->receiveMsgCmd();
-          Serial.print("Cmd arrived ");
-          
-          Serial.print(":");
+          // New command received
+          cmd = baseComm->receiveMsgCmd();
 
-          int n = sizeof(cmdMsg.params)/ sizeof(cmdMsg.params[0]);
-          for(int i = 0; i < 4; ++i) {
-              actuationCommands[i] = cmdMsg.params[i];
-              Serial.print(cmdMsg.params[i]); // Print each byte in hexadecimal
+
+          // Print command
+          Serial.print("Cmd arrived ");          
+          Serial.print(":");
+          int n = sizeof(cmd.params)/ sizeof(cmd.params[0]);
+          for(int i = 0; i < 5; ++i) {              
+              Serial.print(cmd.params[i]); // Print each byte in hexadecimal
               Serial.print(" "); // Print a space between bytes for readability
           }
           Serial.println();
         }
     }
-    s1 = clamp(actuationCommands[2], 0, 180) ; // cant handle values between PI and 2PI
-    s2 = clamp(actuationCommands[3], 0, 180) ;
-    
+
+    // Servo output
+    s1 = constrain(cmd.params[2], 0, 180) ; // cant handle values between PI and 2PI
+    s2 = constrain(cmd.params[3], 0, 180) ;    
     servo1.write((int)(s1 ));
     servo2.write((int)((180 - s2)));
-    m1 = clamp(actuationCommands[0], 0, 1);
-    m2 = clamp(actuationCommands[1], 0, 1);
+
+    // Motor output
+    m1 = constrain(cmd.params[0], 0, 1);
+    m2 = constrain(cmd.params[1], 0, 1);
     thrust1.writeMicroseconds((int)((m1) * (max_thrust - min_thrust) + min_thrust));
     thrust2.writeMicroseconds((int)((m2) * (max_thrust - min_thrust) + min_thrust));
+
+    // User LED
+    int led = (cmd.params[4]<-0.5)? LOW: HIGH;
+    digitalWrite(LED_BUILTIN, led);
+    
+
     //myRobot->actuate(actuationCommands, sizeof(actuationCommands) / sizeof(actuationCommands[0]));
-    sleep(.1);
+    sleep(.01);
 }
 
-float clamp(float in, float min, float max)
-{
-  if (in < min)
-  {
-    return min;
-  }
-  else if (in > max)
-  {
-    return max;
-  }
-  else
-  {
-    return in;
-  }
-}
