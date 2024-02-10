@@ -51,7 +51,7 @@ if __name__ == "__main__":
 
             # Send through serial port
             serial.send_control_params(ROBOT_MAC, (m1, m2, s1, s2, led, 0, 0, 0, 0, 0, 0, 0, 0))
-            time.sleep(.02)
+            time.sleep(.03)
             
     except KeyboardInterrupt:
         print("Stopping!")

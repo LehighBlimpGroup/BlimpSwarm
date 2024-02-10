@@ -7,17 +7,26 @@
 
 
 #include "Robot.h"
+#include "act/BLMotor.h"
+#include "act/AServo.h"
+#include "act/LED.h"
 #include <Preferences.h>
 
 class RawBicopter : public Robot {
-private:
-    
-    void getPreferences() override;
 public:
+    RawBicopter();
     int sense(float sensors[MAX_SENSORS]) override;
     bool actuate(const float actuators[], int size) override;
     //void testActuators(float actuationCmd[4]) override;
-    
+
+private:
+    void getPreferences() override;
+
+    BLMotor* motor1;
+    BLMotor* motor2;
+    AServo* servo1;
+    AServo* servo2;
+    LED* led;
 };
 
 

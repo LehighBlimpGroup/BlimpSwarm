@@ -3,6 +3,7 @@
 #include "comm/BaseCommunicator.h"
 #include "comm/LLC_ESPNow.h"
 #include <Arduino.h>
+#include <ESP32Servo.h>
 
 
 #define SERVO1 D0

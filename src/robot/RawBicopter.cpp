@@ -7,6 +7,33 @@
 #include <Arduino.h>
 
 
+#define SERVO1 D0
+#define SERVO2 D1
+#define THRUST1 D9
+#define THRUST2 D10
+
+
+
+RawBicopter::RawBicopter(){
+
+    servo1 = new AServo(0, 1, 0, SERVO1);
+    servo2 = new AServo(0, 1, 0, SERVO2);
+    motor1 = new BLMotor(0, 1, 0, THRUST1, 55);
+    motor2 = new BLMotor(0, 1, 0, THRUST2, 58);
+    // On board LED light
+    led = new LED(0, 1, 0, LED_BUILTIN);
+
+
+    ESP32PWM::allocateTimer(0);
+    ESP32PWM::allocateTimer(1);
+    ESP32PWM::allocateTimer(2);
+    ESP32PWM::allocateTimer(3);
+
+
+    // Arm brushless motors
+    motor1->arm();
+    motor2->arm();
+}
 
 int RawBicopter::sense(float sensors[MAX_SENSORS]) {
     // Implementation for sensing - fill the sensors array
@@ -15,9 +42,13 @@ int RawBicopter::sense(float sensors[MAX_SENSORS]) {
 }
 
 bool RawBicopter::actuate(const float actuators[], int size) {
-    // Implementation for actuation - process the actuators array
-    // Return true if successful, false otherwise
-    return true; // Placeholder return value
+    servo1->act(actuators[2]);
+    servo2->act(actuators[3]);
+    motor1->act(actuators[0]);
+    motor2->act(actuators[1]);
+    led->act(actuators[4]);
+
+    return true;
 }
 
 void RawBicopter::getPreferences() {
