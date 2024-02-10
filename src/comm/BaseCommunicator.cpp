@@ -9,6 +9,7 @@ uint8_t receivedData[MAX_DATA_SIZE];
 int receivedDataLength;
 
 BaseCommunicator::BaseCommunicator(LowLevelComm* comm) : comm(comm) {
+    comm->init();
 }
 
 void BaseCommunicator::setMainBaseStation(const uint8_t mac_addr[6]){
@@ -76,5 +77,6 @@ ControlInput BaseCommunicator::receiveMsgCmd(){
 }
 
 bool BaseCommunicator::isNewMsgCmd(){
+    readNewMessages();
     return this->newMsgCmd;
 }

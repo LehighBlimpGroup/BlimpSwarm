@@ -11,7 +11,7 @@
 #define SERVO2 D1
 #define THRUST1 D9
 #define THRUST2 D10
-
+#define BATT A2
 
 
 RawBicopter::RawBicopter(){
