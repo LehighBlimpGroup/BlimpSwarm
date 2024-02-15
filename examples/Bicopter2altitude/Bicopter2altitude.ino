@@ -31,6 +31,11 @@ ControlInput cmd;
 float estimatedZ = 0;
 float startHeight = 0;
 float estimatedVZ = 0;
+float kpz = 0;
+float kdz = 0;
+
+Preferences preferences; //initialize the preferences 
+bool updateParams = true;
 
 void setup() {
     Serial.begin(115200);
@@ -49,6 +54,7 @@ void setup() {
     estimatedZ = baro.getEstimatedZ();
     startHeight = baro.getEstimatedZ();
     estimatedVZ = baro.getVelocityZ();
+    paramUpdate();
 }
 
 
@@ -57,7 +63,12 @@ void loop() {
     if (baseComm->isNewMsgCmd()){
       // New command received
       cmd = baseComm->receiveMsgCmd();
-
+      if (bool(cmd.params[11]) == true && updateParams){
+        paramUpdate();
+        updateParams = false;
+      } else {
+        updateParams = true;
+      }
       // Print command
       Serial.print("Cmd arrived: ");
       printControlInput(cmd);
@@ -70,7 +81,7 @@ void loop() {
       float height_velocity = baro.getVelocityZ();
       // estimate
       estimatedZ = estimatedZ * .6 + height * .4;
-      estimatedVZ = estimatedVZ * .90 + height_velocity * .1;
+      estimatedVZ = estimatedVZ * .9 + height_velocity * .1;
       
       Serial.print(estimatedZ);
       Serial.print(", ");
@@ -81,7 +92,9 @@ void loop() {
     /**
      * Begin of Controller for Height:
      * Create your height PID to control m1 and m2 here.
+     * kpz and kdz are changed from the ground station and are floats declared at the top
      */
+    
     float desired_height = cmd.params[0];
     float m1 = 0;  // YOUR INPUT FOR THE MOTOR 1 HERE
     float m2 = 0;  // YOUR INPUT FOR THE MOTOR 1 HERE
@@ -104,4 +117,13 @@ void loop() {
 }
 
 
+void paramUpdate(){
+    preferences.begin("params", true); //true means read-only
 
+      kdz = manager.get("kdz",0.2);
+    kpz = preferences.getFloat("kpz", .2); //(value is an int) (default_value is manually set)
+    kdz = preferences.getFloat("kdz", 0); //(value is an int) (default_value is manually set)
+    
+
+    preferences.end();
+}
