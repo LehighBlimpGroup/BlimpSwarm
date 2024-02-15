@@ -177,6 +177,8 @@ void OnDataSent(const uint8_t *mac_addr, esp_now_send_status_t status) {
 
 
 class LLC_ESPNow : public LowLevelComm {
+private:
+    const int MAC_ADDRESS_SIZE = 6;
 public:
     LLC_ESPNow() {
 
@@ -188,6 +190,7 @@ public:
         Serial.print("ESP Board MAC Address:  ");
         Serial.println(WiFi.macAddress());
 
+//        esp_now_deinit(); //FIXME, this line seens useful
         if (esp_now_init() != ESP_OK)
         {
             Serial.println("Error initializing ESP-NOW");
@@ -225,6 +228,27 @@ public:
 
     bool newData() override{
         return new_data_received;
+    }
+
+
+
+    void addPeer(const uint8_t *peerAddr) {
+        esp_now_peer_info_t peerInfo;
+        memcpy(peerInfo.peer_addr, peerAddr, MAC_ADDRESS_SIZE);
+        peerInfo.channel = 0; // Use auto channel
+        peerInfo.encrypt = false; // No encryption
+
+        if (esp_now_add_peer(&peerInfo) != ESP_OK) {
+            Serial.println("Failed to add peer");
+        } else {
+            Serial.print("Added peer successfully.");
+        }
+    }
+
+    void removePeer(const uint8_t *peerAddr) {
+        if (esp_now_del_peer(peerAddr) != ESP_OK) {
+            Serial.println("Failed to remove peer");
+        }
     }
 
 
