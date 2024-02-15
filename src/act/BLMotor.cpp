@@ -22,7 +22,7 @@ void BLMotor::act(float value){
     //TODO the input should be force. We should use the calibration parameters
     //TODO the thrust is related to angular velocity
 
-    int pwm = constrain(value, 0, 1);
+    float pwm = constrain(value, 0, 1);
     this->thrust.writeMicroseconds((int)(pwm * (max_thrust - min_thrust) + min_thrust));
 }
 
@@ -52,14 +52,14 @@ void BLMotor::arm(){
     for (int i = 1050; i < 1500; i++)
     {
         thrust.writeMicroseconds(i);
-        delay(3);
+        delay(6);
     }
     // Sweep down
-    for (int i = 1050; i > 1100; i--)
-    {
-        thrust.writeMicroseconds(i);
-        delay(3);
-    }
+    // for (int i = 1500; i > 1050; i--)
+    // {
+    //     thrust.writeMicroseconds(i);
+    //     delay(6);
+    // }
     // Back to minimum value
     thrust.writeMicroseconds(1000);
     delay(100);

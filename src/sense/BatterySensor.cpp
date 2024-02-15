@@ -14,5 +14,5 @@ BatterySensor::BatterySensor(int minVal, int maxVal, int pinVal)
 
 float BatterySensor::sense() {
 
-
+    
 }

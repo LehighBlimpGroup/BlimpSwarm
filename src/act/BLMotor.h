@@ -20,7 +20,7 @@ public:
 private:
     Servo thrust;
     int min_thrust = 1050;
-    int max_thrust = 1500;
+    int max_thrust = 1750;
 };
 
 

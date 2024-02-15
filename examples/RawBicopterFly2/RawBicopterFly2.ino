@@ -3,6 +3,7 @@
 #include "comm/BaseCommunicator.h"
 #include "comm/LLC_ESPNow.h"
 #include "util/Print.h"
+#include "sense/Barometer.h"
 #include <Arduino.h>
 #include <ESP32Servo.h>
 
@@ -11,7 +12,7 @@
 uint8_t base_mac[6] = {0xC0, 0x49, 0xEF, 0xE3, 0x34, 0x78};  // fixme load this from memory
 
 
-
+Barometer baro;
 
 const float TIME_STEP = .01;
 // Robot
@@ -21,6 +22,9 @@ BaseCommunicator* baseComm = nullptr;
 // Control input from base station
 ControlInput cmd;
 
+float estimatedZ = 0;
+float startHeight = 0;
+float estimatedVZ = 0;
 
 void setup() {
     Serial.begin(115200);
@@ -32,7 +36,12 @@ void setup() {
 
     // init robot with new parameters
     myRobot = RobotFactory::createRobot("RawBicopter");
-
+    baro.init();
+    baro.updateBarometer();
+    estimatedZ = baro.getEstimatedZ();
+    startHeight = baro.getEstimatedZ();
+    estimatedVZ = baro.getVelocityZ();
+    
     // TODO full logic
     // wait for parameters from ground station until start parameter is set
     // wait for start parameter
@@ -46,6 +55,7 @@ void setup() {
 
 }
 
+
 void loop() {
 
     if (baseComm->isNewMsgCmd()){
@@ -58,6 +68,20 @@ void loop() {
 
     }
 
+    if (baro.updateBarometer()){
+      // sense 
+      float height = baro.getEstimatedZ() - startHeight;
+      float height_velocity = baro.getVelocityZ();
+      // estimate
+      estimatedZ = estimatedZ * .6 + height * .4;
+      estimatedVZ = estimatedVZ * .90 + height_velocity * .1;
+      Serial.print("Height: ");
+      Serial.print(estimatedZ);
+      Serial.print(", ");
+      Serial.println(estimatedVZ);
+    }
+    // height control
+    // servo control
     // Send command to the actuators
     myRobot->actuate(cmd.params, 5);
 
