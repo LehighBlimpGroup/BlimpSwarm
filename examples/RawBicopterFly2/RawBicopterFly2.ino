@@ -73,17 +73,29 @@ void loop() {
       float height = baro.getEstimatedZ() - startHeight;
       float height_velocity = baro.getVelocityZ();
       // estimate
-      estimatedZ = estimatedZ * .6 + height * .4;
-      estimatedVZ = estimatedVZ * .90 + height_velocity * .1;
-      Serial.print("Height: ");
+      estimatedZ = 0;
+      estimatedVZ = 0;
+      
       Serial.print(estimatedZ);
       Serial.print(", ");
       Serial.println(estimatedVZ);
     }
     // height control
+    // Create your height PID to control m1 and m2 here
+    
+    float desired_height = cmd.params[0];
+    float m1 = 0;
+    float m2 = 0;
+    ControlInput actuate; //do not overwrite cmd, since it does not reupdate every loop; instead make a new object.
+    
+    actuate.params[0] = m1; //m1
+    actuate.params[1] = m2; //m2
     // servo control
+    actuate.params[2] = cmd.params[2]; //m1
+    actuate.params[3] = cmd.params[3]; //m2
+    actuate.params[4] = cmd.params[4]; //led
     // Send command to the actuators
-    myRobot->actuate(cmd.params, 5);
+    myRobot->actuate(actuate.params, 5);
 
     sleep(TIME_STEP);
 }

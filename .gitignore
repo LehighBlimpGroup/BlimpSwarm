@@ -32,3 +32,4 @@
 *.app
 SwarmBase/RawBicopterEddie.py
 .pyc
+examples/RawBicopterFlyEddie/RawBicopterFlyEddie.ino
