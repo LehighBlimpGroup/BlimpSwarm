@@ -1,3 +1,9 @@
+/**
+ * BICOPTER with altitude control
+ * This code runs a bicopter with altitude control using the feedback from a barometer.
+ * For this example, your robot needs a barometer sensor.
+ */
+
 #include "BlimpSwarm.h"
 #include "robot/RobotFactory.h"
 #include "comm/BaseCommunicator.h"
@@ -36,23 +42,13 @@ void setup() {
 
     // init robot with new parameters
     myRobot = RobotFactory::createRobot("RawBicopter");
+
+    // Start sensor
     baro.init();
     baro.updateBarometer();
     estimatedZ = baro.getEstimatedZ();
     startHeight = baro.getEstimatedZ();
     estimatedVZ = baro.getVelocityZ();
-    
-    // TODO full logic
-    // wait for parameters from ground station until start parameter is set
-    // wait for start parameter
-    // init basecommunicator settings with new parameters
-    // set ping stations?
-    // set ground station
-
-
-
-
-
 }
 
 
@@ -65,9 +61,9 @@ void loop() {
       // Print command
       Serial.print("Cmd arrived: ");
       printControlInput(cmd);
-
     }
 
+    // Update measurements
     if (baro.updateBarometer()){
       // sense 
       float height = baro.getEstimatedZ() - startHeight;
@@ -80,19 +76,26 @@ void loop() {
       Serial.print(", ");
       Serial.println(estimatedVZ);
     }
-    // height control
-    // Create your height PID to control m1 and m2 here
-    
+
+
+    /**
+     * Begin of Controller for Height:
+     * Create your height PID to control m1 and m2 here.
+     */
     float desired_height = cmd.params[0];
-    float m1 = 0;
-    float m2 = 0;
-    ControlInput actuate; //do not overwrite cmd, since it does not reupdate every loop; instead make a new object.
-    
-    actuate.params[0] = m1; //m1
-    actuate.params[1] = m2; //m2
+    float m1 = 0;  // YOUR INPUT FOR THE MOTOR 1 HERE
+    float m2 = 0;  // YOUR INPUT FOR THE MOTOR 1 HERE
+
+    /**
+     * End of controller
+     */
+    // Control input
+    ControlInput actuate;
+    actuate.params[0] = m1; // Motor 1
+    actuate.params[1] = m2; // Motor 2
     // servo control
-    actuate.params[2] = cmd.params[2]; //m1
-    actuate.params[3] = cmd.params[3]; //m2
+    actuate.params[2] = cmd.params[2]; // Servo 1
+    actuate.params[3] = cmd.params[3]; // Servo 2
     actuate.params[4] = cmd.params[4]; //led
     // Send command to the actuators
     myRobot->actuate(actuate.params, 5);
