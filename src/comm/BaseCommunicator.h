@@ -31,7 +31,6 @@ public:
     bool isNewMsgCmd();
 
     // Send all params to the base station
-    ParamManager paramManager;
 //    bool sendParams(); //TODO
 
 private:

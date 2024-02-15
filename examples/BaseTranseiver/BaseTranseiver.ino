@@ -66,8 +66,9 @@ void loop() {
         bytesToRead = min(bytesToRead, sizeof(buffer)); // Ensure we don't read more than the buffer size
         
         size_t bytesRead = Serial.readBytes(buffer, bytesToRead); // Read the preference data into the buffer
+        Serial.println("Sent Preferences! ");
+        // Serial.println((char*)buffer);
         esp_now_send(peerAddr, buffer, bytesRead); // Send the preference data to the specified peer
-        Serial.println("Sent Preferences!");
       }
     }
   }
@@ -82,7 +83,7 @@ void addPeer(const uint8_t *peerAddr) {
   if (esp_now_add_peer(&peerInfo) != ESP_OK) {
     Serial.println("Failed to add peer");
   } else {
-    Serial.print("Added peer successfully.");
+    Serial.println("Added peer successfully.");
   }
 }
 

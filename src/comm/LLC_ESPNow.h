@@ -7,6 +7,7 @@
 
 #include "WiFi.h"
 #include <esp_now.h> // This is the arduino library for ESP-NOW
+#include "util/ParamManager.h"
 
 
 
@@ -24,6 +25,7 @@ volatile unsigned long esp_time_now;
 
 int delayMS = 1000;
 
+ParamManager manager;
 
 
 // Callback when data is received
@@ -65,7 +67,15 @@ void OnDataRecv(const uint8_t *mac_addr, const uint8_t *data, int data_len){
     }
 
     new_data_len = data_len;
-
+    if (data[0] == 0x68){
+        Serial.print("Rcv: ");
+        Serial.print(data_len);
+        Serial.print(",");
+        Serial.print(data[0]);
+        Serial.print(",");
+        Serial.println(data[1]);
+        manager.parseAndSetPreference(data, data_len);
+    }
 
     // Print received info
 //    if (verbose) {

@@ -25,7 +25,10 @@ ControlInput cmd;
 float estimatedZ = 0;
 float startHeight = 0;
 float estimatedVZ = 0;
+float kpz = 0;
+float kdz = 0;
 
+Preferences preferences; //initialize the preferences 
 void setup() {
     Serial.begin(115200);
     Serial.println("Start!");
@@ -42,6 +45,7 @@ void setup() {
     startHeight = baro.getEstimatedZ();
     estimatedVZ = baro.getVelocityZ();
     
+    paramUpdate();
     // TODO full logic
     // wait for parameters from ground station until start parameter is set
     // wait for start parameter
@@ -56,11 +60,18 @@ void setup() {
 }
 
 
+bool updateParams = true;
 void loop() {
 
     if (baseComm->isNewMsgCmd()){
       // New command received
       cmd = baseComm->receiveMsgCmd();
+      if (bool(cmd.params[11]) == true && updateParams){
+        paramUpdate();
+        updateParams = false;
+      } else {
+        updateParams = true;
+      }
 
       // Print command
       Serial.print("Cmd arrived: ");
@@ -102,3 +113,13 @@ void loop() {
 
 
 
+
+void paramUpdate(){
+    preferences.begin("params", true); //true means read-only
+
+    kpz = preferences.getFloat("kpz", .2); //(value is an int) (default_value is manually set)
+    kdz = preferences.getFloat("kdz", 0); //(value is an int) (default_value is manually set)
+    
+
+    preferences.end();
+}

@@ -1,6 +1,6 @@
 
 
-from comm.Serial import SerialController
+from comm.Serial import SerialController, DataType_Int, DataType_Float
 from joystick.JoystickManager import JoystickManager
 import time
 
@@ -26,6 +26,10 @@ if __name__ == "__main__":
     # Communication
     serial = SerialController(PORT, timeout=.1)  # 5-second timeout
     serial.manage_peer("A", ROBOT_MAC)
+    serial.send_preference(ROBOT_MAC, DataType_Float, "kpz", .6)
+    serial.send_preference(ROBOT_MAC, DataType_Float, "kdz", .8)
+    serial.send_control_params(ROBOT_MAC, (0,0,90,90, 0, 0, 0, 0, 0, 0, 1, 1, 1))
+    time.sleep(.2)
 
     # Joystick
     joystick = JoystickManager()

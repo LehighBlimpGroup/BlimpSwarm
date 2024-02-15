@@ -1,9 +1,10 @@
 import serial
 import struct
 import time
+import codecs
 
 # Message and data type definitions
-MessageType_Parameter = 0x00
+MessageType_Parameter = 0x68
 DataType_Int = 0x01
 DataType_Float = 0x02
 DataType_String = 0x03
@@ -13,7 +14,11 @@ class SerialController:
     def __init__(self, port, baudrate=115200, timeout=2):
         self.serial = serial.Serial(port, baudrate, timeout=timeout)
 
+        incoming = self.serial.read_all()#.decode().strip()
+        print(incoming)
+        
     def manage_peer(self, operation, mac_address=None):
+        incoming = self.serial.read_all()#.decode().strip()
         """Manage ESP-NOW peers by adding or removing them."""
         if operation in ['A', 'R'] and mac_address:
             mac_bytes = bytes(int(x, 16) for x in mac_address.split(':'))
@@ -26,6 +31,7 @@ class SerialController:
         self.wait_for_acknowledgement()
 
     def send_control_params(self, mac_address, params):
+        incoming = self.serial.read_all()#.decode().strip()
         if len(params) != 13:
             raise ValueError("Expected 13 control parameters")
         mac_bytes = bytes(int(x, 16) for x in mac_address.split(':'))
@@ -35,11 +41,12 @@ class SerialController:
         self.wait_for_acknowledgement()
 
     def send_preference(self, peer_mac, value_type, key, value):
+        incoming = self.serial.read_all()#.decode().strip()
         buffer = bytearray()
-        buffer.append(MessageType_Parameter)
-        buffer.append(value_type)
         if value_type in [DataType_Int, DataType_Float, DataType_Boolean]:
             buffer.extend(struct.pack('<6B', *[int(x, 16) for x in peer_mac.split(':')]))
+        buffer.append(MessageType_Parameter)
+        buffer.append(value_type)
         buffer.append(len(key))
         buffer.extend(key.encode('utf-8'))
         
@@ -54,15 +61,17 @@ class SerialController:
         
         self.serial.write(b'D' + buffer)
         self.wait_for_acknowledgement()
+        print("Sending Preference: ", key, ":", value, ", len:", codecs.encode(buffer, 'hex').decode())
 
     def wait_for_acknowledgement(self):
         """Wait for an acknowledgment or error message from Arduino."""
         try:
-            incoming = self.serial.readline().decode().strip()
+            incoming = self.serial.read_all()#.decode().strip()
             if incoming == "":
                 print("Timeout or no data received.")
                 return False
-            # print("Received from Arduino:", incoming)
+            
+            #print("Received from Arduino:", incoming)
             return True
         except serial.SerialException as e:
             print("Serial communication error:", e)
@@ -74,7 +83,7 @@ class SerialController:
 
 # Example usage
 if __name__ == "__main__":
-    port = 'COM6'  # Adjust as necessary for your setup
+    port = 'COM8'  # Adjust as necessary for your setup
     controller = SerialController(port, timeout=.1)  # 5-second timeout
 
     try:
@@ -92,7 +101,7 @@ if __name__ == "__main__":
         s2 = 0
         params = (1.0, m1, m2, s1, s2, 0,0,0,0,0,0,0,0)
         controller.send_control_params(mac_address, params)
-        controller.send_preference(mac_address, DataType_Int, "control", 25)
+        controller.send_preference(mac_address, DataType_Int, "controls", 25)
         
     finally:
         controller.close()
