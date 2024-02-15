@@ -73,8 +73,8 @@ void loop() {
       float height = baro.getEstimatedZ() - startHeight;
       float height_velocity = baro.getVelocityZ();
       // estimate
-      estimatedZ = 0;
-      estimatedVZ = 0;
+      estimatedZ = estimatedZ * .6 + height * .4;
+      estimatedVZ = estimatedVZ * .90 + height_velocity * .1;
       
       Serial.print(estimatedZ);
       Serial.print(", ");

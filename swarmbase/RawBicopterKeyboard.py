@@ -50,4 +50,5 @@ if __name__ == "__main__":
     except KeyboardInterrupt:
         print("Stopping!")
         # Send zero input
-        serial.send_control_params(ROBOT_MAC, (0, 0, 180, 180, 0, 0, 0, 0, 0, 0, 0, 0, 0))
+    serial.send_control_params(ROBOT_MAC, (0, 0, 180, 180, 0, 0, 0, 0, 0, 0, 0, 0, 0))
+    serial.close()
