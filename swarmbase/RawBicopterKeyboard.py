@@ -23,7 +23,7 @@ if __name__ == "__main__":
     serial.manage_peer("A", ROBOT_MAC)
     serial.send_preference(ROBOT_MAC, DataType_Float, "kpz", .6)
     serial.send_preference(ROBOT_MAC, DataType_Float, "kdz", .8)
-    serial.send_control_params(ROBOT_MAC, (0,0,90,90, 0, 0, 0, 0, 0, 0, 1, 1, 1))
+    serial.send_control_params(ROBOT_MAC, (0,0,90,90, 0, 0, 0, 0, 0, 0, 0, 1, 0)) #refresh parameters
     time.sleep(.2)
 
     # Keyboard

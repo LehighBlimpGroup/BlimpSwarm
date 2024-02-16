@@ -63,7 +63,7 @@ void loop() {
     if (baseComm->isNewMsgCmd()){
       // New command received
       cmd = baseComm->receiveMsgCmd();
-      if (bool(cmd.params[11]) == true && updateParams){
+      if (int(cmd.params[11]) == 1 && updateParams){
         paramUpdate();
         updateParams = false;
       } else {
@@ -120,10 +120,13 @@ void loop() {
 void paramUpdate(){
     preferences.begin("params", true); //true means read-only
 
-      kdz = manager.get("kdz",0.2);
     kpz = preferences.getFloat("kpz", .2); //(value is an int) (default_value is manually set)
     kdz = preferences.getFloat("kdz", 0); //(value is an int) (default_value is manually set)
     
 
+    Serial.print("Update Paramters!");
+    Serial.print(kpz);
+    Serial.print(", ");
+    Serial.println(kdz);
     preferences.end();
 }

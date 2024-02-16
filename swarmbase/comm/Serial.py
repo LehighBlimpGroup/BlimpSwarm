@@ -62,6 +62,7 @@ class SerialController:
         self.serial.write(b'D' + buffer)
         self.wait_for_acknowledgement()
         print("Sending Preference: ", key, ":", value, ", len:", codecs.encode(buffer, 'hex').decode())
+        time.sleep(.01)
 
     def wait_for_acknowledgement(self):
         """Wait for an acknowledgment or error message from Arduino."""

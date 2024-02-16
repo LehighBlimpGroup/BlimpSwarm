@@ -17,6 +17,7 @@ public:
     RawBicopter();
     int sense(float sensors[MAX_SENSORS]) override;
     bool actuate(const float actuators[], int size) override;
+    void calibrate() override;
     //void testActuators(float actuationCmd[4]) override;
 
 private:

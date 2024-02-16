@@ -26,7 +26,7 @@ public:
     // Takes an array of actuator commands and its size
     virtual bool actuate(const float actuators[], int size) = 0;
 
-    
+    virtual void calibrate();
 
 
     virtual ~Robot() {}

@@ -24,8 +24,8 @@ void setup() {
   Serial.begin(115200);
   WiFi.mode(WIFI_STA);
   delay(200);
-  Serial.print("Transmitter ESP Board MAC Address:  ");
-  Serial.print(WiFi.macAddress());
+  Serial.print("Transmitter ESP Board");
+  // Serial.print(WiFi.macAddress());
 
   esp_now_deinit();
   // Initialize ESP-NOW

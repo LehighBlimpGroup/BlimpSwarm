@@ -29,10 +29,22 @@ RawBicopter::RawBicopter(){
     ESP32PWM::allocateTimer(2);
     ESP32PWM::allocateTimer(3);
 
-
-    // Arm brushless motors
-    motor1->arm();
-    motor2->arm();
+    Preferences preferences;
+    
+    preferences.begin("params", false); //true means read-only
+    bool calibrate = preferences.getBool("calibrate", false); //(value is an int) (default_value is manually set)
+    if (calibrate){
+        //calibrate brushless motors
+        motor2->calibrate();
+        motor1->calibrate();
+        preferences.putBool("calibrate", false);
+    }
+    else {
+        // Arm brushless motors
+        motor1->arm();
+        motor2->arm();
+    }
+    preferences.end(); //true means read-only
 }
 
 int RawBicopter::sense(float sensors[MAX_SENSORS]) {
@@ -64,6 +76,10 @@ void RawBicopter::getPreferences() {
     preferences.end();
 }
 
+void RawBicopter::calibrate(){
+    motor1->calibrate();
+    motor2->calibrate();
+}
 //void RawBicopter::testActuators(float actuationCmd[4]) {
 //    int servo_delta = 1;
 //    int motor_delta = 10;

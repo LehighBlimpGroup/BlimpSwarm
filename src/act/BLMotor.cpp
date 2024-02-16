@@ -21,7 +21,9 @@ BLMotor::BLMotor(int minVal, int maxVal, int offsetVal, int pinVal, int periodHe
 void BLMotor::act(float value){
     //TODO the input should be force. We should use the calibration parameters
     //TODO the thrust is related to angular velocity
-    value = max(value, 0);
+    if (value <0){
+        value = 0;
+    }
     value = sqrt(value);
     float pwm = constrain(value, 0, 1);
     this->thrust.writeMicroseconds((int)(pwm * (max_thrust - min_thrust) + min_thrust));
@@ -35,11 +37,13 @@ void BLMotor::calibrate(){
     Serial.println("Calibrating ESCs....");
     // ESC arming sequence for BLHeli S
     thrust.writeMicroseconds(2000);
-    delay(15000);
+    delay(8000);
 
     // Back to minimum value
-    thrust.writeMicroseconds(1000);
-    delay(10);
+    thrust.writeMicroseconds(1100);
+    delay(8000);
+    thrust.writeMicroseconds(0);
+    delay(1000);
     Serial.println("Calibration completed");
 }
 
