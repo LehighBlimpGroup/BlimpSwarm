@@ -77,8 +77,24 @@ void RawBicopter::getPreferences() {
 }
 
 void RawBicopter::calibrate(){
-    motor1->calibrate();
-    motor2->calibrate();
+//    motor1->calibrate();
+//    motor2->calibrate();
+
+
+    delay(1000);
+    Serial.println("Calibrating ESCs....");
+    // ESC arming sequence for BLHeli S
+    motor1->act(1);
+    motor2->act(1);
+    delay(8000);
+
+    // Back to minimum value
+    motor1->act(0);
+    motor2->act(0);
+    delay(8000);
+    //motor1->act(-1); //FIXME is this necessary? If so, we can have a if (value== -1) then writeMicroseconds(0) in motor
+    delay(1000);
+    Serial.println("Calibration completed");
 }
 //void RawBicopter::testActuators(float actuationCmd[4]) {
 //    int servo_delta = 1;
