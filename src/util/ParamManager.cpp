@@ -7,7 +7,7 @@ String ParamManager::readString(const uint8_t *data, int &index, uint8_t length)
 }
 
 void ParamManager::parseAndSetPreference(const uint8_t* data, int data_len) {
-    preferences.begin("params", false); // Make sure to match this with your actual namespace
+    preferences.begin("params", false); 
     
     int index = 1; // First value is in index 1, since first byte is for determining the message type
     uint8_t datatype = data[index++];
@@ -48,4 +48,9 @@ void ParamManager::parseAndSetPreference(const uint8_t* data, int data_len) {
     }
 
     preferences.end();
+}
+void ParamManager::setGroundMac(const uint8_t mac_addr[6]) {
+    preferences.begin("params", false);
+    preferences.putBytes("GroundMac", mac_addr, 6);
+    preferences.end(); 
 }

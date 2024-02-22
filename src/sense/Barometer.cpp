@@ -29,28 +29,29 @@ void Barometer::init(){
     if (baroOn){
         estimatedZ = bme.readAltitude(1013.25);
         oldZ = estimatedZ;
+        float groundZ = getEstimatedZ();
+        delay(30);
+        updateBarometer();
+        int tempcount = 0;
+        while (abs(groundZ - getEstimatedZ()) > .005 || groundZ == getEstimatedZ()){
+        // Serial.print("Ground Cal...");
+        // Serial.println(groundZ - getEstimatedZ());
+        if (tempcount >30){
+            break;
+        }
+        tempcount += 1;
+        groundZ = getEstimatedZ();
+        delay(10);
+
+        updateBarometer();
+        }
+        Serial.print("Ground Cal Done: ");
+        Serial.println(groundZ - getEstimatedZ());
     } else {
         estimatedZ = 0;
         oldZ = 0;
     }
-    float groundZ = getEstimatedZ();
-    delay(30);
-    updateBarometer();
-    int tempcount = 0;
-    while (abs(groundZ - getEstimatedZ()) > .005 || groundZ == getEstimatedZ()){
-      Serial.print("Ground Cal...");
-      Serial.println(groundZ - getEstimatedZ());
-      if (tempcount >30){
-        break;
-      }
-      tempcount += 1;
-      groundZ = getEstimatedZ();
-      delay(10);
-
-      updateBarometer();
-    }
-    Serial.print("Ground Cal Done: ");
-    Serial.println(groundZ - getEstimatedZ());
+    
     
     
 }

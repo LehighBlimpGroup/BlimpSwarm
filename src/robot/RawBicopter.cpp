@@ -32,11 +32,9 @@ RawBicopter::RawBicopter(){
     Preferences preferences;
     
     preferences.begin("params", false); //true means read-only
-    bool calibrate = preferences.getBool("calibrate", false); //(value is an int) (default_value is manually set)
-    if (calibrate){
+    if (preferences.getBool("calibrate", false)){
         //calibrate brushless motors
-        motor2->calibrate();
-        motor1->calibrate();
+        calibrate();
         preferences.putBool("calibrate", false);
     }
     else {

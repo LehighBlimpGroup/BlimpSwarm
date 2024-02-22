@@ -9,12 +9,13 @@
 #include "LowLevelComm.h"
 #include "util/data_types.h"
 #include "util/ParamManager.h"
+#include <Preferences.h>
 
 class BaseCommunicator {
 public:
     explicit BaseCommunicator(LowLevelComm* comm); // Constructor declaration
 
-    void setMainBaseStation(const uint8_t mac_addr[6]);
+    void setMainBaseStation();
 
     // During boot, off, and periodically just ping the stations.
     void addPingStation(const uint8_t mac_addr[6]);
@@ -40,7 +41,10 @@ private:
     static const int MAX_PING_STATIONS = 5; // Maximum number of ping stations
     uint8_t pStations[MAX_PING_STATIONS][6]; // Array to store MAC addresses of ping stations
     int numPingStations = 0; // Number of ping stations currently added
+    Preferences preferences;
 
+    unsigned long previousMillis = 0; // Stores the last time a message was sent
+    const long interval = 200; // Interval at which to run the sender (milliseconds) //TODO make SSD
 
     // Messages
     ControlInput* msgCmd;

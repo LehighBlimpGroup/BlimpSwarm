@@ -16,7 +16,7 @@ volatile uint8_t new_data[MAX_DATA_SIZE];
 volatile int new_data_len;
 
 
-volatile bool verbose = true;  //FIXME: this should be a parameter
+volatile bool verbose = false;  //FIXME: this should be a parameter
 volatile unsigned long esp_time_now;
 
 
@@ -75,7 +75,20 @@ void OnDataRecv(const uint8_t *mac_addr, const uint8_t *data, int data_len){
         Serial.print(",");
         Serial.println(data[1]);
         manager.parseAndSetPreference(data, data_len);
-    }
+    } 
+    else if (data[0] == 0x70){
+        Serial.print("Gnd: ");
+        Serial.print(data_len);
+        Serial.print(",");
+        Serial.print(data[0]);
+        Serial.print(",");
+        Serial.println(data[1]);
+        // const uint8_t gnd_mac[6];
+        // for (size_t i = 0; i < 6; ++i) {
+        //     gnd_mac[i] = data[i+1]; // Copy each byte
+        // }
+        manager.setGroundMac(&data[1]);
+    } 
 
     // Print received info
 //    if (verbose) {
@@ -179,6 +192,7 @@ void OnDataSent(const uint8_t *mac_addr, esp_now_send_status_t status) {
 class LLC_ESPNow : public LowLevelComm {
 private:
     const int MAC_ADDRESS_SIZE = 6;
+    esp_now_peer_info_t peerInfo;
 public:
     LLC_ESPNow() {
 
@@ -190,7 +204,7 @@ public:
         Serial.print("ESP Board MAC Address:  ");
         Serial.println(WiFi.macAddress());
 
-//        esp_now_deinit(); //FIXME, this line seens useful
+       esp_now_deinit(); //FIXME, this line seens useful
         if (esp_now_init() != ESP_OK)
         {
             Serial.println("Error initializing ESP-NOW");
@@ -212,6 +226,37 @@ public:
     void sendData(const uint8_t mac_addr[6], const uint8_t* data, unsigned int length) override {
         // Send data using ESP-NOW
         esp_err_t result = esp_now_send(mac_addr, (uint8_t *) data, length);
+        
+        
+        // Serial.print("Sending Data Result: ");
+        // for (int i = 0; i < 6; ++i) {
+        //     if (i > 0) {
+        //         Serial.print(":");
+        //     }
+        //     // Print each byte in hexadecimal format
+        //     if (mac_addr[i] < 16) {
+        //         Serial.print("0"); // Print a leading zero for values less than 0x10
+        //     }
+        //     Serial.print(mac_addr[i], HEX);
+        // }
+        // Serial.print(" ");
+        // if (result == ESP_OK) {
+        //     Serial.println("Success!");
+        // } else if (result == ESP_ERR_ESPNOW_NOT_INIT) {
+        //     Serial.println("ESP-NOW not initialized.");
+        // } else if (result == ESP_ERR_ESPNOW_ARG) {
+        //     Serial.println("Invalid argument.");
+        // } else if (result == ESP_ERR_ESPNOW_INTERNAL) {
+        //     Serial.println("Internal ESP-NOW error.");
+        // } else if (result == ESP_ERR_ESPNOW_NO_MEM) {
+        //     Serial.println("Out of memory.");
+        // } else if (result == ESP_ERR_ESPNOW_NOT_FOUND) {
+        //     Serial.println("Peer not found.");
+        // } else if (result == ESP_ERR_ESPNOW_IF) {
+        //     Serial.println("Interface error.");
+        // } else {
+        //     Serial.println("Unknown error.");
+        // }
     }
 
     void receiveData(uint8_t receivedData[MAX_DATA_SIZE], int& length)  override {
@@ -233,11 +278,23 @@ public:
 
 
     void addPeer(const uint8_t *peerAddr) {
+
         esp_now_peer_info_t peerInfo;
-        memcpy(peerInfo.peer_addr, peerAddr, MAC_ADDRESS_SIZE);
+        memset(&peerInfo, 0, sizeof(peerInfo)); // Initialize peerInfo structure to zero
+        memcpy(peerInfo.peer_addr, peerAddr, 6); 
         peerInfo.channel = 0; // Use auto channel
         peerInfo.encrypt = false; // No encryption
-
+        for (int i = 0; i < 6; ++i) {
+            if (i > 0) {
+                Serial.print(":");
+            }
+            // Print each byte in hexadecimal format
+            if (peerInfo.peer_addr[i] < 16) {
+                Serial.print("0"); // Print a leading zero for values less than 0x10
+            }
+            Serial.print(peerInfo.peer_addr[i], HEX);
+        }
+        Serial.println();
         if (esp_now_add_peer(&peerInfo) != ESP_OK) {
             Serial.println("Failed to add peer");
         } else {

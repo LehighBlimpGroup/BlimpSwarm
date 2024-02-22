@@ -12,9 +12,31 @@ BaseCommunicator::BaseCommunicator(LowLevelComm* comm) : comm(comm) {
     comm->init();
 }
 
-void BaseCommunicator::setMainBaseStation(const uint8_t mac_addr[6]){
-    memcpy(this->main_station_mac, mac_addr, 6); // Copy the MAC address
-    this->addPingStation(mac_addr);  // The main station is also a ping station.
+void BaseCommunicator::setMainBaseStation(){
+    preferences.begin("params", true);
+    
+    if (preferences.getBytesLength("GroundMac") == 6) {
+        Serial.print("Main Base Set: ");
+        uint8_t mac_addr[6];
+        preferences.getBytes("GroundMac", mac_addr, 6);
+        memcpy(this->main_station_mac, mac_addr, 6); // Copy the MAC address
+        for (int i = 0; i < 6; ++i) {
+        if (i > 0) {
+            Serial.print(":");
+        }
+        // Print each byte in hexadecimal format
+        if (mac_addr[i] < 16) {
+            Serial.print("0"); // Print a leading zero for values less than 0x10
+        }
+        Serial.print(mac_addr[i], HEX);
+        }
+        Serial.println();
+        comm->addPeer(this->main_station_mac);
+        this->addPingStation(this->main_station_mac);  // The main station is also a ping station.
+    } else {
+        Serial.println("Main Base Not Set.");
+    }
+    preferences.end(); 
 }
 
 
@@ -40,7 +62,15 @@ void BaseCommunicator::pingStations() {
 
 
 bool BaseCommunicator::sendMeasurements(ReceivedData* measurements){
-    comm->sendData(this->main_station_mac,(uint8_t *) measurements, sizeof(ControlInput));
+    unsigned long currentMillis = millis();
+    if (currentMillis - previousMillis >= interval) {
+        // Save the last time you executed the code
+        previousMillis = currentMillis;
+
+        // Place the code you want to run at a rate of 5 times per second here
+        comm->sendData(this->main_station_mac,(uint8_t *) measurements, sizeof(ReceivedData));
+        return true;
+    }
     return false;  //fixme ??
 }
 

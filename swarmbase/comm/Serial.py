@@ -14,34 +14,40 @@ class SerialController:
     def __init__(self, port, baudrate=115200, timeout=2):
         self.serial = serial.Serial(port, baudrate, timeout=timeout)
 
-        incoming = self.serial.read_all()#.decode().strip()
-        print(incoming)
+        self.serial.reset_input_buffer()
+        self.values = None
+        
+        
         
     def manage_peer(self, operation, mac_address=None):
-        incoming = self.serial.read_all()#.decode().strip()
+        self.serial.reset_input_buffer()
         """Manage ESP-NOW peers by adding or removing them."""
+        mac_bytes = bytes(int(x, 16) for x in mac_address.split(':'))
         if operation in ['A', 'R'] and mac_address:
-            mac_bytes = bytes(int(x, 16) for x in mac_address.split(':'))
             self.serial.write(operation.encode() + mac_bytes)
             print(f"Peer {'added' if operation == 'A' else 'removed'}: {mac_address}")
-        elif operation == 'C':  # Indicates a control command
-            self.serial.write(operation.encode())
+        elif operation == 'G':  # Indicates a control command
+            self.serial.write(operation.encode() + mac_bytes)
+            print("Ground Station Added!")
         else:
             print("Invalid operation or MAC address")
+            
+
         self.wait_for_acknowledgement()
 
     def send_control_params(self, mac_address, params):
-        incoming = self.serial.read_all()#.decode().strip()
+        self.serial.reset_input_buffer()
         if len(params) != 13:
             raise ValueError("Expected 13 control parameters")
         mac_bytes = bytes(int(x, 16) for x in mac_address.split(':'))
         data = struct.pack('<6B13f', *mac_bytes, *params)  # Prefix data with MAC address
         self.serial.write(b'C' + data)  # 'C' indicates a control command
+        
         # print(f"Control parameters sent to {mac_address}.")
         self.wait_for_acknowledgement()
 
     def send_preference(self, peer_mac, value_type, key, value):
-        incoming = self.serial.read_all()#.decode().strip()
+        self.serial.reset_input_buffer()
         buffer = bytearray()
         if value_type in [DataType_Int, DataType_Float, DataType_Boolean]:
             buffer.extend(struct.pack('<6B', *[int(x, 16) for x in peer_mac.split(':')]))
@@ -60,19 +66,34 @@ class SerialController:
             buffer.extend(struct.pack('<?', value))
         
         self.serial.write(b'D' + buffer)
+        
         self.wait_for_acknowledgement()
         print("Sending Preference: ", key, ":", value, ", len:", codecs.encode(buffer, 'hex').decode())
-        time.sleep(.01)
+
+    def getSensorData(self):
+        
+        
+        self.serial.reset_input_buffer()
+        self.serial.write(b'I')
+        incoming = self.serial.readline()#.decode().strip()
+        if (len(incoming) >= 24):
+            self.values = struct.unpack('<6f', incoming[0:24])
+            
+        
+        return self.values
 
     def wait_for_acknowledgement(self):
         """Wait for an acknowledgment or error message from Arduino."""
+        time.sleep(.01)
         try:
-            incoming = self.serial.read_all()#.decode().strip()
+            incoming = self.serial.readline()#.decode().strip()
             if incoming == "":
                 print("Timeout or no data received.")
                 return False
             
             #print("Received from Arduino:", incoming)
+            
+            self.serial.flush()
             return True
         except serial.SerialException as e:
             print("Serial communication error:", e)

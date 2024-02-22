@@ -20,13 +20,14 @@ uint8_t base_mac[6] = {0xC0, 0x49, 0xEF, 0xE3, 0x34, 0x78};  // fixme load this 
 
 Barometer baro;
 
-const float TIME_STEP = .01;
+const float TIME_STEP = .004;
 // Robot
 Robot* myRobot = nullptr;
 // Communication
 BaseCommunicator* baseComm = nullptr;
 // Control input from base station
 ControlInput cmd;
+ReceivedData rcv; 
 
 float estimatedZ = 0;
 float startHeight = 0;
@@ -43,7 +44,7 @@ void setup() {
 
     // init communication
     baseComm = new BaseCommunicator(new LLC_ESPNow());
-    baseComm->setMainBaseStation(base_mac);
+    baseComm->setMainBaseStation();
 
     // init robot with new parameters
     myRobot = RobotFactory::createRobot("RawBicopter");
@@ -83,9 +84,14 @@ void loop() {
       estimatedZ = estimatedZ * .6 + height * .4;
       estimatedVZ = estimatedVZ * .9 + height_velocity * .1;
       
-      Serial.print(estimatedZ);
-      Serial.print(", ");
-      Serial.println(estimatedVZ);
+      // Serial.print(estimatedZ);
+      // Serial.print(", ");
+      // Serial.println(estimatedVZ);
+      rcv.flag = 1;
+      rcv.values[0] = estimatedZ;
+      rcv.values[1] = estimatedVZ;
+      bool sent = baseComm->sendMeasurements(&rcv);
+      // Serial.println(sent);
     }
 
 

@@ -26,7 +26,7 @@ void BLMotor::act(float value){
 
     // Force to PWM
     float force = value * (max_thrust - min_thrust) + min_thrust;
-    float pwm = (int) (force - pwm_b) / pwm_a;
+    int pwm = (int) ((force - pwm_b) / pwm_a);
     this->thrust.writeMicroseconds(pwm);
 }
 

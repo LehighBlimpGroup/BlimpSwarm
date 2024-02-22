@@ -31,7 +31,7 @@ void setup() {
 
     // init communication
     baseComm = new BaseCommunicator(new LLC_ESPNow());
-    baseComm->setMainBaseStation(base_mac);
+    baseComm->setMainBaseStation();
 
     // init robot with new parameters
     myRobot = RobotFactory::createRobot("RawBicopter");

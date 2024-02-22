@@ -26,6 +26,7 @@ if __name__ == "__main__":
     # Communication
     serial = SerialController(PORT, timeout=.1)  # 5-second timeout
     serial.manage_peer("A", ROBOT_MAC)
+    serial.manage_peer("G", ROBOT_MAC)
     serial.send_preference(ROBOT_MAC, DataType_Float, "kpz", .6)
     serial.send_preference(ROBOT_MAC, DataType_Float, "kdz", .8)
     serial.send_control_params(ROBOT_MAC, (0,0,90,90, 0, 0, 0, 0, 0, 0, 0, 1, 0)) #refresh parameters
@@ -53,6 +54,7 @@ if __name__ == "__main__":
             led = axis[0]
             ############# End CONTROL INPUTS ###############
 
+            print(serial.getSensorData())
             # Send through serial port
             serial.send_control_params(ROBOT_MAC, (m1, m2, s1, s2, led, 0, 0, 0, 0, 0, 0, 0, 0))
             time.sleep(.03)

@@ -20,6 +20,7 @@ class ParamManager {
         String readString(const uint8_t *data, int &index, uint8_t length);
     public:
         void parseAndSetPreference(const uint8_t* data, int data_len);
+        void setGroundMac(const uint8_t mac_addr[6]);
 };
 
 

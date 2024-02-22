@@ -20,6 +20,7 @@ public:
 
     virtual void receiveData(uint8_t receivedData[MAX_DATA_SIZE], int& length) = 0;
     virtual bool newData() = 0;
+    virtual void addPeer(const uint8_t *peerAddr) = 0;
 
 
 //    // Pure virtual function to receive data
