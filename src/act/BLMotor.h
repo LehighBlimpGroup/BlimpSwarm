@@ -23,8 +23,8 @@ private:
     int max_thrust = 35;  // Force in grams  //TODO convert this into variables that can be loaded from the flash memory
 
     // Constants to convert PWM to Force. Equation: Force = a * PWM + b
-    int pwm_a = 0.042337045;  //TODO convert this into variables that can be loaded from the flash memory
-    int pwm_b = -46.58244237; //TODO convert this into variables that can be loaded from the flash memory
+    const float pwm_a = 0.042337045;  //TODO convert this into variables that can be loaded from the flash memory
+    const float pwm_b = -46.58244237; //TODO convert this into variables that can be loaded from the flash memory
 };
 
 
