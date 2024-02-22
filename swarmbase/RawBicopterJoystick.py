@@ -2,6 +2,7 @@
 
 from comm.Serial import SerialController, DataType_Int, DataType_Float
 from joystick.JoystickManager import JoystickManager
+from gui.simpleGUI import SimpleGUI
 import time
 
 ##### Insert your robot's MAC ADDRESS here ####
@@ -34,6 +35,7 @@ if __name__ == "__main__":
 
     # Joystick
     joystick = JoystickManager()
+    mygui = SimpleGUI()
 
 
     try:
@@ -53,8 +55,18 @@ if __name__ == "__main__":
             s2 = 0.  # Servo 2: a value between 0-180
             led = axis[0]
             ############# End CONTROL INPUTS ###############
-
-            print(serial.getSensorData())
+            sensors = serial.getSensorData()
+            print(sensors)
+            if (sensors):
+                mygui.update(
+                    cur_yaw=0,
+                    des_yaw=-0,
+                    cur_height=sensors[0],
+                    des_height=0,
+                    battery=0,
+                    distance=0,
+                    connection_status=True,
+                )
             # Send through serial port
             serial.send_control_params(ROBOT_MAC, (m1, m2, s1, s2, led, 0, 0, 0, 0, 0, 0, 0, 0))
             time.sleep(.03)

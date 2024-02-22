@@ -2,6 +2,7 @@
 from comm.Serial import SerialController, DataType_Int, DataType_Float
 # Make sure to import KeyboardManager from its location in your project
 from joystick.KeyboardManager import KeyboardManager
+from gui.simpleGUI import SimpleGUI
 import time
 
 
@@ -29,6 +30,7 @@ if __name__ == "__main__":
 
     # Keyboard
     keyboard = KeyboardManager()
+    mygui = SimpleGUI()
 
     try:
         while True:
@@ -48,8 +50,18 @@ if __name__ == "__main__":
             led = axis[0]  # Example: use the vertical input from the left joystick to control an LED
 
             ############# End CONTROL INPUTS ###############
-
-            print(serial.getSensorData())
+            sensors = serial.getSensorData()
+            print(sensors)
+            if (sensors):
+                mygui.update(
+                    cur_yaw=0,
+                    des_yaw=-0,
+                    cur_height=sensors[0],
+                    des_height=0,
+                    battery=0,
+                    distance=0,
+                    connection_status=True,
+                )
             # Send through serial port
             serial.send_control_params(ROBOT_MAC, (m1, m2, s1, s2, led, 0, 0, 0, 0, 0, 0, 0, 0))
             time.sleep(.02)
