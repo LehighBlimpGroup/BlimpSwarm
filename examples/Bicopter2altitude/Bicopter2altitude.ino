@@ -128,6 +128,7 @@ void paramUpdate(){
 
     kpz = preferences.getFloat("kpz", .2); //(value is an int) (default_value is manually set)
     kdz = preferences.getFloat("kdz", 0); //(value is an int) (default_value is manually set)
+    baseComm->setMainBaseStation();
     
 
     Serial.print("Update Paramters!");
