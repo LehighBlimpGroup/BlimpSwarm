@@ -1,4 +1,5 @@
 # Bicopter Blimp
+![](../figs/bicopter.jpg)
 
 ## 0. Component list
 
@@ -34,3 +35,6 @@ Optionally, sensors can make the flight easier:
 | [Barometer BMP390 i2c](https://www.amazon.com/Geekstory-Precision-Barometric-Altimeter-Cable%EF%BC%88Pack/dp/B09CMJ9FJL/ref=sr_1_2_sspa?crid=RSRZF8IDE7ME&keywords=bmp390&qid=1706299407&sprefix=bmp390%2Caps%2C106&sr=8-2-spons&sp_csd=d2lkZ2V0TmFtZT1zcF9hdGY&psc=1) | 1            | $12.50    | $12.50    |
 | [9DOF IMU i2c](https://www.adafruit.com/product/4754)                                                                                                                                                                                                                  | 1            | $25.00    | $25.00    |
 |                                                                                                                                                                                                                                                                        |              | Total     | $49.00    |
+
+
+## Assembling the frame
