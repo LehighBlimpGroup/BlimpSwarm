@@ -22,23 +22,25 @@ void BNO85::startup() {
     for (int i = 0; i < 6; i++) {
         sensorValues[i] = 0.0f;
     }
-    setReports();
+    if (myIMU.wasReset()) {
+        setReports();
+    }
 }
 
 // Here is where you define the sensor outputs you want to receive
 void BNO85::setReports() {
-    Serial.println("Setting desired reports");
+    Serial.println("  Setting desired reports");
     if (myIMU.enableRotationVector() == true) {
-        Serial.println(F("Rotation vector enabled"));
-        Serial.println(F("Output in form roll, pitch, yaw"));
+        Serial.println(F("    Rotation vector enabled"));
+        Serial.println(F("      Output in form roll, pitch, yaw in radians"));
     } else {
-        Serial.println("Could not enable rotation vector");
+        Serial.println("    Could not enable rotation vector");
     }
     if (myIMU.enableGyro() == true) {
-        Serial.println(F("Gyro enabled"));
-        Serial.println(F("Output in form x, y, z, in radians per second"));
+        Serial.println(F("    Gyro enabled"));
+        Serial.println(F("      Output in form x, y, z, in radians per second"));
     } else {
-        Serial.println("Could not enable gyro");
+        Serial.println("    Could not enable gyro");
     }
 }
 

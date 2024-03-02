@@ -16,12 +16,12 @@ void Barometer::startup() {
     // Attempt to initialize the barometer
     while (!baroInitialized && retryCount < maxRetries) {
         if (bme.begin_I2C()) { // Successfully initialized
-            Serial.println("Barometer Connected!");
+            Serial.println("  Barometer Connected!");
             baroInitialized = true;
             break;
         } else { // Failed to initialize, increase retry count and delay
             retryCount++;
-            Serial.print(F("Attempt "));
+            Serial.print(F("  Attempt "));
             Serial.print(retryCount);
             Serial.println(F(" failed, retrying..."));
             delay(initialDelay * retryCount); // Increase delay with each retry
@@ -29,7 +29,7 @@ void Barometer::startup() {
     } 
 
     if (!baroInitialized) {
-        Serial.println(F("Could not find a valid BMP390 sensor, check wiring or try a different address!"));
+        Serial.println(F("  Could not find a valid BMP390 sensor, check wiring or try a different address!"));
         return; // Exit if unable to initialize
     }
 
@@ -44,7 +44,7 @@ void Barometer::startup() {
     int discardReadings = 5; // Number of initial readings to discard
     for (int i = 0; i < discardReadings + calibrationReadings; i++) {
         if (!bme.performReading()) {
-            Serial.println(F("Failed to perform reading for calibration."));
+            Serial.println(F("  Failed to perform reading for calibration."));
             return;
         }
         if (i >= discardReadings) { // Start accumulating after discarding initial readings
@@ -55,8 +55,9 @@ void Barometer::startup() {
     groundLevel /= calibrationReadings; // Average of the good readings
     temperature = bme.temperature;
     pressure = bme.pressure;
-    Serial.print(F("Ground level calibrated to: "));
-    Serial.println(groundLevel);
+    Serial.print(F("  Ground level calibrated to: "));
+    Serial.print(groundLevel);
+    Serial.println(" meters above sea level.");
 }
 
 
