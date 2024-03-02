@@ -61,6 +61,11 @@ bool RawBicopter::actuate(const float actuators[], int size) {
     return true;
 }
 
+
+bool RawBicopter::control(float sensors[MAX_SENSORS], float controls[], int size) {
+    return RawBicopter::actuate(controls, size);
+}
+
 void RawBicopter::getPreferences() {
     
     // Implementation for reading values from non-volatile storage (NVS)

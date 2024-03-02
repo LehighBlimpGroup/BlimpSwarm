@@ -17,11 +17,12 @@ public:
     RawBicopter();
     int sense(float sensors[MAX_SENSORS]) override;
     bool actuate(const float actuators[], int size) override;
+    bool control(float sensors[MAX_SENSORS], float controls[], int size ) override;
     void calibrate() override;
+    void getPreferences() override;
     //void testActuators(float actuationCmd[4]) override;
 
 private:
-    void getPreferences() override;
 
     BLMotor* motor1;
     BLMotor* motor2;
