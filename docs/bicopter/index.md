@@ -37,4 +37,8 @@ Optionally, sensors can make the flight easier:
 |                                                                                                                                                                                                                                                                        |              | Total     | $49.00    |
 
 
-## Assembling the frame
+## 1. Assembling the robot
+The instructions to assemble the robot are [here](
+https://rhinestone-star-fa9.notion.site/Robot-Assembly-f31e5685cc46427f9f4b832dc4a56b95).
+
+##
