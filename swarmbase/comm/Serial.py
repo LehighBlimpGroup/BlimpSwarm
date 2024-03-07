@@ -20,6 +20,7 @@ class SerialController:
         
         
     def manage_peer(self, operation, mac_address=None):
+        time.sleep(.02)
         self.serial.reset_input_buffer()
         """Manage ESP-NOW peers by adding or removing them."""
         mac_bytes = bytes(int(x, 16) for x in mac_address.split(':'))
@@ -48,6 +49,7 @@ class SerialController:
 
     def send_preference(self, peer_mac, value_type, key, value):
         self.serial.reset_input_buffer()
+        time.sleep(.02)
         buffer = bytearray()
         if value_type in [DataType_Int, DataType_Float, DataType_Boolean]:
             buffer.extend(struct.pack('<6B', *[int(x, 16) for x in peer_mac.split(':')]))

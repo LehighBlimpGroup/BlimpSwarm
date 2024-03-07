@@ -18,12 +18,12 @@ import time
 
 ##### Insert your robot's MAC ADDRESS here ####
 ## (you can get it by running your arduino and looking at the serial monitor for your flying drone) ##
-ROBOT_MAC = "48:27:E2:E6:E1:00" # "DC:54:75:D7:B3:E8"
+ROBOT_MAC = "34:85:18:91:B3:44" # "DC:54:75:D7:B3:E8"
 ### Insert your SERIAL PORT here ###
 ## may look like "COM5" in windows or "/dev/tty.usbmodem14301" in mac  #
 ## look in arduino for the port that your specific transeiver is connected to  ##
 ## Note: make sure that your serial monitor is OFF in arduino or else you will get "access is denied" error. ##
-PORT = "COM8"
+PORT = "COM6"
 
 
 # For debug purposes
@@ -38,5 +38,5 @@ if __name__ == "__main__":
     # Communication
     serial = SerialController(PORT, timeout=.1)  # 5-second timeout
     serial.manage_peer("A", ROBOT_MAC)
-    serial.send_preference(ROBOT_MAC, DataType_Boolean, "calibrate", True)
+    serial.send_preference(ROBOT_MAC, DataType_Boolean, "calibrate", False)
     serial.close()

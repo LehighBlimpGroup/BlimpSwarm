@@ -15,6 +15,8 @@ private:
     float temperature; // Stores the latest temperature reading
     Adafruit_BMP3XX bme;
     bool baroInitialized = false;
+    unsigned long startTime;
+    float velocityZ;
     // Other private members as necessary...
 
 public:

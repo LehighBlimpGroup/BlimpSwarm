@@ -52,6 +52,8 @@ void Barometer::startup() {
         }
         delay(100); // Short delay between readings
     }
+    startTime = micros();
+    velocityZ = 0;
     groundLevel /= calibrationReadings; // Average of the good readings
     temperature = bme.temperature;
     pressure = bme.pressure;
@@ -71,17 +73,22 @@ bool Barometer::update() {
 
     // Calculate altitude
     // The formula for altitude based on pressure varies depending on your needs.
-    altitude = bme.readAltitude(1013.25);
-    
+    float altitudeNew = bme.readAltitude(1013.25);
+    unsigned long newTime = micros();
+    float deltaTime = (newTime - startTime)/1000000.0;
+    velocityZ = (altitudeNew - altitude) / deltaTime;
+    startTime = newTime;
+    altitude = altitudeNew;
     return true; // Data was successfully updated
 }
 
 // returns [pressure, temperature, altitude]
 float* Barometer::readValues(int& count) {
-    static float values[3]; // Static to ensure it persists after the method returns
+    static float values[4]; // Static to ensure it persists after the method returns
     values[0] = pressure;
     values[1] = temperature;
     values[2] = altitude;
-    count = 3; // Indicate that we're returning 3 values
+    values[3] = velocityZ;
+    count = 4; // Indicate that we're returning 3 values
     return values;
 }

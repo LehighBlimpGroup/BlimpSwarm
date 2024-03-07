@@ -44,7 +44,7 @@ private:
     Preferences preferences;
 
     unsigned long previousMillis = 0; // Stores the last time a message was sent
-    const long interval = 200; // Interval at which to run the sender (milliseconds) //TODO make SSD
+    const long interval = 333; // Interval at which to run the sender (milliseconds) //TODO make SSD
 
     // Messages
     ControlInput* msgCmd;

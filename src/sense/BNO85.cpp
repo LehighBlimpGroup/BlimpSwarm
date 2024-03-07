@@ -6,25 +6,52 @@ BNO85::BNO85() {
 
 void BNO85::startup() {
     if (bnoOn) return;
-    Wire.begin();
+    uint8_t sdaPin = D4;
+    uint8_t sclPin = D5;
+    pinMode(sdaPin, INPUT_PULLUP);
+    pinMode(sclPin, OUTPUT);
+    
+    // Toggle SCL line to reset any I2C devices that might be in a bad state
+    for (int i = 0; i < 10; i++) {
+        digitalWrite(sclPin, LOW);
+        delayMicroseconds(10);
+        digitalWrite(sclPin, HIGH);
+        delayMicroseconds(10);
+    }
+    
+    pinMode(sclPin, INPUT_PULLUP);
+    
+    Wire.begin(D4, D5); 
+    Wire.setClock(400000);
     int tempcount = 0;
     while (!myIMU.begin(0x4A, Wire)) {
         tempcount++;
+        pinMode(sclPin, OUTPUT);
+        
+        // Toggle SCL line to reset any I2C devices that might be in a bad state
+        for (int i = 0; i < 10; i++) {
+            digitalWrite(sclPin, LOW);
+            delayMicroseconds(10);
+            digitalWrite(sclPin, HIGH);
+            delayMicroseconds(10);
+        }
+        
+        pinMode(sclPin, INPUT_PULLUP);
         delay(50);
-        if (tempcount > 20) {
+        if (tempcount > 10) {
             Serial.println("Ooops, no BNO085 detected ... Check your wiring or I2C ADDR!");
             return;
         }
     }
+    myIMU.softReset();
     Serial.println("BNO started!");
     bnoOn = true;
-    Wire.setClock(400000);
     for (int i = 0; i < 6; i++) {
         sensorValues[i] = 0.0f;
     }
-    if (myIMU.wasReset()) {
-        setReports();
-    }
+    // if (myIMU.wasReset()) {
+    //     setReports();
+    // }
 }
 
 // Here is where you define the sensor outputs you want to receive

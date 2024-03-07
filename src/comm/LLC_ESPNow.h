@@ -227,36 +227,37 @@ public:
         // Send data using ESP-NOW
         esp_err_t result = esp_now_send(mac_addr, (uint8_t *) data, length);
         
-        
-        // Serial.print("Sending Data Result: ");
-        // for (int i = 0; i < 6; ++i) {
-        //     if (i > 0) {
-        //         Serial.print(":");
-        //     }
-        //     // Print each byte in hexadecimal format
-        //     if (mac_addr[i] < 16) {
-        //         Serial.print("0"); // Print a leading zero for values less than 0x10
-        //     }
-        //     Serial.print(mac_addr[i], HEX);
-        // }
-        // Serial.print(" ");
-        // if (result == ESP_OK) {
-        //     Serial.println("Success!");
-        // } else if (result == ESP_ERR_ESPNOW_NOT_INIT) {
-        //     Serial.println("ESP-NOW not initialized.");
-        // } else if (result == ESP_ERR_ESPNOW_ARG) {
-        //     Serial.println("Invalid argument.");
-        // } else if (result == ESP_ERR_ESPNOW_INTERNAL) {
-        //     Serial.println("Internal ESP-NOW error.");
-        // } else if (result == ESP_ERR_ESPNOW_NO_MEM) {
-        //     Serial.println("Out of memory.");
-        // } else if (result == ESP_ERR_ESPNOW_NOT_FOUND) {
-        //     Serial.println("Peer not found.");
-        // } else if (result == ESP_ERR_ESPNOW_IF) {
-        //     Serial.println("Interface error.");
-        // } else {
-        //     Serial.println("Unknown error.");
-        // }
+        if (verbose){
+            Serial.print("Sending Data Result: ");
+            for (int i = 0; i < 6; ++i) {
+                if (i > 0) {
+                    Serial.print(":");
+                }
+                // Print each byte in hexadecimal format
+                if (mac_addr[i] < 16) {
+                    Serial.print("0"); // Print a leading zero for values less than 0x10
+                }
+                Serial.print(mac_addr[i], HEX);
+            }
+            Serial.print(" ");
+            if (result == ESP_OK) {
+                Serial.println("Success!");
+            } else if (result == ESP_ERR_ESPNOW_NOT_INIT) {
+                Serial.println("ESP-NOW not initialized.");
+            } else if (result == ESP_ERR_ESPNOW_ARG) {
+                Serial.println("Invalid argument.");
+            } else if (result == ESP_ERR_ESPNOW_INTERNAL) {
+                Serial.println("Internal ESP-NOW error.");
+            } else if (result == ESP_ERR_ESPNOW_NO_MEM) {
+                Serial.println("Out of memory.");
+            } else if (result == ESP_ERR_ESPNOW_NOT_FOUND) {
+                Serial.println("Peer not found.");
+            } else if (result == ESP_ERR_ESPNOW_IF) {
+                Serial.println("Interface error.");
+            } else {
+                Serial.println("Unknown error.");
+            }
+        }
     }
 
     void receiveData(uint8_t receivedData[MAX_DATA_SIZE], int& length)  override {

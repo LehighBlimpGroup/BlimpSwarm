@@ -4,34 +4,30 @@
 
 
 #include "FullBicopter.h"
-#include <Arduino.h>
-
-
-#define SERVO1 D0
-#define SERVO2 D1
-#define THRUST1 D9
-#define THRUST2 D10
-#define BATT A2
 
 
 FullBicopter::FullBicopter(): RawBicopter() {
     sensorsuite.startup();
-    delay(500);
+    delay(200);
     
     float senses[MAX_SENSORS];
     FullBicopter::sense(senses);
-    groundZ = senses[2];
+    groundZ = senses[1];
 }
+
 
 int FullBicopter::sense(float sensors[MAX_SENSORS]) {
     sensorsuite.update();
     int numSenses = 0;
-    //(pressure, temperature, altitude, roll, pitch, yaw, rollrate, pitchrate, yawrate, batteryVoltage)
+    //(temperature, altitude, velocityAltitude, roll, pitch, yaw, rollrate, pitchrate, yawrate, batteryVoltage)
 
     float* sensorsValues = sensorsuite.readValues(numSenses);
     for (int i = 0; i < numSenses; i++) {
         sensors[i] = sensorsValues[i];
+        // Serial.print(sensors[i]);
+        // Serial.print(",");
     }
+    // Serial.println();
     // Implementation for sensing - fill the sensors array
     // Return the number of sensors used
     return numSenses; // Placeholder return value
@@ -43,8 +39,8 @@ bool FullBicopter::control(float sensors[MAX_SENSORS], float controls[], int siz
     if (controls[0] == 0) {
         outputs[0] = 0;
         outputs[1] = 0;
-        outputs[2] = 90;
-        outputs[3] = 90;
+        outputs[2] = 90 + PDterms.servoBeta;
+        outputs[3] = 90 - PDterms.servoBeta;
         outputs[4] = 0;
         
         return FullBicopter::actuate(outputs, size);
@@ -106,6 +102,11 @@ void FullBicopter::getPreferences() {
     // radius of the blimp
     PDterms.lx = preferences.getFloat("lx", .15);
 
+    // A-matrix adjustments for the servo
+    PDterms.servoBeta = preferences.getFloat("servoBeta", 0);
+    PDterms.servoRange = preferences.getFloat("servoRange", 190);
+    PDterms.botZlim = preferences.getFloat("botZlim", 0.001);
+    PDterms.pitchOffset = preferences.getFloat("pitchOffset", 0);
     preferences.end();
 }
 
@@ -118,17 +119,18 @@ void FullBicopter::addFeedback(float sensors[MAX_SENSORS], float controls[], flo
     float fz = controls[2]; // Fz/height
     float tx = controls[3]; // tx
     float tz = controls[4]; // tz
+    
     int dt = 4000;
-
+    
     // Z feedback
     if (PDterms.zEn) {
         // Integral in Z
-        z_integral += (controls[2] - (sensors[2]-groundZ)) * ((float)dt)/1000000.0f * PDterms.kiz;
+        z_integral += (controls[2] - (sensors[1]-groundZ)) * ((float)dt)/1000000.0f * PDterms.kiz;
         z_integral = clamp(z_integral, PDterms.z_int_low, PDterms.z_int_high);
         // Serial.println("z feedback");
         // PID in z
-        fz = (controls[2] - (sensors[2]-groundZ))*PDterms.kpz 
-                      - (0)*PDterms.kdz + (z_integral); //TODO velocityZ unimplemented
+        fz = (controls[2] - (sensors[1]-groundZ))*PDterms.kpz 
+                      - (sensors[2])*PDterms.kdz + (z_integral); 
     }
 
     // Yaw feedback (Cascading control format) 
@@ -136,7 +138,7 @@ void FullBicopter::addFeedback(float sensors[MAX_SENSORS], float controls[], flo
     //      what this basically means is that the D term for the absolute yaw is replaced with the yawrate PI
     //          the D term in yaw is equivalent to the P term in yawrate
     if (PDterms.yawEn) {
-        // Serial.println("yaw feedback");
+        // Serial.print("yaw feedback: ");
         // initial absolute error for the yaw
         float e_yaw = controls[4] - sensors[5]; // Tz - Yaw
         e_yaw = atan2(sin(e_yaw), cos(e_yaw));
@@ -158,6 +160,8 @@ void FullBicopter::addFeedback(float sensors[MAX_SENSORS], float controls[], flo
 
         // final result of the cascading PID controller in yaw
         tz = e_yawrate*PDterms.kdyaw + yawrate_integral;
+        
+        // Serial.println(tz);
     }
 
     // Roll feedback
@@ -182,6 +186,7 @@ void FullBicopter::addFeedback(float sensors[MAX_SENSORS], float controls[], flo
     feedbackControls[3] = tz;
     feedbackControls[4] = 1;
     
+    
 }
 
 
@@ -191,7 +196,12 @@ void FullBicopter::getOutputs(float sensors[MAX_SENSORS], float controls[], floa
     float l = PDterms.lx;
 
     float fx = clamp(controls[0], -1, 1);
-    float fz = clamp(controls[1], 0.001, 2);
+    float fz = controls[1];
+    // if (fx > abs(fz)){
+        fz = clamp(fz, PDterms.botZlim, 2);
+    // } else {
+    //     fz = clamp(fz, 0.001, 2);
+    // }
     float taux = clamp(controls[2], -l + 0.01f, l - 0.01f);
     float tauz = clamp(controls[3], -1, 1);
 
@@ -205,9 +215,10 @@ void FullBicopter::getOutputs(float sensors[MAX_SENSORS], float controls[], floa
     float t1 = atan2((fz * l - taux) / term3, (fx * l + tauz) / term3);
     float t2 = atan2((fz * l + taux) / term4, (fx * l - tauz) / term4);
     
+    // Adds the pitch to the servo to accomodate for swinging behavior
     if (PDterms.pitchEn) {
-        t1 -= sensors[4]; // Pitch
-        t2 -= sensors[4]; // Pitch
+        t1 += sensors[3] + PDterms.pitchOffset/180 * PI; // Pitch
+        t2 += sensors[3] + PDterms.pitchOffset/180 * PI; // Pitch
     }
 
     // Checking for full rotations and adjusting t1 and t2
@@ -215,26 +226,29 @@ void FullBicopter::getOutputs(float sensors[MAX_SENSORS], float controls[], floa
     t2 = adjustAngle(t2);
 
     // Converting values to a more stable form
-    out[2] = clamp((t1 ) / PI, 0.05f, 0.95f)* 180;
-    out[3] = clamp((t2) / PI, 0.05f, 0.95f)* 180;
+    // float servoBottom = 90.0f - PDterms.servoRange/2.0f; // bottom limit of servo in degrees
+    // float servoTop = 90.0f + PDterms.servoRange/2.0f; // top limit of servo in degrees
+    out[2] = clamp((t1 ) * 180.0f / PI  + PDterms.servoBeta , 0.0f,  PDterms.servoRange ) * 180.0f / PDterms.servoRange;
+    out[3] = 180.0f -clamp((t2) * 180.0f / PI  + PDterms.servoBeta, 0.0f,  PDterms.servoRange ) * 180.0f / PDterms.servoRange;
     out[0] = clamp(f1, 0, 1);
     out[1] = clamp(f2, 0, 1);
 
-    // Adjust servo positions if motor speeds are too low
-    if (out[0] < 0.02f) {
-        out[2] = 90;
-    }
-    if (out[1] < 0.02f) {
-        out[3] = 90;
-    }
+    // // Adjust servo positions if motor speeds are too low
+    // if (out[0] < 0.02f) {
+    //     out[2] = 90;
+    // }
+    // if (out[1] < 0.02f) {
+    //     out[3] = 90;
+    // }
 }
 
 float FullBicopter::clamp(float val, float minVal, float maxVal) {
     return std::max(minVal, std::min(maxVal, val));
 }
 
+// adjusts the servo deadzone to be in the correct place
 float FullBicopter::adjustAngle(float angle) {
-  while (angle < -PI / 2) angle += 2 * PI;
-  while (angle > 3 * PI / 2) angle -= 2 * PI;
+  while (angle < -PI / 2 - PDterms.servoBeta * PI/180.0f ) angle += 2 * PI;
+  while (angle > 3 * PI / 2 - PDterms.servoBeta * PI/180.0f ) angle -= 2 * PI;
   return angle;
 }
