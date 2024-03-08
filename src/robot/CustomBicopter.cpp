@@ -61,6 +61,16 @@ void CustomBicopter::addFeedback(float sensors[MAX_SENSORS], float controls[], f
     float fz = controls[2]; // Fz/height
     float tx = controls[3]; // tx
     float tz = controls[4]; // tz
+    float temperature = sensors[0];
+    float altitude = sensors[1];
+    float altitudeVelocity = sensors[2];
+    float pitch = sensors[3];
+    float roll = sensors[4];
+    float yaw = sensors[5];
+    float pitchrate = sensors[6];
+    float rollrate = sensors[7];
+    float yawrate = sensors[8];
+    float battery = sensors[10];
     
     //add feedback to your code.
     

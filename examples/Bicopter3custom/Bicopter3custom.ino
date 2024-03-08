@@ -14,10 +14,6 @@
 #include <ESP32Servo.h>
 
 
-// MAC of the base station
-uint8_t base_mac[6] = {0xC0, 0x49, 0xEF, 0xE3, 0x34, 0x78};  // fixme load this from memory
-
-
 // Robot
 Robot* myRobot = nullptr;
 
@@ -73,7 +69,9 @@ void loop() {
   rcv.values[1] = senses[5];  //yaw
   rcv.values[2] = senses[10];  //battery
   rcv.values[3] = senses[0];  //temperature
-  bool sent = baseComm->sendMeasurements(&rcv);
+  rcv.values[4] = 0;  // Free slot for custom usage
+  rcv.values[5] = 0;  // Free slot for custom usage
+  bool sent = baseComm->sendMeasurements(&rcv); // sends at most 3 packets per second to ground station
 
   // print sensor values every second
   // senses => [temperature, altitude, veloctity in altitude, roll, pitch, yaw, rollrate, pitchrate, yawrate, null, battery]
