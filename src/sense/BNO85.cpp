@@ -6,44 +6,22 @@ BNO85::BNO85() {
 
 void BNO85::startup() {
     if (bnoOn) return;
-    uint8_t sdaPin = D4;
-    uint8_t sclPin = D5;
-    pinMode(sdaPin, INPUT_PULLUP);
-    pinMode(sclPin, OUTPUT);
-    
-    // Toggle SCL line to reset any I2C devices that might be in a bad state
-    for (int i = 0; i < 10; i++) {
-        digitalWrite(sclPin, LOW);
-        delayMicroseconds(10);
-        digitalWrite(sclPin, HIGH);
-        delayMicroseconds(10);
-    }
-    
-    pinMode(sclPin, INPUT_PULLUP);
-    
+    bnoOn = false;
+    Serial.println("BNO Initialization!");
     Wire.begin(D4, D5); 
-    Wire.setClock(400000);
+    // Wire.setClock(400000);
     int tempcount = 0;
     while (!myIMU.begin(0x4A, Wire)) {
         tempcount++;
-        pinMode(sclPin, OUTPUT);
+        Serial.println("  Retrying!");
         
-        // Toggle SCL line to reset any I2C devices that might be in a bad state
-        for (int i = 0; i < 10; i++) {
-            digitalWrite(sclPin, LOW);
-            delayMicroseconds(10);
-            digitalWrite(sclPin, HIGH);
-            delayMicroseconds(10);
-        }
-        
-        pinMode(sclPin, INPUT_PULLUP);
-        delay(50);
-        if (tempcount > 10) {
+        delay(50 + tempcount * 50);
+        if (tempcount > 5) {
             Serial.println("Ooops, no BNO085 detected ... Check your wiring or I2C ADDR!");
             return;
         }
     }
-    myIMU.softReset();
+    // myIMU.softReset();
     Serial.println("BNO started!");
     bnoOn = true;
     for (int i = 0; i < 6; i++) {

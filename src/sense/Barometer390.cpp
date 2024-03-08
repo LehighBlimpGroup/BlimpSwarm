@@ -9,6 +9,10 @@
 
 void Barometer::startup() {
     baroInitialized = false;
+    
+    velocityZ = 0;
+    temperature = 0;
+    pressure = 0;
     int retryCount = 0;
     const int maxRetries = 5;
     const int initialDelay = 50; // Initial delay in milliseconds
@@ -65,6 +69,9 @@ void Barometer::startup() {
 
 
 bool Barometer::update() {
+    if (!baroInitialized) {
+        return false;
+    }
     if (!bme.performReading() ) {
         return false;
     }
