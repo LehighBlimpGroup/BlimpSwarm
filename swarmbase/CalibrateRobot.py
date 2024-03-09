@@ -38,5 +38,5 @@ if __name__ == "__main__":
     # Communication
     serial = SerialController(PORT, timeout=.1)  # 5-second timeout
     serial.manage_peer("A", ROBOT_MAC)
-    serial.send_preference(ROBOT_MAC, DataType_Boolean, "calibrate", False)
+    serial.send_preference(ROBOT_MAC, DataType_Boolean, "calibrate", True)
     serial.close()

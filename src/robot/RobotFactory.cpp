@@ -9,6 +9,7 @@
 #include "RawBicopter.h"
 #include "FullBicopter.h"
 #include "CustomBicopter.h"
+#include "SBlimp.h"
 
 
 Robot* RobotFactory::createRobot(const String& type) {
@@ -18,6 +19,8 @@ Robot* RobotFactory::createRobot(const String& type) {
         return new FullBicopter();
     }else if (type== "CustomBicopter") {
         return new CustomBicopter();
+    }else if (type== "SBlimp") {
+        return new SBlimp();
     }
         // Add cases for other robot types here
     else {
