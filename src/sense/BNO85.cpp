@@ -5,25 +5,37 @@ BNO85::BNO85() {
 }
 
 void BNO85::startup() {
-    if (bnoOn) return;
+    // if (bnoOn) return;
     bnoOn = false;
+    startTime = micros();
     Serial.println("BNO Initialization!");
     Wire.begin(D4, D5); 
+    delay(100);
     // Wire.setClock(400000);
     int tempcount = 0;
-    while (!myIMU.begin(0x4A, Wire)) {
+    bool connect = false;
+    if (myIMU.begin(0x4A, Wire)) {
         tempcount++;
-        Serial.println("  Retrying!");
+        Serial.print("  connecting! ");
+        connect = myIMU.isConnected();
+        Serial.println(connect);
+        
+        Serial.print("  ");
         
         delay(50 + tempcount * 50);
-        if (tempcount > 5) {
-            Serial.println("Ooops, no BNO085 detected ... Check your wiring or I2C ADDR!");
-            return;
-        }
+        
+    } else  {
+        Serial.println("Ooops, no BNO085 detected ... Check your wiring or I2C ADDR!");
+        startTime = micros();
+        return;
     }
-    // myIMU.softReset();
-    Serial.println("BNO started!");
+    Serial.print("  BNO started: ");
+    connect = myIMU.isConnected();
+    Serial.println(connect);
+    myIMU.softReset();
+    myIMU.modeOn();
     bnoOn = true;
+    startTime = micros();
     for (int i = 0; i < 6; i++) {
         sensorValues[i] = 0.0f;
     }
@@ -34,6 +46,9 @@ void BNO85::startup() {
 
 // Here is where you define the sensor outputs you want to receive
 void BNO85::setReports() {
+    while(myIMU.wasReset()){
+        delay(1);
+    }
     Serial.println("  Setting desired reports");
     if (myIMU.enableRotationVector() == true) {
         Serial.println(F("    Rotation vector enabled"));
@@ -50,7 +65,9 @@ void BNO85::setReports() {
 }
 
 bool BNO85::update() {
-
+    if (micros() - startTime > 3000000) { // every 3 seconds try to reconnect.
+        BNO85::startup();
+    }
     if (!bnoOn) {
         // Initialize sensorValues to 0 if the sensor is not on
         for (int i = 0; i < 6; i++) {
@@ -64,10 +81,15 @@ bool BNO85::update() {
         setReports();
     }
     bool bevent = false;
+    bool attitude = false;
+    bool rate = false;
+    // Serial.print("Event");
     while (myIMU.getSensorEvent()) {
         bevent = true;
+        startTime = micros();
         // Update roll, pitch, yaw based on rotation vector
-        if (myIMU.getSensorEventID() == SENSOR_REPORTID_ROTATION_VECTOR) {
+        if (myIMU.getSensorEventID() == SENSOR_REPORTID_ROTATION_VECTOR && !attitude) {
+            attitude = true;
             sensorValues[0] = myIMU.getRoll();
             sensorValues[1] = myIMU.getPitch();
             sensorValues[2] = myIMU.getYaw();
@@ -78,12 +100,20 @@ bool BNO85::update() {
             }
         }
         // Update gyroscope rates
-        if (myIMU.getSensorEventID() == SENSOR_REPORTID_GYROSCOPE_CALIBRATED) {
+        else if (myIMU.getSensorEventID() == SENSOR_REPORTID_GYROSCOPE_CALIBRATED && !rate) {
+            rate = true;
             sensorValues[3] = myIMU.getGyroX();
             sensorValues[4] = myIMU.getGyroY();
             sensorValues[5] = myIMU.getGyroZ();
         }
+        if (attitude && rate) {
+            break;
+        }
+        // Serial.print("|");
+        
     } 
+    // Serial.println();
+    
 
     // This example assumes you have a way to return or use sensorValues
     return bevent; // Indicate successful update

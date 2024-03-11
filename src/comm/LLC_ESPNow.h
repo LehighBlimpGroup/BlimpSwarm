@@ -299,7 +299,7 @@ public:
         if (esp_now_add_peer(&peerInfo) != ESP_OK) {
             Serial.println("Failed to add peer");
         } else {
-            Serial.print("Added peer successfully.");
+            Serial.println("Added peer successfully.");
         }
     }
 

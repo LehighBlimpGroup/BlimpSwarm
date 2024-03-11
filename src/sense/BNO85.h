@@ -10,6 +10,7 @@ private:
     BNO08x myIMU;
     bool bnoOn = false;
     float sensorValues[6]; // Array to store roll, pitch, yaw, rollRate, pitchRate, yawRate
+    
     // Define sensor data structure here if needed
 
 public:
@@ -18,6 +19,7 @@ public:
     bool update() override;
     float* readValues(int& count) override;
     void setReports();
+    unsigned long startTime;
     // Additional methods as necessary
 };
 
