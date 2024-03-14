@@ -107,6 +107,7 @@ void FullBicopter::getPreferences() {
     PDterms.servoRange = preferences.getFloat("servoRange", 190);
     PDterms.botZlim = preferences.getFloat("botZlim", 0.001);
     PDterms.pitchOffset = preferences.getFloat("pitchOffset", 0);
+    PDterms.pitchInvert = preferences.getFloat("pitchInvert", 1);
     preferences.end();
 }
 
@@ -217,8 +218,8 @@ void FullBicopter::getOutputs(float sensors[MAX_SENSORS], float controls[], floa
     
     // Adds the pitch to the servo to accomodate for swinging behavior
     if (PDterms.pitchEn) {
-        t1 += sensors[3] + PDterms.pitchOffset/180 * PI; // Pitch
-        t2 += sensors[3] + PDterms.pitchOffset/180 * PI; // Pitch
+        t1 += sensors[3] * PDterms.pitchInvert + PDterms.pitchOffset/180 * PI; // Pitch
+        t2 += sensors[3] * PDterms.pitchInvert + PDterms.pitchOffset/180 * PI; // Pitch
     }
 
     // Checking for full rotations and adjusting t1 and t2

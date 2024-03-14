@@ -26,7 +26,7 @@ public:
         float kpyaw, kdyaw, kiyaw, kiyawrate, yawRateIntRange;
         float kpz, kdz, kiz, z_int_low, z_int_high;
         float kproll, kdroll;
-        float servoBeta, servoRange, botZlim, pitchOffset;
+        float servoBeta, servoRange, botZlim, pitchOffset, pitchInvert;
         float lx;
     } feedback_t;
     
@@ -34,7 +34,7 @@ public:
     SensorSuite sensorsuite; 
 
     feedback_t PDterms;
-    
+
     // List of the variables that need persistant storage
     float z_integral = 0;
     float yaw_integral = 0;
