@@ -35,13 +35,15 @@ bool SensorSuite::update() {
     }
     offset = 3;
     // Repeat the pattern for bnoSensor and batterySensor
-    if (bnoSensor.update()) {
-        float* bnoValues = bnoSensor.readValues(tempCount);
-        for(int i = 0; i < tempCount; ++i) {
-            sensorValues[offset + i] = bnoValues[i];
+    if (!updated) {// prevent both baro and bno update on same tick.
+        if (bnoSensor.update()) {
+            float* bnoValues = bnoSensor.readValues(tempCount);
+            for(int i = 0; i < tempCount; ++i) {
+                sensorValues[offset + i] = bnoValues[i];
+            }
+            offset += tempCount;
+            updated = true;
         }
-        offset += tempCount;
-        updated = true;
     }
     offset = 10;
     if (batterySensor.update()) {

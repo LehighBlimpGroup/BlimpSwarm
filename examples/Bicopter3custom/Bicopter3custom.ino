@@ -62,20 +62,20 @@ void loop() {
 
   // Get sensor values
   int numSenses = myRobot->sense(senses);
-
+  
   // send values to ground station
   rcv.flag = 1;
   rcv.values[0] = senses[1] - groundAltitude;  //height
   rcv.values[1] = senses[5];  //yaw
   rcv.values[2] = senses[10];  //battery
   rcv.values[3] = senses[0];  //temperature
-  rcv.values[4] = 0;  // Free slot for custom usage
-  rcv.values[5] = 0;  // Free slot for custom usage
-  bool sent = baseComm->sendMeasurements(&rcv); // sends at most 3 packets per second to ground station
+  bool sent = baseComm->sendMeasurements(&rcv);
 
   // print sensor values every second
   // senses => [temperature, altitude, veloctity in altitude, roll, pitch, yaw, rollrate, pitchrate, yawrate, null, battery]
-  if (micros() - printTime > 1000000){
+  if (micros() - printTime > 515106){
+      Serial.print(dt/1000.0f);
+      Serial.print(",");
     for (int i = 0; i < numSenses-1; i++){
       Serial.print(senses[i]);
       Serial.print(",");

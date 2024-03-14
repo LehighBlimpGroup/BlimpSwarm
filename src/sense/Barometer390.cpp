@@ -13,6 +13,7 @@ void Barometer::startup() {
     velocityZ = 0;
     temperature = 0;
     pressure = 0;
+    altitude = 0;
     int retryCount = 0;
     const int maxRetries = 5;
     const int initialDelay = 50; // Initial delay in milliseconds
@@ -59,6 +60,7 @@ void Barometer::startup() {
     startTime = micros();
     velocityZ = 0;
     groundLevel /= calibrationReadings; // Average of the good readings
+    altitude = groundLevel;
     temperature = bme.temperature;
     pressure = bme.pressure;
     Serial.print(F("  Ground level calibrated to: "));
@@ -69,14 +71,15 @@ void Barometer::startup() {
 
 
 bool Barometer::update() {
+    if (micros() - startTime < 20000) { // if less than 20 hz
+        return false;
+    }
     if (!baroInitialized) {
         return false;
     }
-    if (!bme.performReading() ) {
-        return false;
-    }
-    temperature = bme.temperature;
-    pressure = bme.pressure;
+    // if (!bme.performReading() ) {
+    //     return false;
+    // }
 
     // Calculate altitude
     // The formula for altitude based on pressure varies depending on your needs.
@@ -86,6 +89,8 @@ bool Barometer::update() {
     velocityZ = (altitudeNew - altitude) / deltaTime;
     startTime = newTime;
     altitude = altitudeNew;
+    temperature = bme.temperature;
+    pressure = bme.pressure;
     return true; // Data was successfully updated
 }
 

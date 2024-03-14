@@ -29,6 +29,7 @@ void BNO85::startup() {
         startTime = micros();
         return;
     }
+    Wire.setClock(400000); //Increase I2C data rate to 400kHz
     Serial.print("  BNO started: ");
     connect = myIMU.isConnected();
     Serial.println(connect);
@@ -88,7 +89,8 @@ bool BNO85::update() {
         bevent = true;
         startTime = micros();
         // Update roll, pitch, yaw based on rotation vector
-        if (myIMU.getSensorEventID() == SENSOR_REPORTID_ROTATION_VECTOR && !attitude) {
+        if (myIMU.getSensorEventID() == SENSOR_REPORTID_ROTATION_VECTOR ) {
+            // Serial.print("A");
             attitude = true;
             sensorValues[0] = myIMU.getRoll();
             sensorValues[1] = myIMU.getPitch();
@@ -100,7 +102,8 @@ bool BNO85::update() {
             }
         }
         // Update gyroscope rates
-        else if (myIMU.getSensorEventID() == SENSOR_REPORTID_GYROSCOPE_CALIBRATED && !rate) {
+        else if (myIMU.getSensorEventID() == SENSOR_REPORTID_GYROSCOPE_CALIBRATED ) {
+            // Serial.print("G");
             rate = true;
             sensorValues[3] = myIMU.getGyroX();
             sensorValues[4] = myIMU.getGyroY();
@@ -109,7 +112,6 @@ bool BNO85::update() {
         if (attitude && rate) {
             break;
         }
-        // Serial.print("|");
         
     } 
     // Serial.println();
