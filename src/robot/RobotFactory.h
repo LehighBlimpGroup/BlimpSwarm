@@ -8,7 +8,13 @@
 
 #include "Arduino.h"
 #include "Robot.h"
-// Other robot types would be included here
+
+// Include robots
+#include "RawBicopter.h"
+#include "FullBicopter.h"
+#include "CustomBicopter.h"
+#include "SBlimp.h"
+
 
 class RobotFactory {
 public:

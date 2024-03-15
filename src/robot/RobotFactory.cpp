@@ -5,13 +5,6 @@
 
 #include "RobotFactory.h"
 
-// Include robots
-#include "RawBicopter.h"
-#include "FullBicopter.h"
-#include "CustomBicopter.h"
-#include "SBlimp.h"
-
-
 Robot* RobotFactory::createRobot(const String& type) {
     if (type== "RawBicopter") {
         return new RawBicopter();
