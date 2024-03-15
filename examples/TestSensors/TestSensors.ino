@@ -2,10 +2,10 @@
 
 #include <Arduino.h>
 #include "BlimpSwarm.h"
-#include "sense/SensorSuite.h"
+#include "sense/NiclaSuite.h"
 
 
-SensorSuite sensors; 
+NiclaSuite sensors; 
 // Barometer sensors;
 // BNO85 sensors;
 // WeightedBatterySensor sensors;

@@ -14,7 +14,7 @@ private:
 
 public:
     // Assume a fixed maximum size for the arrays
-    static const int MAX_SENSORS = 11;
+    static const int MAX_SENSORS = 21;
 
     // Pure virtual function for sensing
     // Returns the number of elements filled in the array

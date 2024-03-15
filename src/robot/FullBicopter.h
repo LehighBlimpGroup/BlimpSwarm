@@ -8,7 +8,7 @@
 
 
 #include "RawBicopter.h"
-#include "sense/SensorSuite.h"
+#include "sense/NiclaSuite.h"
 #include <Arduino.h>
 
 
@@ -31,7 +31,7 @@ public:
     } feedback_t;
     
     // Sensor interface
-    SensorSuite sensorsuite; 
+    NiclaSuite sensorsuite; 
 
     feedback_t PDterms;
 

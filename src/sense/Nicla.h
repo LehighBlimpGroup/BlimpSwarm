@@ -13,7 +13,7 @@
 class Nicla : public SensorInterface {
 private:
     float value[10]; // Array to store the battery voltage
-    uint8_t mode = 0x80;
+    uint8_t mode = 0x81;
     unsigned long sendTime;
     
 

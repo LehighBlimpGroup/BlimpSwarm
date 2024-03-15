@@ -6,6 +6,9 @@
 
 HardwareSerial MySerial0(0);
 Nicla::Nicla() {
+    for (int i = 0; i < 10; i++) {
+        value[i] = 0;
+    }
 }
 
 void Nicla::startup() {
@@ -13,7 +16,7 @@ void Nicla::startup() {
     MySerial0.begin(115200, SERIAL_8N1, -1, -1);
     IBus.begin(MySerial0, IBUSBM_NOTIMER);
     IBus.loop();
-    mode = 0x80; //balloon detection
+    // mode = 0x80; //balloon detection
     //mode = 0x81; //goal detection
     MySerial0.write(mode); 
     sendTime = micros();
@@ -31,7 +34,7 @@ void Nicla::startup(uint8_t setMode) {
 
 //data = [flag, x_roi, y_roi, w_roi, h_roi, x_value, y_value, w_value, h_value, dis]
 bool Nicla::update() {
-    if (micros() - sendTime > 5000000) {// resend command every 5 seconds. 
+    if (micros() - sendTime > 200000000) {// resend command every 5 seconds. 
         MySerial0.write(mode); 
         sendTime = micros();
     }
