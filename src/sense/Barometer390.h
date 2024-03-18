@@ -17,6 +17,7 @@ private:
     bool baroInitialized = false;
     unsigned long startTime;
     float velocityZ;
+    float groundLevel = 0.0;
     // Other private members as necessary...
 
 public:

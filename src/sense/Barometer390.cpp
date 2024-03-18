@@ -44,7 +44,7 @@ void Barometer::startup() {
     bme.setIIRFilterCoeff(BMP3_IIR_FILTER_COEFF_7);
     bme.setOutputDataRate(BMP3_ODR_100_HZ);
 
-    float groundLevel = 0.0;
+    groundLevel = 0.0;
     int calibrationReadings = 10;
     int discardReadings = 5; // Number of initial readings to discard
     for (int i = 0; i < discardReadings + calibrationReadings; i++) {
@@ -99,7 +99,7 @@ float* Barometer::readValues(int& count) {
     static float values[4]; // Static to ensure it persists after the method returns
     values[0] = pressure;
     values[1] = temperature;
-    values[2] = altitude;
+    values[2] = altitude - groundLevel;
     values[3] = velocityZ;
     count = 4; // Indicate that we're returning 3 values
     return values;

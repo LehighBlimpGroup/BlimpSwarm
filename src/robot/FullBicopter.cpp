@@ -12,7 +12,7 @@ FullBicopter::FullBicopter(): RawBicopter() {
     
     float senses[MAX_SENSORS];
     FullBicopter::sense(senses);
-    groundZ = senses[1];
+    
 }
 
 
@@ -126,11 +126,11 @@ void FullBicopter::addFeedback(float sensors[MAX_SENSORS], float controls[], flo
     // Z feedback
     if (PDterms.zEn) {
         // Integral in Z
-        z_integral += (controls[2] - (sensors[1]-groundZ)) * ((float)dt)/1000000.0f * PDterms.kiz;
+        z_integral += (controls[2] - (sensors[1])) * ((float)dt)/1000000.0f * PDterms.kiz;
         z_integral = clamp(z_integral, PDterms.z_int_low, PDterms.z_int_high);
         // Serial.println("z feedback");
         // PID in z
-        fz = (controls[2] - (sensors[1]-groundZ))*PDterms.kpz 
+        fz = (controls[2] - (sensors[1]))*PDterms.kpz 
                       - (sensors[2])*PDterms.kdz + (z_integral); 
     }
 

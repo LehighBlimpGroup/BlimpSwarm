@@ -39,7 +39,7 @@ public:
     float z_integral = 0;
     float yaw_integral = 0;
     float yawrate_integral = 0;
-    float groundZ = 0; 
+    
 
 private:
 
