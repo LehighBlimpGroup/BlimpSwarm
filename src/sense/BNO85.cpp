@@ -66,7 +66,7 @@ void BNO85::setReports() {
 }
 
 bool BNO85::update() {
-    if (micros() - startTime > 3000000) { // every 3 seconds try to reconnect.
+    if (micros() - startTime > 5000000) { // every 3 seconds try to reconnect.
         BNO85::startup();
     }
     if (!bnoOn) {
