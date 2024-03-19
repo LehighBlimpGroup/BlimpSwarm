@@ -39,8 +39,15 @@ bool FullBicopter::control(float sensors[MAX_SENSORS], float controls[], int siz
     if (controls[0] == 0) {
         outputs[0] = 0;
         outputs[1] = 0;
-        outputs[2] = 90 + PDterms.servoBeta;
-        outputs[3] = 90 - PDterms.servoBeta;
+        // Checking for full rotations and adjusting t1 and t2
+        float t1 = adjustAngle(PI/2);
+        float t2 = adjustAngle(PI/2);
+
+        // Converting values to a more stable form
+        // float servoBottom = 90.0f - PDterms.servoRange/2.0f; // bottom limit of servo in degrees
+        // float servoTop = 90.0f + PDterms.servoRange/2.0f; // top limit of servo in degrees
+        outputs[2] = clamp((t1 ) * 180.0f / PI  + PDterms.servoBeta , 0.0f,  PDterms.servoRange ) * 180.0f / PDterms.servoRange;
+        outputs[3] = 180.0f -clamp((t2) * 180.0f / PI  + PDterms.servoBeta, 0.0f,  PDterms.servoRange ) * 180.0f / PDterms.servoRange;
         outputs[4] = 0;
         
         return FullBicopter::actuate(outputs, size);
@@ -104,10 +111,13 @@ void FullBicopter::getPreferences() {
 
     // A-matrix adjustments for the servo
     PDterms.servoBeta = preferences.getFloat("servoBeta", 0);
-    PDterms.servoRange = preferences.getFloat("servoRange", 190);
+    PDterms.servoRange = preferences.getFloat("servoRange", 180);
     PDterms.botZlim = preferences.getFloat("botZlim", 0.001);
     PDterms.pitchOffset = preferences.getFloat("pitchOffset", 0);
     PDterms.pitchInvert = preferences.getFloat("pitchInvert", 1);
+
+    servoDiff = 2*PI - PDterms.servoRange * PI/180;// calculating the servo dead zone
+
     preferences.end();
 }
 
@@ -249,7 +259,7 @@ float FullBicopter::clamp(float val, float minVal, float maxVal) {
 
 // adjusts the servo deadzone to be in the correct place
 float FullBicopter::adjustAngle(float angle) {
-  while (angle < -PI / 2 - PDterms.servoBeta * PI/180.0f ) angle += 2 * PI;
-  while (angle > 3 * PI / 2 - PDterms.servoBeta * PI/180.0f ) angle -= 2 * PI;
+  while (angle <  - servoDiff / 2 - PDterms.servoBeta * PI/180.0f ) angle += 2 * PI;
+  while (angle > 2 * PI - servoDiff / 2 - PDterms.servoBeta * PI/180.0f ) angle -= 2 * PI;
   return angle;
 }

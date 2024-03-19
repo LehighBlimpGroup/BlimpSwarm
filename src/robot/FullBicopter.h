@@ -39,6 +39,7 @@ public:
     float z_integral = 0;
     float yaw_integral = 0;
     float yawrate_integral = 0;
+    float servoDiff = 0;//2*PI - PDterms.servoRange * PI/180;
     
 
 private:
