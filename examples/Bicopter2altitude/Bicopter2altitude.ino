@@ -5,7 +5,8 @@
  */
 
 #include "BlimpSwarm.h"
-#include "robot/RobotFactory.h"
+// #include "robot/RobotFactory.h"
+#include "robot/RawBicopter.h"
 #include "comm/BaseCommunicator.h"
 #include "comm/LLC_ESPNow.h"
 #include "util/Print.h"
@@ -47,7 +48,8 @@ void setup() {
     baseComm->setMainBaseStation();
 
     // init robot with new parameters
-    myRobot = RobotFactory::createRobot("RawBicopter");
+    // myRobot = RobotFactory::createRobot("RawBicopter");
+    myRobot = new RawBicopter();
 
     // Start sensor
     baro.init();
