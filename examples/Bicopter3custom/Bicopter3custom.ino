@@ -84,14 +84,12 @@ void loop() {
 
   // print sensor values every second
   // senses => [temperature, altitude, veloctity in altitude, roll, pitch, yaw, rollrate, pitchrate, yawrate, null, battery]
-  if (micros() - printTime > 515106){
-      Serial.print(dt/1000.0f);
-      Serial.print(",");
-    for (int i = 0; i < numSenses-1; i++){
+  if (micros() - printTime > 500000){
+    for (int i = 0; i < numSenses-11; i++){
       Serial.print(senses[i]);
       Serial.print(",");
     }
-    Serial.println(senses[numSenses-1]);
+    Serial.println(senses[numSenses-11]);
     printTime = micros();
   }
 
@@ -103,7 +101,7 @@ void loop() {
     outputs[1] = 0;
     outputs[2] = 90; // change if you are not using upwards facing motor/servos
     outputs[3] = 90; // change if you are not using upwards facing motor/servos
-    outputs[4] = 0;
+    outputs[4] = controls[5]; //LED controller
     
     myRobot->actuate(outputs, 5);
     fixClockRate();
@@ -116,7 +114,7 @@ void loop() {
   float fz = controls[2]; // Fz ()
   float tx = controls[3]; // tx
   float tz = controls[4]; // tz
-  float moreCommands = controls[5]; // increase number of parameters as needed if you want more controls from ground station
+  float LED = controls[5]; // increase number of parameters as needed if you want more controls from ground station
 
   float temperature = senses[0];
   float altitude = senses[1];
