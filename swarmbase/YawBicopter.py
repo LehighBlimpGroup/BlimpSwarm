@@ -85,8 +85,11 @@ if __name__ == "__main__":
                 print(" ".join(["{:.1f}".format(num) for num in axis]), buttons)
 
             #### CONTROL INPUTS to the robot here #########
+            fx = 0
+            fz = 0
+            tx = 0
+            tz = 0
             
-            
 
 
 
@@ -102,7 +105,7 @@ if __name__ == "__main__":
 
 
 
-            
+
             
             led = -buttons[2]
             ############# End CONTROL INPUTS ###############
