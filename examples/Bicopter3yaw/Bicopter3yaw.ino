@@ -1,5 +1,5 @@
 /**
- * BICOPTER with altitude control
+ * BICOPTER with altitude and yaw control
  * This code runs a bicopter with altitude control using the feedback from a barometer.
  * For this example, your robot needs a barometer sensor.
  */
@@ -44,7 +44,7 @@ typedef struct feedback_s {
 
 feedback_t PDterms;
 
-// List of the variables that need persistant storage
+// List of the variables that need persistent storage
 float z_integral = 0;
 
 void setup() {
@@ -61,7 +61,6 @@ void setup() {
     paramUpdate();
 
     // updates the ground altitude for the ground feedback
-    // TODO: make some way to access the actual ground height from robot
     int numSenses = myRobot->sense(senses);
     groundAltitude = senses[1];//height
 }
@@ -135,29 +134,20 @@ void loop() {
     // Integral in Z
     z_integral += (fz - altitude) * ((float)dt)/1000000.0f * PDterms.kiz;
     z_integral = constrain(z_integral, PDterms.z_int_low, PDterms.z_int_high);
-    // Serial.println("z feedback");
-    // PID in z
+    // PID in z: the output is the force to maintain the altitude
     fz = (fz - altitude) * PDterms.kpz - altitudeVelocity * PDterms.kdz + z_integral; 
   }
 
   // Put your controller code here which converts ground station controls and sensor feedback into motor/servo values
   // feel free to use the PDterms set from the ground station which are picked up in the paramUpdate function for easy tuning
-  float m1 = 0; // motor 1
-  float m2 = 0; // motor 2
-  float t1 = 0; // servo 1
-  float t2 = 0; // servo 2
+  float m1 = 0;  // motor 1
+  float m2 = 0;  // motor 2
+  float t1 = 0;  // servo 1
+  float t2 = 0;  // servo 2
 
 
+  /******** INSERT YOUR CODE HERE: Use the variable yaw and yawrate for yaw control ******************/
 
-
-
-
-
-
-
-
-
-  // end
 
   outputs.params[0] = m1;
   outputs.params[1] = m2;
@@ -166,7 +156,7 @@ void loop() {
   // Send command to the actuators
   myRobot->actuate( outputs.params, 5);
 
-  // makes the clock rate of the loop consistant. 
+  // makes the clock rate of the loop consistent.
   fixClockRate();
 }
 
@@ -201,19 +191,17 @@ void paramUpdate(){
     PDterms.kdyaw = preferences.getFloat("kdyaw", 0.1);// same thing as if I said kpyawrate
     PDterms.kiyaw = preferences.getFloat("kiyaw", 0);
 
-    
     preferences.end();
 
     myRobot->getPreferences();
     baseComm->setMainBaseStation();
-    
 }
 
 void fixClockRate() {
 
-  dt = (int)(micros()-clockTime);
+  dt = (int) (micros()-clockTime);
   while (TIME_STEP_MICRO - dt > 0){
-    dt = (int)(micros()-clockTime);
+    dt = (int) (micros()-clockTime);
   }
   clockTime = micros();
 }
