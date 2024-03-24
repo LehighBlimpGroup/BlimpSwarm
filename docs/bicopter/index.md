@@ -14,7 +14,8 @@ The main components t build a bicopter that can be teleoperated are the followin
 | [Micro ESP32](https://us.seeedstudio.com/XIAO-ESP32S3-p-5627.html?queryID=b390fec8be23f6356e6cb35bff41f48c&objectID=5627&indexName=bazaar_us_products) | 1            | $6.50     | $6.50     |
 | [Balloon](https://balloonsfast.com/36-ruby-red-foil-circle-balloon-1ct-12681.html)                                                                     | 1            | $4.00     | $4.00     |
 | [Battery Kit: 5 Batteries + Charger](https://www.amazon.com/dp/B08XZNRTCP?psc=1&ref=ppx_yo2ov_dt_b_product_details)                                    | 1            | $19.00    | $19.00    |
-|                                                                                                                                                        |              | Total     | $74.25    |
+| [Elastic](https://www.amazon.com/gp/product/B0B9BRFW4M/ref=ppx_yo_dt_b_search_asin_title?ie=UTF8&th=1)                                   | 1            | $9.49     | $9.49     |
+|                                                                                                                                                        |              | Total     | $83.74    |
 
 
 It is recommended to have a joystick and an USB hub
@@ -37,7 +38,7 @@ Optionally, sensors can make the flight easier:
 |                                                                                                                                                                                                                                                                        |              | Total     | $49.00    |
 
 
-## 1. Assembling the robot
+## Assembling the robot
 The instructions to assemble the robot are [here](
 https://rhinestone-star-fa9.notion.site/Robot-Assembly-f31e5685cc46427f9f4b832dc4a56b95).
 
