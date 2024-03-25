@@ -37,19 +37,19 @@ int NiclaSimpleServo::servoing(float sensors[], float controls[], float outContr
         
         float subdt = (millis() - lastDetection)/1000.0f;
         lastDetection = millis();
+
         float x_cal = tracking_x / max_x;
-        
-        
-        float y_cal = detection_y / max_y;
-
-
         des_yaw = ((x_cal - 0.5));
-        if ( des_yaw < .1) { // if too close than height doesnt make sense
+        robot_to_goal = _yaw + des_yaw;
+        
+        
+
+        float y_cal = detection_y / max_y;
+        if ( abs(des_yaw) < .1) { // if too close than height doesnt make sense
             // z_offset += 20*((y_cal - 0.5))* subdt / sideLength;//(.75 - max(detection_h, detection_w)/max_y);
             z_offset = z_offset * .7 + ( _height + 1 * (y_cal - 0.65)) * .3; // integral must be on
         }
         
-        robot_to_goal = _yaw + des_yaw;
         // if (detected == false) { // positive edge of detection
         // goal_yaw_estimator = robot_to_goal;
         //     goal_yaw_counter = 1;
