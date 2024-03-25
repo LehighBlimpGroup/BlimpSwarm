@@ -3,24 +3,16 @@ from comm.Serial import SerialController, DataType_Int, DataType_Float
 # Make sure to import KeyboardManager from its location in your project
 from joystick.KeyboardManager import KeyboardManager
 from gui.simpleGUI import SimpleGUI
+from user_parameters import ROBOT_MAC, SERIAL_PORT, PRINT_JOYSTICK
 import time
 
 
-##### Insert your robot's MAC ADDRESS here ####
-## (you can get it by running your arduino and looking at the serial monitor for your flying drone) ##
-ROBOT_MAC = "34:85:18:8D:A0:D4" # "DC:54:75:D7:B3:E8"
-### Insert your SERIAL PORT here ###
-## may look like "COM5" in windows or "/dev/tty.usbmodem14301" in mac  #
-## look in arduino for the port that your specific transeiver is connected to  ##
-## Note: make sure that your serial monitor is OFF in arduino or else you will get "access is denied" error. ##
-PORT = "/dev/ttyUSB0"
 
-# For debug purposes
-PRINT_JOYSTICK = False
+
 
 if __name__ == "__main__":
     # Communication
-    serial = SerialController(PORT, timeout=.1)  # 5-second timeout
+    serial = SerialController(SERIAL_PORT, timeout=.1)  # 5-second timeout
     serial.manage_peer("A", ROBOT_MAC)
     serial.manage_peer("G", ROBOT_MAC)
     serial.send_preference(ROBOT_MAC, DataType_Float, "kpz", .6)
@@ -30,7 +22,7 @@ if __name__ == "__main__":
 
     # Keyboard
     keyboard = KeyboardManager()
-    mygui = SimpleGUI()
+    sensorGUI = SimpleGUI()
 
     try:
         while True:
@@ -47,13 +39,14 @@ if __name__ == "__main__":
             m2 = 0.  # Motor 2: a value between 0-1
             s1 = 0.  # Servo 1: a value between 0-180
             s2 = 0.  # Servo 2: a value between 0-180
-            led = axis[0]  # Example: use the vertical input from the left joystick to control an LED
+            led = axis[0]  # Example: press W in the keyboard to control an LED
 
             ############# End CONTROL INPUTS ###############
             sensors = serial.getSensorData()
-            print(sensors)
-            if (sensors):
-                mygui.update(
+
+            if sensors:
+                print(sensors)
+                sensorGUI.update(
                     cur_yaw=0,
                     des_yaw=-0,
                     cur_height=sensors[0],
@@ -62,6 +55,8 @@ if __name__ == "__main__":
                     distance=0,
                     connection_status=True,
                 )
+            else:
+                print("No sensors")
             # Send through serial port
             serial.send_control_params(ROBOT_MAC, (m1, m2, s1, s2, led, 0, 0, 0, 0, 0, 0, 0, 0))
             time.sleep(.02)

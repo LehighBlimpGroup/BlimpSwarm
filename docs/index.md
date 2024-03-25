@@ -3,10 +3,14 @@ title: Home
 ---
 
 ## BlimpSwarm Framework: Tutorials and Documentation
+[![Documentation](https://img.shields.io/badge/Documentation-website)](https://lehighblimpgroup.github.io/BlimpSwarm/)
+[![Documentation](https://img.shields.io/badge/Source%20code-8A2BE2)](https://github.com/LehighBlimpGroup/BlimpSwarm)
 
 ![](figs/flying.gif)
 
-* [Bicopter robot](bicopter)
+* [Bicopter robot: Parts and assembly](bicopter)
+* [Firmware: Install and test](bicopter/firmware.md)
+* [Computer Vision: Install and test](bicopter/vision.md)
 
 
 

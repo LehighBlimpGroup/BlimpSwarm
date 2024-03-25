@@ -1,5 +1,8 @@
 # BLIMP SWARM
+[![Documentation](https://img.shields.io/badge/Documentation-website)](https://lehighblimpgroup.github.io/BlimpSwarm/)
+
 BlimpSwarm is a framework to operate robots based on the ESP32 microcontroler.
+
 
 
 ### 0. Hardware setup

@@ -3,21 +3,14 @@
 from comm.Serial import SerialController, DataType_Int, DataType_Float, DataType_Boolean
 from joystick.JoystickManager import JoystickManager
 from gui.simpleGUI import SimpleGUI
+from user_parameters import ROBOT_MAC, SERIAL_PORT, PRINT_JOYSTICK
 
 import time
 
-##### Insert your robot's MAC ADDRESS here ####
-## (you can get it by running your arduino and looking at the serial monitor for your flying drone) ##
-ROBOT_MAC = "DC:54:75:D7:B3:E8"#"34:85:18:AB:FE:68" # "DC:54:75:D7:B3:E8"
-### Insert your SERIAL PORT here ###
-## may look like "COM5" in windows or "/dev/tty.usbmodem14301" in mac  #
-## look in arduino for the port that your specific transeiver is connected to  ##
-## Note: make sure that your serial monitor is OFF in arduino or else you will get "access is denied" error. ##
-PORT = "COM6"
 
 
-# For debug purposes
-PRINT_JOYSTICK = False
+
+
 
 
 BaseStationAddress = "" # you do not need this, just make sure your DroneMacAddress is not your base station mac address
@@ -26,7 +19,7 @@ BaseStationAddress = "" # you do not need this, just make sure your DroneMacAddr
 
 if __name__ == "__main__":
     # Communication
-    serial = SerialController(PORT, timeout=.5)  # .5-second timeout
+    serial = SerialController(SERIAL_PORT, timeout=.5)  # .5-second timeout
     serial.manage_peer("A", ROBOT_MAC)
     serial.manage_peer("G", ROBOT_MAC)
     time.sleep(.05)
@@ -82,36 +75,21 @@ if __name__ == "__main__":
 
 
             if PRINT_JOYSTICK:
-                print(" ".join(["{:.1f}".format(num) for num in axis]), buttons)
+                print("Joystick: ", ["{:.1f}".format(num) for num in axis], "Buttons: ", buttons)
 
             #### CONTROL INPUTS to the robot here #########
-            fx = 0
-            fz = 0
-            tx = 0
-            tz = 0
-            
+            fx = (axis[5]+1) / 2 - (axis[4]+1) / 2  # Forward with the triggers
+            fz = -axis[0]  # Vertical left joystick
+            tx = 0  # No roll control
+            tz = axis[3]  # Horizontal right joystick
+            led = -buttons[2]  # Button X
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-            
-            led = -buttons[2]
+            print("fx={:.2f} fz={:.2f} tz={:.2f} LED={:.2f} ".format(fx, fz, tz, led), end=' ')
             ############# End CONTROL INPUTS ###############
             sensors = serial.getSensorData()
-            # print(sensors)
-            if (sensors):
+            #
+            if sensors:
+                print("Sensors:", ["{:.2f}".format(val) for val in sensors])
                 mygui.update(
                     cur_yaw=sensors[1],
                     des_yaw=tz,
@@ -121,7 +99,11 @@ if __name__ == "__main__":
                     distance=sensors[3],
                     connection_status=True,
                 )
-                
+            else:
+                print("No sensors")
+
+
+
             # Send through serial port
             serial.send_control_params(ROBOT_MAC, (ready, fx, fz, tx, tz, led, 0, 0, 0, 0, 0, 0, 0))
             time.sleep(dt)
