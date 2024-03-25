@@ -2,11 +2,13 @@
 
 BNO85::BNO85() {
     // Constructor logic if necessary
+    restartLength = 5000000;
 }
 
 void BNO85::startup() {
     // if (bnoOn) return;
     bnoOn = false;
+    
     startTime = micros();
     Serial.println("BNO Initialization!");
     Wire.begin(D4, D5); 
@@ -66,8 +68,9 @@ void BNO85::setReports() {
 }
 
 bool BNO85::update() {
-    if (micros() - startTime > 5000000) { // every 3 seconds try to reconnect.
+    if (micros() - startTime > restartLength) { // every 3 seconds try to reconnect.
         BNO85::startup();
+        restartLength = restartLength + 1500000;
     }
     if (!bnoOn) {
         // Initialize sensorValues to 0 if the sensor is not on

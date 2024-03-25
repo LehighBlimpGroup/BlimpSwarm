@@ -10,6 +10,7 @@ private:
     BNO08x myIMU;
     bool bnoOn = false;
     float sensorValues[6]; // Array to store roll, pitch, yaw, rollRate, pitchRate, yawRate
+    unsigned long restartLength = 5000000;
     
     // Define sensor data structure here if needed
 
