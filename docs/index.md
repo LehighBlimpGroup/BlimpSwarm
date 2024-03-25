@@ -10,6 +10,7 @@ title: Home
 
 * [Bicopter robot: Parts and assembly](bicopter)
 * [Firmware: Install and test](bicopter/firmware.md)
+* [Computer Vision: Install and test](bicopter/vision.md)
 
 
 
