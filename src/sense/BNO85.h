@@ -4,6 +4,7 @@
 #include <Wire.h>
 #include "SensorInterface.h"
 #include "SparkFun_BNO08x_Arduino_Library.h"
+#include <math.h>
 
 class BNO85 : public SensorInterface {
 private:

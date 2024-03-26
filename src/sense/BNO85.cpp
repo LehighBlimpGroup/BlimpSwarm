@@ -49,23 +49,52 @@ void BNO85::startup() {
 
 // Here is where you define the sensor outputs you want to receive
 void BNO85::setReports() {
-    while(myIMU.wasReset()){
-        delay(1);
-    }
-    Serial.println("  Setting desired reports");
-    if (myIMU.enableRotationVector() == true) {
-        Serial.println(F("    Rotation vector enabled"));
-        Serial.println(F("      Output in form roll, pitch, yaw in radians"));
+    Serial.println("Setting desired reports");
+    if (myIMU.enableGyroIntegratedRotationVector() == true) {
+        Serial.println(F("Gryo Integrated Rotation vector enabled"));
+        Serial.println(F("Output in form i, j, k, real, gyroX, gyroY, gyroZ"));
     } else {
-        Serial.println("    Could not enable rotation vector");
+        Serial.println("Could not enable gyro integrated rotation vector");
     }
-    if (myIMU.enableGyro() == true) {
-        Serial.println(F("    Gyro enabled"));
-        Serial.println(F("      Output in form x, y, z, in radians per second"));
-    } else {
-        Serial.println("    Could not enable gyro");
+    // Serial.println("  Setting desired reports");
+    // if (myIMU.enableRotationVector() == true) {
+    //     Serial.println(F("    Rotation vector enabled"));
+    //     Serial.println(F("      Output in form roll, pitch, yaw in radians"));
+    // } else {
+    //     Serial.println("    Could not enable rotation vector");
+    // }
+    // if (myIMU.enableGyro() == true) {
+    //     Serial.println(F("    Gyro enabled"));
+    //     Serial.println(F("      Output in form x, y, z, in radians per second"));
+    // } else {
+    //     Serial.println("    Could not enable gyro");
+    // }
+    while(myIMU.wasReset()) {
+        delay(10);
     }
+    
 }
+
+// Conversion from quaternion to roll, pitch, yaw
+void quaternionToEuler(float qW, float qX, float qY, float qZ, float& roll, float& pitch, float& yaw) {
+    // Roll (x-axis rotation)
+    double sinr_cosp = +2.0 * (qW * qX + qY * qZ);
+    double cosr_cosp = +1.0 - 2.0 * (qX * qX + qY * qY);
+    roll = atan2(sinr_cosp, cosr_cosp);
+
+    // Pitch (y-axis rotation)
+    double sinp = +2.0 * (qW * qY - qZ * qX);
+    if (fabs(sinp) >= 1)
+        pitch = copysign(M_PI / 2, sinp); // Use 90 degrees if out of range
+    else
+        pitch = asin(sinp);
+
+    // Yaw (z-axis rotation)
+    double siny_cosp = +2.0 * (qW * qZ + qX * qY);
+    double cosy_cosp = +1.0 - 2.0 * (qY * qY + qZ * qZ);
+    yaw = atan2(siny_cosp, cosy_cosp);
+}
+
 
 bool BNO85::update() {
     if (micros() - startTime > restartLength) { // every 3 seconds try to reconnect.
@@ -84,41 +113,37 @@ bool BNO85::update() {
         Serial.println("Sensor was reset");
         setReports();
     }
+
     bool bevent = false;
-    bool attitude = false;
-    bool rate = false;
-    // Serial.print("Event");
+    // The loop now only checks for one type of sensor event
     while (myIMU.getSensorEvent()) {
         bevent = true;
         startTime = micros();
-        // Update roll, pitch, yaw based on rotation vector
-        if (myIMU.getSensorEventID() == SENSOR_REPORTID_ROTATION_VECTOR ) {
-            // Serial.print("A");
-            attitude = true;
-            sensorValues[0] = myIMU.getRoll();
-            sensorValues[1] = myIMU.getPitch();
-            sensorValues[2] = myIMU.getYaw();
-            // Adjust the angles to be within -PI to PI
+
+        // Only checking for gyro integrated rotation vector
+        if (myIMU.getSensorEventID() == SENSOR_REPORTID_GYRO_INTEGRATED_ROTATION_VECTOR) {
+            float qW = myIMU.getGyroIntegratedRVReal();
+            float qX = myIMU.getGyroIntegratedRVI();
+            float qY = myIMU.getGyroIntegratedRVJ();
+            float qZ = myIMU.getGyroIntegratedRVK();
+
+            // Convert quaternion to Euler angles
+            quaternionToEuler(qW, qX, qY, qZ, sensorValues[0], sensorValues[1], sensorValues[2]);
+
+            // Normalize angles between -PI and PI
             for (int i = 0; i < 3; i++) {
-                while (sensorValues[i] > PI) sensorValues[i] -= 2 * PI;
-                while (sensorValues[i] < -PI) sensorValues[i] += 2 * PI;
+                while (sensorValues[i] > M_PI) sensorValues[i] -= 2 * M_PI;
+                while (sensorValues[i] < -M_PI) sensorValues[i] += 2 * M_PI;
             }
+
+            // Get angular velocity directly from the sensor
+            sensorValues[3] = myIMU.getGyroIntegratedRVangVelX();
+            sensorValues[4] = myIMU.getGyroIntegratedRVangVelY();
+            sensorValues[5] = myIMU.getGyroIntegratedRVangVelZ();
+
+            break; // Since we are only looking for this event, break after handling
         }
-        // Update gyroscope rates
-        else if (myIMU.getSensorEventID() == SENSOR_REPORTID_GYROSCOPE_CALIBRATED ) {
-            // Serial.print("G");
-            rate = true;
-            sensorValues[3] = myIMU.getGyroX();
-            sensorValues[4] = myIMU.getGyroY();
-            sensorValues[5] = myIMU.getGyroZ();
-        }
-        if (attitude && rate) {
-            break;
-        }
-        
-    } 
-    // Serial.println();
-    
+    }
 
     // This example assumes you have a way to return or use sensorValues
     return bevent; // Indicate successful update
