@@ -74,6 +74,7 @@ bool FullBicopter::control(float sensors[MAX_SENSORS], float controls[], int siz
 void FullBicopter::getPreferences() {
     //calls the getPreferences of the superclass object to reduce the number of getPreferences calls
     RawBicopter::getPreferences();
+    sensorsuite.getPreferences();
     // Implementation for reading values from non-volatile storage (NVS)
     // must manually enter keys and default values for every variable.
     Preferences preferences; //initialize the preferences 
@@ -90,7 +91,9 @@ void FullBicopter::getPreferences() {
 
     // PID terms
     PDterms.kpyaw = preferences.getFloat("kpyaw", 0.1);
+    PDterms.kppyaw = preferences.getFloat("kppyaw", 0.1);
     PDterms.kdyaw = preferences.getFloat("kdyaw", 0.1);// same thing as if I said kpyawrate
+    PDterms.kddyaw = preferences.getFloat("kddyaw", 0.1);
     PDterms.kiyaw = preferences.getFloat("kiyaw", 0);
     PDterms.kiyawrate = preferences.getFloat("kiyawrate", 0);
 
@@ -115,6 +118,7 @@ void FullBicopter::getPreferences() {
     PDterms.botZlim = preferences.getFloat("botZlim", 0.001);
     PDterms.pitchOffset = preferences.getFloat("pitchOffset", 0);
     PDterms.pitchInvert = preferences.getFloat("pitchInvert", 1);
+    PDterms.servo_move_min = preferences.getFloat("servo_move_min", 2); // degrees
 
     servoDiff = 2*PI - PDterms.servoRange * PI/180;// calculating the servo dead zone
 
@@ -160,17 +164,17 @@ void FullBicopter::addFeedback(float sensors[MAX_SENSORS], float controls[], flo
         yaw_integral = clamp(yaw_integral, -PI/4, PI/4);
         
         // finding desired yaw rate from the absolute yaw feedback
-        float yaw_desired_rate = (e_yaw * PDterms.kpyaw + yaw_integral);
+        float yaw_desired_rate = (e_yaw  + yaw_integral);
 
         // getting the error in the yawrate
-        float e_yawrate = yaw_desired_rate - sensors[8]; // YawRate
+        float e_yawrate = yaw_desired_rate * PDterms.kpyaw - sensors[8]; // YawRate
 
         // integral term for the yawrate
         yawrate_integral += e_yawrate * ((float)dt)/1000000.0f * PDterms.kiyawrate;
         yawrate_integral = clamp(yawrate_integral, - PDterms.yawRateIntRange, PDterms.yawRateIntRange);
 
         // final result of the cascading PID controller in yaw
-        tz = e_yawrate*PDterms.kdyaw + yawrate_integral;
+        tz = yaw_desired_rate * PDterms.kppyaw  + e_yawrate*PDterms.kdyaw - sensors[8] * PDterms.kddyaw  + yawrate_integral;
         
         // Serial.println(tz);
     }
@@ -243,7 +247,17 @@ void FullBicopter::getOutputs(float sensors[MAX_SENSORS], float controls[], floa
     out[3] = 180.0f -clamp((t2) * 180.0f / PI  + PDterms.servoBeta, 0.0f,  PDterms.servoRange ) * 180.0f / PDterms.servoRange;
     out[0] = clamp(f1, 0, 1);
     out[1] = clamp(f2, 0, 1);
-
+    if (abs(out[2] - servo_old1) < PDterms.servo_move_min) {
+        out[2] = servo_old1;
+    } else {
+        servo_old1 = out[2];
+    }
+    
+    if (abs(out[3] - servo_old2) < PDterms.servo_move_min) {
+        out[3] = servo_old2;
+    } else {
+        servo_old2 = out[3];
+    }
     // // Adjust servo positions if motor speeds are too low
     // if (out[0] < 0.02f) {
     //     out[2] = 90;

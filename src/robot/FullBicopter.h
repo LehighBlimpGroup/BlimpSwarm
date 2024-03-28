@@ -23,10 +23,10 @@ public:
     
     typedef struct feedback_s {
         bool zEn, yawEn, rollEn, pitchEn, rotateEn;
-        float kpyaw, kdyaw, kiyaw, kiyawrate, yawRateIntRange;
+        float kpyaw, kppyaw, kdyaw, kddyaw, kiyaw, kiyawrate, yawRateIntRange;
         float kpz, kdz, kiz, z_int_low, z_int_high;
         float kproll, kdroll;
-        float servoBeta, servoRange, botZlim, pitchOffset, pitchInvert;
+        float servoBeta, servoRange, servo_move_min, botZlim, pitchOffset, pitchInvert;
         float lx;
     } feedback_t;
     
@@ -40,6 +40,8 @@ public:
     float yaw_integral = 0;
     float yawrate_integral = 0;
     float servoDiff = 0;//2*PI - PDterms.servoRange * PI/180;
+    float servo_old1 = 0;
+    float servo_old2 = 0;
     
 
 private:
