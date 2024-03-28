@@ -57,7 +57,7 @@ void setup() {
     baseComm->setMainBaseStation();
 
     // init robot with new parameters
-    myRobot = RobotFactory::createRobot("CustomBicopter");
+    myRobot = RobotFactory::createRobot("FullBicopter");
     paramUpdate();
 
     // updates the ground altitude for the ground feedback
@@ -92,69 +92,10 @@ void loop() {
     printTime = micros();
   }
 
-  float* controls = cmd.params;
-  // When control[0] == 0, the robot stops its motors and sets servos to 90 degrees
-  if (controls[0] == 0) {
-    float outputs[5];
-    outputs[0] = 0;
-    outputs[1] = 0;
-    outputs[2] = 90; // change if you are not using upwards facing motor/servos
-    outputs[3] = 90; // change if you are not using upwards facing motor/servos
-    outputs[4] = controls[5]; //LED controller
-    
-    myRobot->actuate(outputs, 5);
-    fixClockRate();
-    return;
-    
-  }
-
-  // you can freely change how these values work from the ground station- dont feel required to use this version
-  float fx = controls[1]; // Fx (foward backwards)
-  float fz = controls[2]; // Fz ()
-  float tx = controls[3]; // tx
-  float tz = controls[4]; // tz
-  float LED = controls[5]; // increase number of parameters as needed if you want more controls from ground station
-
-  float temperature = senses[0];
-  float altitude = senses[1];
-  float altitudeVelocity = senses[2];
-  float pitch = senses[3];
-  float roll = senses[4];
-  float yaw = senses[5];
-  float pitchrate = senses[6];
-  float rollrate = senses[7];
-  float yawrate = senses[8];
-  float battery = senses[10];
-
-
-  // Z feedback
-  // This is the solution that I use for the height feedback, you still need to convert this value into motor/servo values
-  // This is an absolute height controller, which is in meters; for example if your controls
-  if (PDterms.zEn) {
-    // Integral in Z
-    z_integral += (fz - altitude) * ((float)dt)/1000000.0f * PDterms.kiz;
-    z_integral = constrain(z_integral, PDterms.z_int_low, PDterms.z_int_high);
-    // PID in z: the output is the force to maintain the altitude
-    fz = (fz - altitude) * PDterms.kpz - altitudeVelocity * PDterms.kdz + z_integral; 
-  }
-
-  // Put your controller code here which converts ground station controls and sensor feedback into motor/servo values
-  // feel free to use the PDterms set from the ground station which are picked up in the paramUpdate function for easy tuning
-  float m1 = 0;  // motor 1
-  float m2 = 0;  // motor 2
-  float t1 = 0;  // servo 1
-  float t2 = 0;  // servo 2
-
-
-  /******** INSERT YOUR CODE HERE: Use the variable yaw and yawrate for yaw control ******************/
-
-
-  outputs.params[0] = m1;
-  outputs.params[1] = m2;
-  outputs.params[2] = t1;
-  outputs.params[3] = t2;
+ 
   // Send command to the actuators
-  myRobot->actuate( outputs.params, 5);
+  
+  myRobot->control(senses, cmd.params, 5);
 
   // makes the clock rate of the loop consistent.
   fixClockRate();
@@ -180,16 +121,16 @@ void paramUpdate(){
     Preferences preferences; //initialize the preferences 
     preferences.begin("params", true); //true means read-only
 
-    PDterms.zEn = preferences.getBool("zEn", false);
-    PDterms.zEn = preferences.getBool("yawEn", false);
-    PDterms.kpz = preferences.getFloat("kpz", 0.5);
-    PDterms.kdz = preferences.getFloat("kdz", 0.5);
-    PDterms.kiz = preferences.getFloat("kiz", 0);
-    PDterms.z_int_low = preferences.getFloat("z_int_low", 0);
-    PDterms.z_int_high = preferences.getFloat("z_int_high", 0.2);
-    PDterms.kpyaw = preferences.getFloat("kpyaw", 0.1);
-    PDterms.kdyaw = preferences.getFloat("kdyaw", 0.1);// same thing as if I said kpyawrate
-    PDterms.kiyaw = preferences.getFloat("kiyaw", 0);
+    // PDterms.zEn = preferences.getBool("zEn", false);
+    // PDterms.zEn = preferences.getBool("yawEn", false);
+    // PDterms.kpz = preferences.getFloat("kpz", 0.5);
+    // PDterms.kdz = preferences.getFloat("kdz", 0.5);
+    // PDterms.kiz = preferences.getFloat("kiz", 0);
+    // PDterms.z_int_low = preferences.getFloat("z_int_low", 0);
+    // PDterms.z_int_high = preferences.getFloat("z_int_high", 0.2);
+    // PDterms.kpyaw = preferences.getFloat("kpyaw", 0.1);
+    // PDterms.kdyaw = preferences.getFloat("kdyaw", 0.1);// same thing as if I said kpyawrate
+    // PDterms.kiyaw = preferences.getFloat("kiyaw", 0);
 
     preferences.end();
 
