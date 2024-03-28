@@ -5,6 +5,7 @@
 #ifndef BLIMPSWARM_SENSOR_H
 #define BLIMPSWARM_SENSOR_H
 
+#include <Preferences.h>
 
 class SensorInterface {
 public:
@@ -21,6 +22,9 @@ public:
     // The return type is a pointer to a float array.
     // Implementations should also set the output parameter `count` to indicate the size of the array.
     virtual float* readValues(int& count) = 0;
+
+    // gets ground station parameters for tuning
+    virtual void getPreferences();
 };
 
 

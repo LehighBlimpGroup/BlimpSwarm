@@ -8,6 +8,7 @@
 // }
 
 void Barometer::startup() {
+    Barometer::getPreferences();
     baroInitialized = false;
     
     velocityZ = 0;
@@ -103,4 +104,8 @@ float* Barometer::readValues(int& count) {
     values[3] = velocityZ;
     count = 4; // Indicate that we're returning 3 values
     return values;
+}
+
+void Barometer::getPreferences(){
+    return;
 }

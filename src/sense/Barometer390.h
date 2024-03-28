@@ -25,6 +25,7 @@ public:
     void startup() override;
     bool update() override;
     float* readValues(int& count) override;
+    void getPreferences();
     // Additional Barometer-specific methods...
 };
 

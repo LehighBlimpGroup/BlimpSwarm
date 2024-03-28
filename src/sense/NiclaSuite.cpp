@@ -7,6 +7,7 @@ void NiclaSuite::startup() {
     // bnoSensor = new BNO85();
     // barometer = new Barometer();
     // batterySensor = new WeightedBatterySensor();
+    NiclaSuite::getPreferences();
     nicla.startup();
     sensorSuite.startup();
     for (int i = 0; i < 21; i++) {
@@ -48,4 +49,12 @@ bool NiclaSuite::update() {
 float* NiclaSuite::readValues(int& count) {
     count = valueCount; // Return the count of valid sensor values
     return sensorValues; // Return the array of sensor values
+}
+
+
+void NiclaSuite::getPreferences(){
+    nicla.getPreferences();
+    sensorSuite.getPreferences();
+    return;
+
 }

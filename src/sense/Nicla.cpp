@@ -12,6 +12,7 @@ Nicla::Nicla() {
 }
 
 void Nicla::startup() {
+    Nicla::getPreferences();
     Serial.println("Starting IBUS Init");
     MySerial0.begin(115200, SERIAL_8N1, -1, -1);
     IBus.begin(MySerial0, IBUSBM_NOTIMER);
@@ -68,4 +69,9 @@ bool Nicla::update(uint8_t setMode) {
 float* Nicla::readValues(int& count) {
     count = 10; 
     return value;
+}
+
+void Nicla::getPreferences(){
+    return;
+
 }

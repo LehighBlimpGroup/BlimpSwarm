@@ -21,6 +21,7 @@ public:
     virtual void startup() override;
     virtual bool update() override;
     virtual float* readValues(int& count) override;
+    void getPreferences();
 };
 
 #endif

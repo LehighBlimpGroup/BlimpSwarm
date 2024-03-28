@@ -19,6 +19,7 @@ public:
     void startup() override;
     bool update() override;
     float* readValues(int& count) override;
+    void getPreferences();
 };
 
 
@@ -39,6 +40,7 @@ public:
     void startup() override;
     bool update() override;
     float* readValues(int& count) override;
+    void getPreferences();
 };
 
 

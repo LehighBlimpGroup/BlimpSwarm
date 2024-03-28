@@ -9,6 +9,7 @@
 class BNO85 : public SensorInterface {
 private:
     BNO08x myIMU;
+    float gamma = 0;
     bool bnoOn = false;
     float sensorValues[6]; // Array to store roll, pitch, yaw, rollRate, pitchRate, yawRate
     unsigned long restartLength = 5000000;
@@ -21,6 +22,7 @@ public:
     bool update() override;
     float* readValues(int& count) override;
     void setReports();
+    void getPreferences();
     unsigned long startTime;
     // Additional methods as necessary
 };

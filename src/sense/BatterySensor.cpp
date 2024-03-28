@@ -7,6 +7,7 @@
 BatterySensor::BatterySensor(int pin, float referenceVoltage) : pin(pin), referenceVoltage(referenceVoltage) {
 }
 void BatterySensor::startup() {
+    BatterySensor::getPreferences();
     pinMode(pin, INPUT);
 }
 bool BatterySensor::update() {
@@ -20,6 +21,10 @@ float* BatterySensor::readValues(int& count) {
     return value;
 }
 
+void BatterySensor::getPreferences(){
+    return;
+
+}
 
 WeightedBatterySensor::WeightedBatterySensor( float gamma)
 :  filteredValue(0.0), gamma(gamma), valueCount(1) {
@@ -29,6 +34,7 @@ WeightedBatterySensor::~WeightedBatterySensor() {
     // Clean-up code if needed
 }
 void WeightedBatterySensor::startup(int pin, float referenceVoltage) {
+    getPreferences();
     sensor = new BatterySensor(pin, referenceVoltage);
     sensor->startup();
 }
@@ -52,4 +58,8 @@ bool WeightedBatterySensor::update() {
 float* WeightedBatterySensor::readValues(int& count) {
     count = valueCount;
     return &filteredValue;
+}
+void WeightedBatterySensor::getPreferences(){
+    return;
+
 }

@@ -10,6 +10,7 @@ void SensorSuite::startup() {
     // bnoSensor = new BNO85();
     // barometer = new Barometer();
     // batterySensor = new WeightedBatterySensor();
+    SensorSuite::getPreferences();
     bnoSensor.startup();
     barometer.startup();
     batterySensor.startup();
@@ -62,4 +63,14 @@ bool SensorSuite::update() {
 float* SensorSuite::readValues(int& count) {
     count = valueCount; // Return the count of valid sensor values
     return sensorValues; // Return the array of sensor values
+}
+
+
+
+void SensorSuite::getPreferences() {
+    bnoSensor.getPreferences();
+    barometer.getPreferences();
+    batterySensor.getPreferences();
+    return;
+
 }

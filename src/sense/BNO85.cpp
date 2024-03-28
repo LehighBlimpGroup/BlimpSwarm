@@ -7,6 +7,7 @@ BNO85::BNO85() {
 
 void BNO85::startup() {
     // if (bnoOn) return;
+    BNO85::getPreferences();
     bnoOn = false;
     
     startTime = micros();
@@ -137,9 +138,9 @@ bool BNO85::update() {
             }
 
             // Get angular velocity directly from the sensor
-            sensorValues[3] = myIMU.getGyroIntegratedRVangVelX();
-            sensorValues[4] = myIMU.getGyroIntegratedRVangVelY();
-            sensorValues[5] = myIMU.getGyroIntegratedRVangVelZ();
+            sensorValues[3] = sensorValues[3] * gamma + myIMU.getGyroIntegratedRVangVelX() * (1-gamma);
+            sensorValues[4] = sensorValues[4] * gamma + myIMU.getGyroIntegratedRVangVelY() * (1-gamma);
+            sensorValues[5] = sensorValues[5] * gamma + myIMU.getGyroIntegratedRVangVelZ() * (1-gamma);
 
             break; // Since we are only looking for this event, break after handling
         }
@@ -152,4 +153,17 @@ bool BNO85::update() {
 float* BNO85::readValues(int& count) {
     count = 6; // Indicate we are returning 6 values
     return sensorValues; // Return the pointer to the sensor values
+}
+
+void BNO85::getPreferences(){
+
+    // Implementation for reading values from non-volatile storage (NVS)
+    // must manually enter keys and default values for every variable.
+    Preferences preferences; //initialize the preferences 
+    preferences.begin("params", true); //true means read-only
+
+    
+    gamma = constrain(preferences.getFloat("yawrate_gamma", 0), 0, 1);
+    preferences.end();
+    return;
 }

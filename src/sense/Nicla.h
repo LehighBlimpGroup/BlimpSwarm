@@ -25,6 +25,8 @@ public:
     bool update() override;
     bool update(uint8_t setMode);
     float* readValues(int& count) override;
+    
+    void getPreferences();
 };
 
 
