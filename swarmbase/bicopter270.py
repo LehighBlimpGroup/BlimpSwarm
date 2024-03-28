@@ -29,13 +29,13 @@ def sendParamsActive(serial, mac):
     serial.send_preference(mac, DataType_Boolean, "zEn", True)
     serial.send_preference(mac, DataType_Boolean, "rollEn", False)
     serial.send_preference(mac, DataType_Boolean, "rotateEn", False)
-    serial.send_preference(mac, DataType_Boolean, "pitchEn", False)
-    serial.send_preference(mac, DataType_Boolean, "yawEn", False)
+    serial.send_preference(mac, DataType_Boolean, "pitchEn", True)
+    serial.send_preference(mac, DataType_Boolean, "yawEn", True)
 
     
     # // PID terms
-    serial.send_preference(mac, DataType_Float, "kpyaw", 1.5) #2
-    serial.send_preference(mac, DataType_Float, "kdyaw", .1)#.1
+    serial.send_preference(mac, DataType_Float, "kpyaw", .8) #2
+    serial.send_preference(mac, DataType_Float, "kdyaw", 1.1)#.1
     serial.send_preference(mac, DataType_Float, "kiyaw", 0)
     serial.send_preference(mac, DataType_Float, "kiyawrate", 0)
 
@@ -52,7 +52,7 @@ def sendParamsActive(serial, mac):
     serial.send_preference(mac, DataType_Float, "yawRateIntRange", 0)
 
     # // radius of the blimp
-    serial.send_preference(mac, DataType_Float, "lx", 0.15)
+    serial.send_preference(mac, DataType_Float, "lx", 0.7)
     serial.send_preference(mac, DataType_Float, "servoRange", 260) #degrees
     serial.send_preference(mac, DataType_Float, "servoBeta", 90) #degrees
     serial.send_preference(mac, DataType_Float, "botZlim", -1)
@@ -90,9 +90,9 @@ def sendParamsPassive(serial, mac):
     serial.send_preference(mac, DataType_Float, "yawRateIntRange", 0)
 
     # // radius of the blimp
-    serial.send_preference(mac, DataType_Float, "lx", 0.15)
-    serial.send_preference(mac, DataType_Float, "servoRange", 180) #degrees
-    serial.send_preference(mac, DataType_Float, "servoBeta", -80) #degrees
+    serial.send_preference(mac, DataType_Float, "lx", 0.7)
+    serial.send_preference(mac, DataType_Float, "servoRange", 260) #degrees
+    serial.send_preference(mac, DataType_Float, "servoBeta", 90) #degrees
     serial.send_preference(mac, DataType_Float, "botZlim", -1)
     serial.send_preference(mac, DataType_Float, "pitchOffset", 0) #degrees
     serial.send_preference(mac, DataType_Float, "pitchInvert", -1) #degrees
@@ -107,18 +107,23 @@ if __name__ == "__main__":
     sendParamsActive(serial, ROBOT_MAC)
     sendParamsPassive(serial, PASSIVE_ROBOT_MAC)
     
+    sensors = serial.getSensorData()
+    height = 0
+    tz = 0
+    if (sensors) :
+        tz = sensors[1]
+        height = sensors[0]
     # Joystick
     joystick = JoystickManager()
     mygui = SimpleGUI()
     niclaGUI = NiclaBox(max_x=240, max_y=160, x=120, y=80, width=120, height=80)
-    ready = 1
+    ready = 0
     old_b = 0
     old_x = 0
     dt = .1
-    height = 0
     servos = 75
-    tz = 0
-    fz2 = -0.4
+    fz2 = 0
+    fx2 = .3
     try:
         while True:
             # Axis input: [left_vert, left_horz, right_vert, right_horz, left_trigger, right_trigger]
@@ -133,7 +138,12 @@ if __name__ == "__main__":
                 else:
                     ready = 1
             if buttons[2] == 1 and old_x == 0:
-                fz2 = -fz2
+                if fz2 <= 0:
+                    fz2 = -.4
+                    fx2 = .5
+                else:
+                    fz2 = 0
+                    fx2 = .3
 
             old_x = buttons[2]
             old_b = buttons[1]
@@ -152,7 +162,7 @@ if __name__ == "__main__":
 
             if abs(axis[1]) < .15:
                 axis[1] = 0
-            tx = axis[1] * .2
+            tx = axis[1] * .5
 
             if abs(axis[4]) < .15:
                 axis[4] = 0
@@ -187,11 +197,12 @@ if __name__ == "__main__":
             # tx = 0
             # tz = 0
             # Send through serial port
-            serial.send_control_params(ROBOT_MAC, (ready, fx, fz, tx, tz2, led, 0, 0, 0, 0, 0, 0, 0))
-            serial.send_control_params(PASSIVE_ROBOT_MAC, (ready, -0.5, fz2, 0, 0, led, 0, 0, 0, 0, 0, 0, 0))
+            serial.send_control_params(ROBOT_MAC, (ready, fx + .3, fz, tx, tz, led, 0, 0, 0, 0, 0, 0, 0))
+            serial.send_control_params(PASSIVE_ROBOT_MAC, (ready, fx2, fz2, 0, 0, led, 0, 0, 0, 0, 0, 0, 0))
             time.sleep(dt)
             
     except KeyboardInterrupt:
         print("Stopping!")
         # Send zero input
 serial.send_control_params(ROBOT_MAC, (0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0))
+serial.send_control_params(PASSIVE_ROBOT_MAC, (0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0))
