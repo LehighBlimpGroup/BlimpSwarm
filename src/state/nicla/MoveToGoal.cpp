@@ -12,7 +12,7 @@ RobotState* MoveToGoal::statetransitions(float sensors[], float controls[]) {
         RobotState* chargeGoal = new ChargeGoal();
         return chargeGoal;
     }
-    else if (!detected(sensors)) {
+    else if (sensors[11] == 3) { // no detection registered by nicla in flag
         RobotState* levyWalk = new LevyWalk();
         return levyWalk;
     }
@@ -28,7 +28,7 @@ void MoveToGoal::behavior(float sensors[], float controls[], float outControls[]
     int niclaOffset = 11;
     float tracking_x = (float)sensors[niclaOffset + 1];
     float detection_y = (float)sensors[niclaOffset + 6];
-    if (detected(sensors)) {// checks if new yaw occurs 
+    if (detected(sensors)) {// checks if new yaw occurs on positive edge
         float x_cal = tracking_x / terms.n_max_x;
         hist.des_yaw = ((x_cal - 0.5));
         hist.robot_to_goal = _yaw + hist.des_yaw;
