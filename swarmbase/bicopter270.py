@@ -149,7 +149,7 @@ if __name__ == "__main__":
                     x_state += 1
                 else :
                     fz2 = 0.2
-                    fx2 = -.2
+                    fx2 = -.1
                     x_state = 0
 
             old_x = buttons[2]

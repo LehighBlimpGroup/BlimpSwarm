@@ -63,7 +63,7 @@ if __name__ == "__main__":
 
     serial.send_preference(ROBOT_MAC, DataType_Float, "servoRange", 180) #degrees
     serial.send_preference(ROBOT_MAC, DataType_Float, "servoBeta", -45) #degrees
-    serial.send_preference(ROBOT_MAC, DataType_Float, "servo_move_min", 2.5) #degrees
+    serial.send_preference(ROBOT_MAC, DataType_Float, "servo_move_min",5) #degrees
 
     serial.send_preference(ROBOT_MAC, DataType_Float, "botZlim", -1)
     serial.send_preference(ROBOT_MAC, DataType_Float, "pitchOffset", 0) #degrees
