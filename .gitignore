@@ -34,5 +34,5 @@ SwarmBase/RawBicopterEddie.py
 .pyc
 examples/RawBicopterFlyEddie/RawBicopterFlyEddie.ino
 SwarmBase/comm/__pycache__/Serial.cpython-311.pyc
-SwarmBase/RawBicopterEddie2.py
+
 __pycache__

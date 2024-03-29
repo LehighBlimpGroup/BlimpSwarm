@@ -14,7 +14,7 @@ PASSIVE_ROBOT_MAC = "48:27:E2:E6:E0:1C"#48:27:E2:E6:E0:1C
 ## may look like "COM5" in windows or "/dev/tty.usbmodem14301" in mac  #
 ## look in arduino for the port that your specific transeiver is connected to  ##
 ## Note: make sure that your serial monitor is OFF in arduino or else you will get "access is denied" error. ##
-PORT = "COM6"
+PORT = "COM8"
 
 
 # For debug purposes
@@ -120,9 +120,10 @@ if __name__ == "__main__":
     ready = 0
     old_b = 0
     old_x = 0
-    dt = .1
+    x_state = 0
+    dt = .2
     servos = 75
-    fz2 = 0
+    fz2 = .2
     fx2 = .3
     try:
         while True:
@@ -138,12 +139,18 @@ if __name__ == "__main__":
                 else:
                     ready = 1
             if buttons[2] == 1 and old_x == 0:
-                if fz2 <= 0:
+                if x_state ==0:
+                    fz2 = .2
+                    fx2 = .3
+                    x_state += 1
+                elif x_state ==1:
                     fz2 = -.4
                     fx2 = .5
-                else:
-                    fz2 = 0
-                    fx2 = .3
+                    x_state += 1
+                else :
+                    fz2 = 0.2
+                    fx2 = -.2
+                    x_state = 0
 
             old_x = buttons[2]
             old_b = buttons[1]
@@ -198,8 +205,9 @@ if __name__ == "__main__":
             # tz = 0
             # Send through serial port
             serial.send_control_params(ROBOT_MAC, (ready, fx + .3, fz, tx, tz, led, 0, 0, 0, 0, 0, 0, 0))
+            time.sleep(dt/2)
             serial.send_control_params(PASSIVE_ROBOT_MAC, (ready, fx2, fz2, 0, 0, led, 0, 0, 0, 0, 0, 0, 0))
-            time.sleep(dt)
+            time.sleep(dt/2)
             
     except KeyboardInterrupt:
         print("Stopping!")
