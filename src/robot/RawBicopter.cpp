@@ -13,6 +13,8 @@
 #define THRUST2 D10
 #define BATT A2
 
+#define PUMP D3
+
 
 RawBicopter::RawBicopter(){
 
@@ -20,6 +22,10 @@ RawBicopter::RawBicopter(){
     servo2 = new AServo(0, 1, 0, SERVO2);
     motor1 = new BLMotor(0, 1, 0, THRUST1, 55);
     motor2 = new BLMotor(0, 1, 0, THRUST2, 58);
+
+    pump = new DCMotor(0, 1, 0, PUMP);
+
+
     // On board LED light
     led = new LED(0, 1, 0, LED_BUILTIN);
 
@@ -58,7 +64,9 @@ bool RawBicopter::actuate(const float actuators[], int size) {
     servo2->act(actuators[3]);
     motor1->act(actuators[0]);
     motor2->act(actuators[1]);
-    led->act(actuators[4]);
+//    led->act(actuators[4]);
+
+    pump->act(actuators[4]);
 
     return true;
 }
@@ -101,6 +109,7 @@ void RawBicopter::calibrate(){
     delay(1000);
     Serial.println("Calibration completed");
 }
+
 //void RawBicopter::testActuators(float actuationCmd[4]) {
 //    int servo_delta = 1;
 //    int motor_delta = 10;

@@ -9,7 +9,7 @@ import time
 ##### Insert your robot's MAC ADDRESS here ####
 ## (you can get it by running your arduino and looking at the serial monitor for your flying drone) ##
 ROBOT_MAC = "48:27:E2:E6:EC:CC"#"34:85:18:AB:FE:68" # "DC:54:75:D7:B3:E8"
-PASSIVE_ROBOT_MAC = "48:27:E2:E6:E0:1C"#48:27:E2:E6:E0:1C
+PASSIVE_ROBOT_MAC = "48:27:E2:E6:E6:44"#48:27:E2:E6:E0:1C
 ### Insert your SERIAL PORT here ###
 ## may look like "COM5" in windows or "/dev/tty.usbmodem14301" in mac  #
 ## look in arduino for the port that your specific transeiver is connected to  ##
@@ -119,6 +119,7 @@ if __name__ == "__main__":
     servos = 75
     tz = 0
     fz2 = -0.4
+    led = 0
     try:
         while True:
             # Axis input: [left_vert, left_horz, right_vert, right_horz, left_trigger, right_trigger]
@@ -133,7 +134,12 @@ if __name__ == "__main__":
                 else:
                     ready = 1
             if buttons[2] == 1 and old_x == 0:
-                fz2 = -fz2
+            # fz2 = -fz2
+                if led == 0:
+                    led = 250
+                else:
+                    led = 0
+
 
             old_x = buttons[2]
             old_b = buttons[1]
@@ -166,7 +172,7 @@ if __name__ == "__main__":
             #print(tz, ":", height)
             #print(height)
             
-            led = -buttons[2]
+            # led = -buttons[2]
             # ############# End CONTROL INPUTS ###############
             # sensors = serial.getSensorData()
             # # print(sensors)
@@ -188,7 +194,7 @@ if __name__ == "__main__":
             # tz = 0
             # Send through serial port
             serial.send_control_params(ROBOT_MAC, (ready, fx, fz, tx, tz2, led, 0, 0, 0, 0, 0, 0, 0))
-            # serial.send_control_params(PASSIVE_ROBOT_MAC, (ready, -0.5, fz2, 0, 0, led, 0, 0, 0, 0, 0, 0, 0))
+            serial.send_control_params(PASSIVE_ROBOT_MAC, (ready, -0.5, fz2, 0, 0, led, 0, 0, 0, 0, 0, 0, 0))
             time.sleep(dt)
             
     except KeyboardInterrupt:

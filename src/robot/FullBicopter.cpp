@@ -56,7 +56,7 @@ bool FullBicopter::control(float sensors[MAX_SENSORS], float controls[], int siz
     float feedbackControls[5];
     FullBicopter::addFeedback(sensors, controls, feedbackControls);
     
-    outputs[4] = 1;
+    outputs[4] = controls[5];
     FullBicopter::getOutputs(sensors, feedbackControls,  outputs);
     // Serial.print(outputs[0]);
     // Serial.print(",");

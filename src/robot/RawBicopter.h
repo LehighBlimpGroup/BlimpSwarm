@@ -9,6 +9,7 @@
 #include "Robot.h"
 #include "act/BLMotor.h"
 #include "act/AServo.h"
+#include "act/DCMotor.h"
 #include "act/LED.h"
 #include <Preferences.h>
 
@@ -29,6 +30,7 @@ private:
     BLMotor* motor2;
     AServo* servo1;
     AServo* servo2;
+    DCMotor* pump;
     LED* led;
 };
 
