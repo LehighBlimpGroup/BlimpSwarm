@@ -15,6 +15,10 @@
 
 SBlimp::SBlimp(){
 
+}
+
+void SBlimp::startup() {
+
     motor1 = new BLMotor(0, 1, 0, THRUST1, 50);
     motor2 = new BLMotor(0, 1, 0, THRUST2, 50);
     motor3 = new BLMotor(0, 1, 0, SERVO1, 55);
@@ -45,8 +49,6 @@ SBlimp::SBlimp(){
     }
     preferences.end(); //true means read-only
 }
-
-
 
 int SBlimp::sense(float sensors[MAX_SENSORS]) {
     // Implementation for sensing - fill the sensors array

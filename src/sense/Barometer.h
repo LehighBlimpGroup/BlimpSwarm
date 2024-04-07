@@ -1,5 +1,5 @@
 #include <Adafruit_BMP3XX.h>
-class Barometer
+class BarometerOld
 {
 private:
     unsigned long tStart = micros();
@@ -10,7 +10,7 @@ private:
     float estimatedZ = 0;
     float oldZ = 0;
 public:
-    Barometer();
+    BarometerOld();
     void init();
     float getEstimatedZ();
     float getVelocityZ();

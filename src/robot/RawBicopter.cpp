@@ -15,7 +15,10 @@
 
 
 RawBicopter::RawBicopter(){
+    
+}
 
+void RawBicopter::startup() {
     servo1 = new AServo(0, 1, 0, SERVO1);
     servo2 = new AServo(0, 1, 0, SERVO2);
     motor1 = new BLMotor(0, 1, 0, THRUST1, 55);
@@ -44,8 +47,6 @@ RawBicopter::RawBicopter(){
     }
     preferences.end(); //true means read-only
 }
-
-
 
 int RawBicopter::sense(float sensors[MAX_SENSORS]) {
     // Implementation for sensing - fill the sensors array

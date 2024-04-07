@@ -1,11 +1,11 @@
 #include "Barometer.h"
 
-Barometer::Barometer(){
+BarometerOld::BarometerOld(){
     
     //pass
     
 }
-void Barometer::init(){
+void BarometerOld::init(){
     /* Initialise the sensor */
     int countTries = 0;
     baroOn = bme.begin_I2C();
@@ -55,7 +55,7 @@ void Barometer::init(){
     
     
 }
-bool Barometer::updateBarometer(){
+bool BarometerOld::updateBarometer(){
     if (baroOn){
         if ((micros() - tStart) > (BMP390_SAMPLERATE_DELAY_MS * 1000)) {
             oldZ = estimatedZ;
@@ -69,12 +69,12 @@ bool Barometer::updateBarometer(){
 }
 
 
-float Barometer::getEstimatedZ(){
+float BarometerOld::getEstimatedZ(){
     return estimatedZ;
 
 
 }
-float Barometer::getVelocityZ(){
+float BarometerOld::getVelocityZ(){
     // Micro seconds to seconds
     return 1000000 * (estimatedZ - oldZ) / dtBaro;
 }

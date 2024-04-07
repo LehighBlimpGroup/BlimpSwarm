@@ -24,6 +24,8 @@ public:
     // Takes an array of actuator commands and its size
     virtual bool actuate(const float actuators[], int size) = 0;
 
+    virtual void startup();
+
     // Takes an array of higher-level control commands and its size
     // Also takes the sensor array
     // Calls the lower-level actuate automatically 

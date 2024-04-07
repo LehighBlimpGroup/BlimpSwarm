@@ -15,7 +15,7 @@
 class SBlimp : public Robot {
 public:
     SBlimp();
-    
+    void startup() override;
     int sense(float sensors[MAX_SENSORS]) override;
     bool actuate(const float actuators[], int size) override;
     bool control(float sensors[MAX_SENSORS], float controls[], int size ) override;

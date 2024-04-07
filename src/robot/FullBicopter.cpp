@@ -6,13 +6,15 @@
 #include "FullBicopter.h"
 
 
-FullBicopter::FullBicopter(): RawBicopter() {
-    sensorsuite.startup();
-    delay(200);
+FullBicopter::FullBicopter(){
     
+}
+
+void FullBicopter::startup() {
+    sensorsuite.startup();
+    RawBicopter::startup();
     float senses[MAX_SENSORS];
     FullBicopter::sense(senses);
-    
 }
 
 

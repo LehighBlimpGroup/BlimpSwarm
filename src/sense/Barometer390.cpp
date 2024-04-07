@@ -3,13 +3,16 @@
 // Barometer.cpp
 #include "Barometer390.h"
 
-// Barometer::Barometer() {
-//     // Initialization code, similar to what you have in initBarometer()
-// }
+Barometer::Barometer() {
+    // Initialization code, similar to what you have in initBarometer()
+    baroInitialized = false;
+}
 
 void Barometer::startup() {
     Barometer::getPreferences();
-    baroInitialized = false;
+    if (baroInitialized){
+        return;
+    }
     
     velocityZ = 0;
     temperature = 0;

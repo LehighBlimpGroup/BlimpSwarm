@@ -15,6 +15,7 @@
 class RawBicopter : public Robot {
 public:
     RawBicopter();
+    void startup() override;
     
     int sense(float sensors[MAX_SENSORS]) override;
     bool actuate(const float actuators[], int size) override;

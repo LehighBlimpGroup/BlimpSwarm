@@ -19,7 +19,7 @@
 uint8_t base_mac[6] = {0xC0, 0x49, 0xEF, 0xE3, 0x34, 0x78};  // fixme load this from memory
 
 
-Barometer baro;
+BarometerOld baro;
 
 const float TIME_STEP = .004;
 // Robot

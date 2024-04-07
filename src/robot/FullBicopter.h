@@ -20,6 +20,7 @@ public:
     int sense(float sensors[MAX_SENSORS]) override;
     bool control(float sensors[MAX_SENSORS], float controls[], int size ) override;
     void getPreferences() override;
+    void startup() override;
     
     typedef struct feedback_s {
         bool zEn, yawEn, rollEn, pitchEn, rotateEn;

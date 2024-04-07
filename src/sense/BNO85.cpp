@@ -3,13 +3,15 @@
 BNO85::BNO85() {
     // Constructor logic if necessary
     restartLength = 5000000;
+    bnoOn = false;
 }
 
 void BNO85::startup() {
     // if (bnoOn) return;
     BNO85::getPreferences();
-    bnoOn = false;
-    
+    if (bnoOn){
+        return;
+    }
     startTime = micros();
     Serial.println("BNO Initialization!");
     Wire.begin(D4, D5); 

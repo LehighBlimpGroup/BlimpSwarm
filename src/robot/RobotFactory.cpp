@@ -7,13 +7,21 @@
 
 Robot* RobotFactory::createRobot(const String& type) {
     if (type== "RawBicopter") {
-        return new RawBicopter();
+        Robot* robot = new RawBicopter();
+        robot->startup();
+        return robot;
     } else if (type== "FullBicopter") {
-        return new FullBicopter();
+        Robot* robot = new FullBicopter();
+        robot->startup();
+        return robot;
     }else if (type== "CustomBicopter") {
-        return new CustomBicopter();
+        Robot* robot = new CustomBicopter();
+        robot->startup();
+        return robot;
     }else if (type== "SBlimp") {
-        return new SBlimp();
+        Robot* robot = new SBlimp();
+        robot->startup();
+        return robot;
     }
         // Add cases for other robot types here
     else {
