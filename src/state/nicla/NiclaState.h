@@ -7,7 +7,7 @@
 class NiclaState : public RobotState {
 protected:
 
-    hist_t hist;
+    hist_t* hist;
     nicla_t terms; 
 
     bool detected(float sensors[]) ;
