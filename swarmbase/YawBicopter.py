@@ -23,7 +23,7 @@ if __name__ == "__main__":
     serial.manage_peer("A", ROBOT_MAC)
     serial.manage_peer("G", ROBOT_MAC)
     time.sleep(.05)
-    serial.send_preference(ROBOT_MAC, DataType_Boolean, "zEn", True)
+    serial.send_preference(ROBOT_MAC, DataType_Boolean, "zEn", False)
     serial.send_preference(ROBOT_MAC, DataType_Boolean, "yawEn", True)
 
     # // PID terms
