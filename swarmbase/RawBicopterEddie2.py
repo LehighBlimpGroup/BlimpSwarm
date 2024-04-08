@@ -39,22 +39,22 @@ if __name__ == "__main__":
     
     # // PID terms
     serial.send_preference(ROBOT_MAC, DataType_Float, "kpyaw", 0) #2
-    serial.send_preference(ROBOT_MAC, DataType_Float, "kppyaw", 0.07) #2
+    serial.send_preference(ROBOT_MAC, DataType_Float, "kppyaw", 0.23) #2
     serial.send_preference(ROBOT_MAC, DataType_Float, "kdyaw", 0)#.1
-    serial.send_preference(ROBOT_MAC, DataType_Float, "kddyaw", 0.05)#.1
+    serial.send_preference(ROBOT_MAC, DataType_Float, "kddyaw", 0.23)#.1
     serial.send_preference(ROBOT_MAC, DataType_Float, "kiyaw", 0)
     serial.send_preference(ROBOT_MAC, DataType_Float, "kiyawrate", 0)
-    serial.send_preference(ROBOT_MAC, DataType_Float, "yawrate_gamma", 0.5)
+    serial.send_preference(ROBOT_MAC, DataType_Float, "yawrate_gamma", 0.7)
     
 
     serial.send_preference(ROBOT_MAC, DataType_Float, "kpz", 0.3)
-    serial.send_preference(ROBOT_MAC, DataType_Float, "kdz", 0.6)
-    serial.send_preference(ROBOT_MAC, DataType_Float, "kiz", 0.2)
+    serial.send_preference(ROBOT_MAC, DataType_Float, "kdz", 0.8)
+    serial.send_preference(ROBOT_MAC, DataType_Float, "kiz", 0.1)
     serial.send_preference(ROBOT_MAC, DataType_Float, "kproll", 0)
     serial.send_preference(ROBOT_MAC, DataType_Float, "kdroll", 0)
 
     # // Range terms for the integrals
-    serial.send_preference(ROBOT_MAC, DataType_Float, "z_int_low", -0.15)
+    serial.send_preference(ROBOT_MAC, DataType_Float, "z_int_low", 0.0)
     serial.send_preference(ROBOT_MAC, DataType_Float, "z_int_high", 0.15)
     serial.send_preference(ROBOT_MAC, DataType_Float, "yawRateIntRange", 0)
 
@@ -71,15 +71,16 @@ if __name__ == "__main__":
 
     # nicla parameters
     serial.send_preference(ROBOT_MAC, DataType_Float, "y_thresh", 0.65)
-    serial.send_preference(ROBOT_MAC, DataType_Float, "y_strength", 1)
+    serial.send_preference(ROBOT_MAC, DataType_Float, "y_strength", 2.5)
+    serial.send_preference(ROBOT_MAC, DataType_Float, "x_strength", 1.5)
 
-    serial.send_preference(ROBOT_MAC, DataType_Float, "fx_togoal", -0.2)
-    serial.send_preference(ROBOT_MAC, DataType_Float, "fx_charge", -0.4)
+    serial.send_preference(ROBOT_MAC, DataType_Float, "fx_togoal", -0.15)
+    serial.send_preference(ROBOT_MAC, DataType_Float, "fx_charge", -0.3)
     serial.send_preference(ROBOT_MAC, DataType_Float, "fx_levy", -0.1)
 
     serial.send_preference(ROBOT_MAC, DataType_Int, "n_max_x", 240)
     serial.send_preference(ROBOT_MAC, DataType_Int, "n_max_y", 160)
-    serial.send_preference(ROBOT_MAC, DataType_Float, "h_ratio", 0.75)
+    serial.send_preference(ROBOT_MAC, DataType_Float, "h_ratio", 0.8)
     serial.send_control_params(ROBOT_MAC, (0,0,0,0, 0, 0, 0, 0, 0, 0, 0, 1, 0))
     time.sleep(.2)
 
@@ -87,13 +88,21 @@ if __name__ == "__main__":
     joystick = JoystickManager()
     mygui = SimpleGUI()
     niclaGUI = NiclaBox(max_x=240, max_y=160, x=120, y=80, width=120, height=80)
-    ready = 1
+    
+    sensors = serial.getSensorData()
+    height = 0
+    tz = 0
+    if (sensors) :
+        tz = sensors[1]
+        height = sensors[0]
+    ready = 0
     old_b = 0
     old_x = 0
+    fx_ave = 0
     dt = .1
-    height = 0
+    
     servos = 75
-    tz = 0
+    
     try:
         while True:
             # Axis input: [left_vert, left_horz, right_vert, right_horz, left_trigger, right_trigger]
@@ -103,6 +112,9 @@ if __name__ == "__main__":
             if buttons[3] == 1: # y stops the program
                 break
             if buttons[1] == 1 and old_b == 0: # b pauses the control
+                if (sensors) :
+                    tz = sensors[1]
+                    height = sensors[0]
                 if ready != 0:
                     ready = 0
                 else:
@@ -130,7 +142,7 @@ if __name__ == "__main__":
 
             if abs(axis[4]) < .15:
                 axis[4] = 0
-            tz += -axis[4] *2.2 * dt
+            tz += -axis[4] *1.2 * dt
             # tz = -axis[4] * .1
             
             fx = axis[2] - axis[5]
@@ -158,10 +170,11 @@ if __name__ == "__main__":
                 )
             # fx = 0
             fz = height
+            fx_ave = fx_ave * .8 + fx * .2
             # tx = 0
             # tz = 0
             # Send through serial port
-            serial.send_control_params(ROBOT_MAC, (ready, fx, fz, tx, tz, led, 0, 0, 0, 0, 0, 0, 0))
+            serial.send_control_params(ROBOT_MAC, (ready, fx_ave, fz, tx, tz, led, 0, 0, 0, 0, 0, 0, 0))
             time.sleep(dt)
             
     except KeyboardInterrupt:

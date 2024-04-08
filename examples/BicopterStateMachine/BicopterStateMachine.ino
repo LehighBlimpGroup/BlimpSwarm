@@ -73,10 +73,10 @@ void loop() {
   rcv.flag = 1;
   rcv.values[0] = senses[1];  //height
   rcv.values[1] = senses[5];  //yaw
-  rcv.values[2] = senses[16];  //battery
-  rcv.values[3] = senses[17];  //temperature
-  rcv.values[4] = senses[18];  //battery
-  rcv.values[5] = senses[19];  //temperature
+  rcv.values[2] = senses[16];  //x
+  rcv.values[3] = senses[17];  //y
+  rcv.values[4] = senses[18];  //w
+  rcv.values[5] = senses[19];  //h
   bool sent = baseComm->sendMeasurements(&rcv);
 
   // print sensor values every second
@@ -122,6 +122,7 @@ void paramUpdate(){
 
     myRobot->getPreferences();
     baseComm->setMainBaseStation();
+    NiclaConfig::getInstance()->loadConfiguration();
     
 }
 

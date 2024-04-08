@@ -7,7 +7,7 @@
 typedef struct {
     int n_max_x, n_max_y;
     float fx_togoal, fx_charge, fx_levy;
-    float h_ratio, y_thresh, y_strength;
+    float h_ratio, y_thresh, y_strength, x_strength;
 } nicla_t;
 
 typedef struct {

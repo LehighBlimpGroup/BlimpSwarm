@@ -42,8 +42,7 @@ void RawBicopter::startup() {
     }
     else {
         // Arm brushless motors
-        motor1->arm();
-        motor2->arm();
+        arm();
     }
     preferences.end(); //true means read-only
 }
@@ -101,6 +100,30 @@ void RawBicopter::calibrate(){
     //motor1->act(-1); //FIXME is this necessary? If so, we can have a if (value== -1) then writeMicroseconds(0) in motor
     delay(1000);
     Serial.println("Calibration completed");
+}
+void RawBicopter::arm(){
+// ESC arming sequence for BLHeli S
+    motor1->act(0);
+    motor2->act(0);
+    delay(10);
+
+    // Sweep up
+    for (int i = 1050; i < 1500; i++)
+    {
+        motor1->act((i-1000)/1000);
+        motor2->act((i-1000)/1000);
+        delay(6);
+    }
+    // Sweep down
+    // for (int i = 1500; i > 1050; i--)
+    // {
+    //     thrust.writeMicroseconds(i);
+    //     delay(6);
+    // }
+    // Back to minimum value
+    motor1->act(0);
+    motor2->act(0);
+    delay(1000);
 }
 //void RawBicopter::testActuators(float actuationCmd[4]) {
 //    int servo_delta = 1;

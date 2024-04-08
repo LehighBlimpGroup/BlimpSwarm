@@ -20,6 +20,7 @@ void NiclaConfig::loadConfiguration() {
     
     configData.y_thresh = preferences.getFloat("y_thresh", 0.65);
     configData.y_strength = preferences.getFloat("y_strength", 1);
+    configData.x_strength = preferences.getFloat("x_strength", 1);
 
     configData.fx_togoal = preferences.getFloat("fx_togoal", -0.2f);
     configData.fx_charge = preferences.getFloat("fx_charge", -0.4f);

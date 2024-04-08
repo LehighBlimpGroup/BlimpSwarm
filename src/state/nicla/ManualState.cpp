@@ -5,13 +5,16 @@
 
 RobotState* ManualState::statetransitions(float sensors[], float controls[]) {
     if (controls[0] != 2){
+        hist->z_estimator = sensors[1];
         return this;
     }
     else if (detected(sensors)) {
+        hist->z_estimator = sensors[1];
         RobotState* moveToGoal = new MoveToGoal();
         return moveToGoal;
     }
     else {
+        hist->z_estimator = sensors[1];
         RobotState* levyWalk = new LevyWalk();
         return levyWalk;
     }

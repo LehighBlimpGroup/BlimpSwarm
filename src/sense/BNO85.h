@@ -12,7 +12,7 @@ private:
     float gamma = 0;
     bool bnoOn = false;
     float sensorValues[6]; // Array to store roll, pitch, yaw, rollRate, pitchRate, yawRate
-    unsigned long restartLength = 1000000;
+    unsigned long restartLength = 500000;
     
     // Define sensor data structure here if needed
 

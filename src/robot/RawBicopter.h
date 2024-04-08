@@ -25,6 +25,7 @@ public:
     //void testActuators(float actuationCmd[4]) override;
 
 private:
+    void arm();
 
     BLMotor* motor1;
     BLMotor* motor2;

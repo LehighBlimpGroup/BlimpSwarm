@@ -102,7 +102,7 @@ void quaternionToEuler(float qW, float qX, float qY, float qZ, float& roll, floa
 bool BNO85::update() {
     if (micros() - startTime > restartLength) { // every 3 seconds try to reconnect.
         BNO85::startup();
-        restartLength = restartLength + 1500000;
+        restartLength = restartLength + 500000;
     }
     if (!bnoOn) {
         // Initialize sensorValues to 0 if the sensor is not on
