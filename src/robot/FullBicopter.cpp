@@ -105,6 +105,8 @@ void FullBicopter::getPreferences() {
 
     PDterms.kproll = preferences.getFloat("kproll", 0);
     PDterms.kdroll = preferences.getFloat("kdroll", 0);
+    PDterms.kppitch = preferences.getFloat("kppitch", 0);
+    PDterms.kdpitch = preferences.getFloat("kdpitch", 0);
 
     // Range terms for the integrals
     PDterms.z_int_low = preferences.getFloat("z_int_low", 0);
@@ -181,12 +183,16 @@ void FullBicopter::addFeedback(float sensors[MAX_SENSORS], float controls[], flo
         // Serial.println(tz);
     }
 
+    // Pitch feedback
+    if (PDterms.pitchEn) { 
+        // Serial.println("roll feedback");
+        fx = fx - sensors[3]*PDterms.kppitch - sensors[6] * PDterms.kdpitch; // Pitch - PitchRate
+    }
     // Roll feedback
     if (PDterms.rollEn) { 
         // Serial.println("roll feedback");
-        tx = controls[3] - sensors[3]*PDterms.kproll - sensors[6] * PDterms.kdroll; // Roll - RollRate
+        tx = tx - constrain(sensors[4]*PDterms.kproll - sensors[7] * PDterms.kdroll, -fz*PDterms.lx*.9, fz*PDterms.lx*.9); // Roll - RollRate
     }
-
     // Roll and pitch rotation state feedback
     if (PDterms.rotateEn) {
         // Serial.println("rotate feedback");

@@ -140,9 +140,9 @@ bool BNO85::update() {
             }
 
             // Get angular velocity directly from the sensor
-            sensorValues[3] = sensorValues[3] * gamma + myIMU.getGyroIntegratedRVangVelX() * (1-gamma);
-            sensorValues[4] = sensorValues[4] * gamma + myIMU.getGyroIntegratedRVangVelY() * (1-gamma);
-            sensorValues[5] = sensorValues[5] * gamma + myIMU.getGyroIntegratedRVangVelZ() * (1-gamma);
+            sensorValues[3] = sensorValues[3] * pitchgamma + myIMU.getGyroIntegratedRVangVelX() * (1-pitchgamma);
+            sensorValues[4] = sensorValues[4] * rollgamma + myIMU.getGyroIntegratedRVangVelY() * (1-rollgamma);
+            sensorValues[5] = sensorValues[5] * yawgamma + myIMU.getGyroIntegratedRVangVelZ() * (1-yawgamma);
 
             break; // Since we are only looking for this event, break after handling
         }
@@ -165,7 +165,9 @@ void BNO85::getPreferences(){
     preferences.begin("params", true); //true means read-only
 
     
-    gamma = constrain(preferences.getFloat("yawrate_gamma", 0), 0, 1);
+    yawgamma = constrain(preferences.getFloat("yawrate_gamma", 0), 0, 1);
+    rollgamma = constrain(preferences.getFloat("rollrate_gamma", 0), 0, 1);
+    pitchgamma = constrain(preferences.getFloat("pitchrate_gamma", 0), 0, 1);
     preferences.end();
     return;
 }

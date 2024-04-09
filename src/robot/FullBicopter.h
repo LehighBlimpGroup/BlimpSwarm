@@ -21,12 +21,12 @@ public:
     bool control(float sensors[MAX_SENSORS], float controls[], int size ) override;
     void getPreferences() override;
     void startup() override;
-    
+
     typedef struct feedback_s {
         bool zEn, yawEn, rollEn, pitchEn, rotateEn;
         float kpyaw, kppyaw, kdyaw, kddyaw, kiyaw, kiyawrate, yawRateIntRange;
         float kpz, kdz, kiz, z_int_low, z_int_high;
-        float kproll, kdroll;
+        float kproll, kdroll, kppitch, kdpitch;
         float servoBeta, servoRange, servo_move_min, botZlim, pitchOffset, pitchInvert;
         float lx;
     } feedback_t;

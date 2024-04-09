@@ -28,25 +28,25 @@ if __name__ == "__main__":
     
     # // PID terms
     serial.send_preference(ROBOT_MAC, DataType_Float, "kpyaw", 2) #2
-    serial.send_preference(ROBOT_MAC, DataType_Float, "kppyaw", 0.1) #2
-    serial.send_preference(ROBOT_MAC, DataType_Float, "kdyaw", 0.13)#.1
+    serial.send_preference(ROBOT_MAC, DataType_Float, "kppyaw", 0.12) #2
+    serial.send_preference(ROBOT_MAC, DataType_Float, "kdyaw", .15)#.1
     serial.send_preference(ROBOT_MAC, DataType_Float, "kddyaw", 0.12)#.1
     serial.send_preference(ROBOT_MAC, DataType_Float, "kiyaw", 0)
     serial.send_preference(ROBOT_MAC, DataType_Float, "kiyawrate", 0)
 
     serial.send_preference(ROBOT_MAC, DataType_Float, "yawrate_gamma", 0.5)
-    serial.send_preference(ROBOT_MAC, DataType_Float, "rollrate_gamma", 0.9)
-    serial.send_preference(ROBOT_MAC, DataType_Float, "pitchrate_gamma", 0.9)
+    serial.send_preference(ROBOT_MAC, DataType_Float, "rollrate_gamma", 0.85)
+    serial.send_preference(ROBOT_MAC, DataType_Float, "pitchrate_gamma", 0.7)
     
 
     serial.send_preference(ROBOT_MAC, DataType_Float, "kpz", 0.3)
     serial.send_preference(ROBOT_MAC, DataType_Float, "kdz", 0.8)
     serial.send_preference(ROBOT_MAC, DataType_Float, "kiz", 0.1)
-    
+
     serial.send_preference(ROBOT_MAC, DataType_Float, "kproll", 0)
-    serial.send_preference(ROBOT_MAC, DataType_Float, "kdroll", -0.3)
+    serial.send_preference(ROBOT_MAC, DataType_Float, "kdroll", 0.2)
     serial.send_preference(ROBOT_MAC, DataType_Float, "kppitch", 0)
-    serial.send_preference(ROBOT_MAC, DataType_Float, "kdpitch", .3)
+    serial.send_preference(ROBOT_MAC, DataType_Float, "kdpitch", -.9)
 
     # // Range terms for the integrals
     serial.send_preference(ROBOT_MAC, DataType_Float, "z_int_low", 0.0)
@@ -56,9 +56,9 @@ if __name__ == "__main__":
     # // radius of the blimp
     serial.send_preference(ROBOT_MAC, DataType_Float, "lx", 0.15)
 
-    serial.send_preference(ROBOT_MAC, DataType_Float, "servoRange", 180) #degrees
-    serial.send_preference(ROBOT_MAC, DataType_Float, "servoBeta", -45) #degrees
-    serial.send_preference(ROBOT_MAC, DataType_Float, "servo_move_min",5) #degrees
+    serial.send_preference(ROBOT_MAC, DataType_Float, "servoRange", 260) #degrees
+    serial.send_preference(ROBOT_MAC, DataType_Float, "servoBeta", 90) #degrees
+    serial.send_preference(ROBOT_MAC, DataType_Float, "servo_move_min",0) #degrees
 
     serial.send_preference(ROBOT_MAC, DataType_Float, "botZlim", -1)
     serial.send_preference(ROBOT_MAC, DataType_Float, "pitchOffset", 0) #degrees
@@ -69,9 +69,9 @@ if __name__ == "__main__":
     serial.send_preference(ROBOT_MAC, DataType_Float, "y_strength", 2.5)
     serial.send_preference(ROBOT_MAC, DataType_Float, "x_strength", 1.5)
 
-    serial.send_preference(ROBOT_MAC, DataType_Float, "fx_togoal", -0.15)
-    serial.send_preference(ROBOT_MAC, DataType_Float, "fx_charge", -0.3)
-    serial.send_preference(ROBOT_MAC, DataType_Float, "fx_levy", -0.1)
+    serial.send_preference(ROBOT_MAC, DataType_Float, "fx_togoal", 0.15)
+    serial.send_preference(ROBOT_MAC, DataType_Float, "fx_charge", 0.3)
+    serial.send_preference(ROBOT_MAC, DataType_Float, "fx_levy", 0.1)
 
     serial.send_preference(ROBOT_MAC, DataType_Int, "n_max_x", 240)
     serial.send_preference(ROBOT_MAC, DataType_Int, "n_max_y", 160)
@@ -140,7 +140,7 @@ if __name__ == "__main__":
             tz += -axis[4] *1.2 * dt
             # tz = -axis[4] * .1
             
-            fx = axis[2] - axis[5]
+            fx = - axis[2] + axis[5]
             if (fx < 0):
                 fx = fx * .8
             

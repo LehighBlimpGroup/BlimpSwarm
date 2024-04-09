@@ -29,7 +29,7 @@ def sendParamsActive(serial, mac):
     serial.send_preference(mac, DataType_Boolean, "zEn", True)
     serial.send_preference(mac, DataType_Boolean, "rollEn", False)
     serial.send_preference(mac, DataType_Boolean, "rotateEn", False)
-    serial.send_preference(mac, DataType_Boolean, "pitchEn", True)
+    serial.send_preference(mac, DataType_Boolean, "pitchEn", False)
     serial.send_preference(mac, DataType_Boolean, "yawEn", True)
 
     
@@ -55,9 +55,24 @@ def sendParamsActive(serial, mac):
     serial.send_preference(mac, DataType_Float, "lx", 0.7)
     serial.send_preference(mac, DataType_Float, "servoRange", 260) #degrees
     serial.send_preference(mac, DataType_Float, "servoBeta", 90) #degrees
+    serial.send_preference(mac, DataType_Float, "servo_move_min",5) #degrees
     serial.send_preference(mac, DataType_Float, "botZlim", -1)
     serial.send_preference(mac, DataType_Float, "pitchOffset", 0) #degrees
     serial.send_preference(mac, DataType_Float, "pitchInvert", -1) #degrees
+
+    
+    # nicla parameters
+    serial.send_preference(mac, DataType_Float, "y_thresh", 0.65)
+    serial.send_preference(mac, DataType_Float, "y_strength", 2.5)
+    serial.send_preference(mac, DataType_Float, "x_strength", 1.5)
+
+    serial.send_preference(mac, DataType_Float, "fx_togoal", 0.1)
+    serial.send_preference(mac, DataType_Float, "fx_charge", 0.1)
+    serial.send_preference(mac, DataType_Float, "fx_levy", 0.1)
+
+    serial.send_preference(mac, DataType_Int, "n_max_x", 240)
+    serial.send_preference(mac, DataType_Int, "n_max_y", 160)
+    serial.send_preference(mac, DataType_Float, "h_ratio", 0.8)
     serial.send_control_params(mac, (0,0,0,0, 0, 0, 0, 0, 0, 0, 0, 1, 0))
     time.sleep(.2)
 
@@ -93,9 +108,22 @@ def sendParamsPassive(serial, mac):
     serial.send_preference(mac, DataType_Float, "lx", 0.7)
     serial.send_preference(mac, DataType_Float, "servoRange", 260) #degrees
     serial.send_preference(mac, DataType_Float, "servoBeta", 90) #degrees
+    serial.send_preference(mac, DataType_Float, "servo_move_min",5) #degrees
     serial.send_preference(mac, DataType_Float, "botZlim", -1)
     serial.send_preference(mac, DataType_Float, "pitchOffset", 0) #degrees
     serial.send_preference(mac, DataType_Float, "pitchInvert", -1) #degrees
+    # nicla parameters
+    serial.send_preference(mac, DataType_Float, "y_thresh", 0.65)
+    serial.send_preference(mac, DataType_Float, "y_strength", 2.5)
+    serial.send_preference(mac, DataType_Float, "x_strength", 1.5)
+
+    serial.send_preference(mac, DataType_Float, "fx_togoal", -0.15)
+    serial.send_preference(mac, DataType_Float, "fx_charge", -0.3)
+    serial.send_preference(mac, DataType_Float, "fx_levy", -0.1)
+
+    serial.send_preference(mac, DataType_Int, "n_max_x", 240)
+    serial.send_preference(mac, DataType_Int, "n_max_y", 160)
+    serial.send_preference(mac, DataType_Float, "h_ratio", 0.8)
     serial.send_control_params(mac, (0,0,0,0, 0, 0, 0, 0, 0, 0, 0, 1, 0))
     time.sleep(.2)
 
@@ -120,11 +148,16 @@ if __name__ == "__main__":
     ready = 0
     old_b = 0
     old_x = 0
+    old_a = 0
+    a_state = 0
+    x_time = 0
     x_state = 0
-    dt = .2
+    dt = .1
     servos = 75
-    fz2 = .2
-    fx2 = .3
+    fz2 = -.15
+    follower_speed = .35
+    fx2 = follower_speed
+    fz = 0
     try:
         while True:
             # Axis input: [left_vert, left_horz, right_vert, right_horz, left_trigger, right_trigger]
@@ -133,53 +166,104 @@ if __name__ == "__main__":
             
             if buttons[3] == 1: # y stops the program
                 break
+            if buttons[0] == 1 and old_a == 0: # b pauses the control
+                if a_state == 0:
+                    fz2 = .2
+                    fx2 = follower_speed
+                    a_state = 1
+                else:
+                    fz2 = -.15
+                    fx2 = follower_speed
+                    a_state = 0
             if buttons[1] == 1 and old_b == 0: # b pauses the control
+                x_time = 0
                 if ready != 0:
                     ready = 0
                 else:
+                    if (sensors) :
+                        tz = sensors[1]
+                        height = sensors[0]
                     ready = 1
-            if buttons[2] == 1 and old_x == 0:
-                if x_state ==0:
-                    fz2 = .2
-                    fx2 = .3
-                    x_state += 1
-                elif x_state ==1:
-                    fz2 = -.4
-                    fx2 = .5
-                    x_state += 1
-                else :
-                    fz2 = 0.2
-                    fx2 = -.1
-                    x_state = 0
+            if buttons[2] == 1 and old_x == 0 and ready:
+                x_time = 30
+                # if x_state ==0:
+                #     fz2 = .2
+                #     fx2 = .3
+                #     x_state += 1
+                # elif x_state ==1:
+                #     fz2 = -.4
+                #     fx2 = .5
+                #     x_state += 1
+                # else :
+                #     fz2 = 0.2
+                #     fx2 = -.1
+                #     x_state = 0
+
 
             old_x = buttons[2]
             old_b = buttons[1]
+            old_a = buttons[0]
+
+
+
+
             if PRINT_JOYSTICK:
                 print(" ".join(["{:.1f}".format(num) for num in axis]), buttons)
 
             #### CONTROL INPUTS to the robot here #########
-            if abs(axis[0]) < .15:
-                axis[0] = 0
-            height += -axis[0] * dt 
-            if height > 15:
-                height = 15
-            elif height < -5:
-                height = -5
-            # fz2 = -axis[0] * .4
+            if x_time <=0:
+                if abs(axis[0]) < .15:
+                    axis[0] = 0
+                height += -axis[0] * dt 
+                if height > 15:
+                    height = 15
+                elif height < -5:
+                    height = -5
+                # fz2 = -axis[0] * .4
 
-            if abs(axis[1]) < .15:
-                axis[1] = 0
-            tx = axis[1] * .5
+                if abs(axis[1]) < .15:
+                    axis[1] = 0
+                tx = axis[1] * .5
 
-            if abs(axis[4]) < .15:
-                axis[4] = 0
-            tz += -axis[4] *2.2 * dt
-            tz2 = -axis[4] * .1
-            
-            fx = axis[2] - axis[5]
-            if (fx < 0):
-                fx = fx * .3
-            
+                if abs(axis[4]) < .15:
+                    axis[4] = 0
+                tz += -axis[4] *.3 * dt#2.2
+                tz2 = -axis[4] * .1
+                
+                fx = axis[2] - axis[5]
+                if (fx < 0):
+                    fx = fx * .5
+                fz = height
+            else:
+                fx = -follower_speed*.5
+                fx2 = follower_speed*1.5
+                fz = height
+                tz += .2*dt
+                # if x_time > 25:
+                #     fx = 0.1
+                #     height += .3 * dt
+                #     fz = height
+                #     fx2 = .3
+                #     fz2 = .6
+                # elif x_time > 1:
+                #     if (x_time//3)%2 == 0:
+                #         fx = 0.5
+                #         fz = height
+                #         fx2 = 0
+                #         fz2 = .3
+                #     else:
+                #         fx = -.6
+                #         fz = height
+                #         fx2 = .3
+                #         fz2 = .3
+                # elif x_time > 0:
+                #     fx = 0.0
+                    
+                #     fz = height
+                #     fx2 = .3
+                #     fz2 = .2
+                x_time -= dt
+                
             #print(tz, ":", height)
             #print(height)
             
@@ -200,11 +284,11 @@ if __name__ == "__main__":
                     connection_status=True,
                 )
             # fx = 0
-            fz = height
+            # fz = height
             # tx = 0
             # tz = 0
             # Send through serial port
-            serial.send_control_params(ROBOT_MAC, (ready, fx + .3, fz, tx, tz, led, 0, 0, 0, 0, 0, 0, 0))
+            serial.send_control_params(ROBOT_MAC, (ready, fx + follower_speed, fz, tx, tz, led, 0, 0, 0, 0, 0, 0, 0))
             time.sleep(dt/2)
             serial.send_control_params(PASSIVE_ROBOT_MAC, (ready, fx2, fz2, 0, 0, led, 0, 0, 0, 0, 0, 0, 0))
             time.sleep(dt/2)
