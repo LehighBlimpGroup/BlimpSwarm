@@ -109,9 +109,9 @@ void loop() {
   myRobot->control(senses, behave.params, 5);
 
   if (cmd.params[0] == 0) {
-    servoR.writeMicroseconds(1500);
+    servoR.write((int) 86);
   } else {
-    int angle = constrain(cmd.params[6], 0, 180) ; // cant handle values between PI and 2PI
+    int angle = constrain(cmd.params[6]-4, 0, 180) ; // cant handle values between PI and 2PI
     servoR.write((int) angle);
   }
   // makes the clock rate of the loop consistant. 

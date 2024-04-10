@@ -96,7 +96,7 @@ if __name__ == "__main__":
     fx_ave = 0
     dt = .1
     
-    servos = 75
+    servos = 90
     
     try:
         while True:
@@ -138,6 +138,14 @@ if __name__ == "__main__":
             if abs(axis[4]) < .15:
                 axis[4] = 0
             tz += -axis[4] *1.2 * dt
+
+            if abs(axis[3]) < .15:
+                axis[3] = 0
+            servos += -axis[3] *20 * dt
+            if servos < 0:
+                servos = 0
+            if servos > 180:
+                servos = 180
             # tz = -axis[4] * .1
             
             fx = - axis[2] + axis[5]
@@ -146,7 +154,7 @@ if __name__ == "__main__":
             
             #print(tz, ":", height)
             #print(height)
-            
+            print(servos)
             led = -buttons[2]
             ############# End CONTROL INPUTS ###############
             sensors = serial.getSensorData()
@@ -169,10 +177,10 @@ if __name__ == "__main__":
             # tx = 0
             # tz = 0
             # Send through serial port
-            serial.send_control_params(ROBOT_MAC, (ready, fx_ave, fz, tx, tz, led, 180, 0, 0, 0, 0, 0, 0))
+            serial.send_control_params(ROBOT_MAC, (ready, fx_ave, fz, tx, tz, led, servos, 0, 0, 0, 0, 0, 0))
             time.sleep(dt)
             
     except KeyboardInterrupt:
         print("Stopping!")
         # Send zero input
-serial.send_control_params(ROBOT_MAC, (0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0))
+serial.send_control_params(ROBOT_MAC, (0, 0, 0, 0, 0, 0, 86, 0, 0, 0, 0, 0, 0))
