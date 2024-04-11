@@ -19,6 +19,7 @@
 Robot* myRobot = nullptr;
 
 
+nicla_t terms; 
 
 // Communication
 BaseCommunicator* baseComm = nullptr;
@@ -142,7 +143,9 @@ void recieveCommands(){
 }
 
 void paramUpdate(){
-
+    
+    const nicla_t& config = NiclaConfig::getInstance()->getConfiguration();
+    terms = config; // Copy configuration data
     myRobot->getPreferences();
     baseComm->setMainBaseStation();
 
