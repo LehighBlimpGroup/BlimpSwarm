@@ -6,7 +6,7 @@
 
 #include "BlimpSwarm.h"
 #include "robot/RobotFactory.h"
-#include "state/nicla/NiclaState.h"
+#include "state/nicla/NiclaConfig.h"
 #include "comm/BaseCommunicator.h"
 #include "comm/LLC_ESPNow.h"
 #include "util/Print.h"
@@ -18,8 +18,7 @@
 // Robot
 Robot* myRobot = nullptr;
 
-// Behavior
-RobotStateMachine* stateMachine = nullptr;
+
 
 // Communication
 BaseCommunicator* baseComm = nullptr;
@@ -39,6 +38,7 @@ int dt = 1000;
 unsigned long clockTime;
 unsigned long printTime;
 
+int niclaOffset = 11;
 
 
 void setup() {
@@ -52,7 +52,7 @@ void setup() {
 
     // init robot with new parameters
     myRobot = RobotFactory::createRobot("FullBicopter");
-    stateMachine = new RobotStateMachine(new ManualState());
+    
     paramUpdate();
 
     // updates the ground altitude for the ground feedback
@@ -61,6 +61,7 @@ void setup() {
 
 }
 
+float nicla_yaw = 0;
 
 void loop() {
   // Retrieves cmd.params from ground station and checks flags
@@ -73,17 +74,16 @@ void loop() {
   rcv.flag = 1;
   rcv.values[0] = senses[1];  //height
   rcv.values[1] = senses[5];  //yaw
-  rcv.values[2] = senses[16];  //battery
-  rcv.values[3] = senses[17];  //temperature
-  rcv.values[4] = senses[18];  //battery
-  rcv.values[5] = senses[19];  //temperature
+  rcv.values[2] = senses[niclaOffset + 1];  //nicla x
+  rcv.values[3] = senses[niclaOffset + 2];  //nicla y
+  rcv.values[4] = senses[niclaOffset + 3];  //nicla w
+  rcv.values[5] = senses[niclaOffset + 4];  //nicla h
   bool sent = baseComm->sendMeasurements(&rcv);
 
   // print sensor values every second
-  // senses => [temperature, altitude, veloctity in altitude, roll, pitch, yaw, rollrate, pitchrate, yawrate, null, battery]
+  // senses => [temperature, altitude, veloctity_in_altitude, roll, pitch, yaw, rollrate, pitchrate, yawrate, null, battery, nicla_flag, nicla_x, nicla_y, nicla_w, nicla_h, nicla...]
   if (micros() - printTime > 515106){
-      Serial.print(dt/1000.0f);
-      Serial.print(",");
+    
     for (int i = 0; i < numSenses-1; i++){
       Serial.print(senses[i]);
       Serial.print(",");
@@ -92,8 +92,31 @@ void loop() {
     printTime = micros();
   }
 
-  // Create Behavior based on sensory input to put into behave
-  stateMachine->update(senses, cmd.params, behave.params);
+
+
+  // Nicla controller (when the incomming flag = 2)
+  if (cmd.params == 2) {
+    int nicla_flag = (int)senses[niclaOffset + 0];
+    if (nicla_flag != 0) {// checks if new yaw occurs on positive edge
+        float _yaw = senses[5];  
+        float _height = senses[1];  
+        float tracking_x = (float)senses[niclaOffset + 1]; 
+        
+        float x_cal = tracking_x / terms.n_max_x; // normalizes the pixles into a value between [0,1]
+        float des_yaw = ((x_cal - 0.5)) * terms.x_strength; // normalizes the normal to between [-.5, .5] to act as an offset for yaw
+        nicla_yaw = _yaw + des_yaw; // add the offset in yaw to the current yaw for movement.
+    } 
+
+    behave.params[0] = cmd.params[0]; // flag
+    behave.params[1] = cmd.params[1]; // fx ('meters'/second)
+    behave.params[2] = cmd.params[2]; // fz (meters)
+    behave.params[3] = 0; // tx (radians/second)
+    behave.params[4] = nicla_yaw; // tz (radians)
+
+  } else { // direct control with joystick if 'flag' is not 2
+    nicla_yaw = cmd.params[4]; // autoset for when switch occurs
+    behave.params = cmd.params;
+  }
 
   // Send command to the actuators
   myRobot->control(senses, behave.params, 5);
