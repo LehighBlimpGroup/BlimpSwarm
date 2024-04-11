@@ -26,8 +26,10 @@ public:
 // activates a random walk algorith which excels in uncertain environments
 class LevyWalk : public NiclaState {
 protected:
+    unsigned long SpiralTimer = 0;
     unsigned long levyDuration = 0;
     float levyYaw = 0;
+    float yawCurr = 0;
     unsigned long levyTimer = 0;
     
     RobotState* statetransitions(float sensors[], float controls[]) ;
@@ -40,6 +42,22 @@ public:
     LevyWalk();
 };
 
+// activates a spiral algorithm which systematically searches
+class Spiral : public NiclaState {
+protected:
+    unsigned long spiralDuration = 0;
+    float SpiralYaw = 0;
+    unsigned long SpiralTimer = 0;
+    
+    RobotState* statetransitions(float sensors[], float controls[]) ;
+
+    // levy walk is a random levy walk algorithm which is good for 'hunting' in a random environment
+    void behavior(float sensors[], float controls[], float outControls[]) ;
+
+
+public:
+    Spiral();
+};
 
 
 // actively moves towards a detected goal
