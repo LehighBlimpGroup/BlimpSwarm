@@ -154,7 +154,7 @@ void recieveCommands(){
 }
 
 void paramUpdate(){
-    
+    NiclaConfig::getInstance()->loadConfiguration();
     const nicla_t& config = NiclaConfig::getInstance()->getConfiguration();
     terms = config; // Copy configuration data
     myRobot->getPreferences();
