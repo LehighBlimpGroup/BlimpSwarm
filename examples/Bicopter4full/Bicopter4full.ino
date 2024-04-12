@@ -63,6 +63,7 @@ void setup() {
 }
 
 float nicla_yaw = 0;
+float z_estimator = 0;
 
 void loop() {
   // Retrieves cmd.params from ground station and checks flags
@@ -98,14 +99,19 @@ void loop() {
   // Nicla controller (when the incomming flag = 2)
   if (cmd.params == 2) {
     int nicla_flag = (int)senses[niclaOffset + 0];
-    if (nicla_flag != 0) {// checks if new yaw occurs on positive edge
+    if (nicla_flag != 0) {// checks if new yaw occurs
         float _yaw = senses[5];  
         float _height = senses[1];  
-        float tracking_x = (float)senses[niclaOffset + 1]; 
+        float tracking_x = (float)senses[niclaOffset + 1];
+        float tracking_y = (float)senses[niclaOffset + 2];
         
         float x_cal = tracking_x / terms.n_max_x; // normalizes the pixles into a value between [0,1]
         float des_yaw = ((x_cal - 0.5)) * terms.x_strength; // normalizes the normal to between [-.5, .5] to act as an offset for yaw
         nicla_yaw = _yaw + des_yaw; // add the offset in yaw to the current yaw for movement.
+        float y_cal = detection_y / terms.n_max_y;
+        if ( abs(x_cal - 0.5) < .16) { // makes sure yaw is in center before making height adjustments
+            z_estimator =  ( _height + terms.y_strength * (y_cal - terms.y_thresh)) ; // integral must be on
+        }
     } 
 
     behave.params[0] = cmd.params[0]; // flag
@@ -115,6 +121,7 @@ void loop() {
     behave.params[4] = nicla_yaw; // tz (radians)
 
   } else { // direct control with joystick if 'flag' is not 2
+    z_estimator = cmd.params[2];
     nicla_yaw = cmd.params[4]; // autoset for when switch occurs
     behave.params = cmd.params;
   }
