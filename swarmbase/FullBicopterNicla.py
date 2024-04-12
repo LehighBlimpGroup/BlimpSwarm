@@ -61,8 +61,8 @@ if __name__ == "__main__":
     serial.send_preference(ROBOT_MAC, DataType_Float, "pitchInvert", -1) #degrees
 
     # nicla parameters
-    serial.send_preference(ROBOT_MAC, DataType_Float, "y_thresh", 0.65)
-    serial.send_preference(ROBOT_MAC, DataType_Float, "y_strength", 2.5)
+    serial.send_preference(ROBOT_MAC, DataType_Float, "y_thresh", 0.5)
+    serial.send_preference(ROBOT_MAC, DataType_Float, "y_strength", 0)
     serial.send_preference(ROBOT_MAC, DataType_Float, "x_strength", 1)
 
     serial.send_preference(ROBOT_MAC, DataType_Float, "fx_togoal", 0.15)
