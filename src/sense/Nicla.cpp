@@ -41,11 +41,11 @@ bool Nicla::update() {
     }
     IBus.loop();
     // check to see if the data is new
-    if (value[5] == (float)IBus.readChannel(5) && value[6] == (float)IBus.readChannel(6)) {
-        return false;
-    } else if (IBus.readChannel(0) == 3) { // check to see if the nicla registers a detection
-        return false;
-    }
+    // if (value[5] == (float)IBus.readChannel(5) && value[6] == (float)IBus.readChannel(6)) {
+    //     return false;
+    // } else if (IBus.readChannel(0) == 3) { // check to see if the nicla registers a detection
+    //     return false;
+    // }
 
     for (int i = 0; i < 10; i++){
         value[i] = (float)IBus.readChannel(i);
