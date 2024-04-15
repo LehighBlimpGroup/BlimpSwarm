@@ -31,8 +31,7 @@ bool NiclaState::detected(float sensors[]) {
 // function which detects the positive edge of a new image
 bool NiclaState::closeToGoal(float sensors[]) {
     int niclaOffset = 11;
-    
-    
+
     float detection_w = (float)sensors[niclaOffset + 7];
     float detection_h = (float)sensors[niclaOffset + 8];
 

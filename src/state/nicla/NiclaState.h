@@ -31,6 +31,14 @@ protected:
     float levyYaw = 0;
     float yawCurr = 0;
     unsigned long levyTimer = 0;
+    float yawProgress; // Variable to track the progressive change in yaw
+
+    unsigned long spinTimer; // Timer for spinning
+    const unsigned long spinDuration = 20000; // Duration for a full 360 spin in milliseconds
+    bool isSpinning; // Flag to indicate spinning state
+
+    unsigned angleChangeCount;
+    int currentDirection;
     
     RobotState* statetransitions(float sensors[], float controls[]) ;
 
