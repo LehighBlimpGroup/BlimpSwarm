@@ -61,17 +61,36 @@ if __name__ == "__main__":
     serial.send_preference(ROBOT_MAC, DataType_Float, "pitchInvert", -1) #degrees
 
     # nicla parameters
-    serial.send_preference(ROBOT_MAC, DataType_Float, "y_thresh", 0.42)
-    serial.send_preference(ROBOT_MAC, DataType_Float, "y_strength", 5)
-    serial.send_preference(ROBOT_MAC, DataType_Float, "x_strength", 2)
+    # goals
+    serial.send_preference(ROBOT_MAC, DataType_Float, "state_flag", 0x40)
+    serial.send_preference(ROBOT_MAC, DataType_Float, "y_thresh", 0.5)
+    serial.send_preference(ROBOT_MAC, DataType_Float, "y_strength", 0)
+    serial.send_preference(ROBOT_MAC, DataType_Float, "x_strength", 1)
 
-    serial.send_preference(ROBOT_MAC, DataType_Float, "fx_togoal", .15) # speed when centered
-    serial.send_preference(ROBOT_MAC, DataType_Float, "fx_charge", 0.05) #temp used for x_thresh
+    serial.send_preference(ROBOT_MAC, DataType_Float, "fx_togoal", 0.15)
+    serial.send_preference(ROBOT_MAC, DataType_Float, "fx_charge", 0.3)
     serial.send_preference(ROBOT_MAC, DataType_Float, "fx_levy", 0.1)
 
     serial.send_preference(ROBOT_MAC, DataType_Int, "n_max_x", 240)
     serial.send_preference(ROBOT_MAC, DataType_Int, "n_max_y", 160)
     serial.send_preference(ROBOT_MAC, DataType_Float, "h_ratio", 0.8)
+
+    serial.send_preference(ROBOT_MAC, DataType_Float, "range_for_forward", 0.16)
+
+    # balloons
+    serial.send_preference(ROBOT_MAC, DataType_Float, "by_thresh", 0.42)
+    serial.send_preference(ROBOT_MAC, DataType_Float, "by_strength", 5)
+    serial.send_preference(ROBOT_MAC, DataType_Float, "bx_strength", 2)
+
+    serial.send_preference(ROBOT_MAC, DataType_Float, "bfx_togoal", .15)
+    serial.send_preference(ROBOT_MAC, DataType_Float, "bfx_charge", 0.05)
+    serial.send_preference(ROBOT_MAC, DataType_Float, "bfx_levy", 0.1)
+
+    serial.send_preference(ROBOT_MAC, DataType_Int, "bn_max_x", 240)
+    serial.send_preference(ROBOT_MAC, DataType_Int, "bn_max_y", 160)
+    serial.send_preference(ROBOT_MAC, DataType_Float, "bh_ratio", 0.8)
+
+    serial.send_preference(ROBOT_MAC, DataType_Float, "brange_for_forward", 0.16)
     serial.send_control_params(ROBOT_MAC, (0,0,0,0, 0, 0, 0, 0, 0, 0, 0, 1, 0))
     time.sleep(.2)
 

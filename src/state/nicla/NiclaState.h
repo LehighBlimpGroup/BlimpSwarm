@@ -10,7 +10,7 @@ protected:
     hist_t* hist;
     nicla_t terms; 
 
-    bool detected(float sensors[]) ;
+    int detected(float sensors[]) ;
     bool closeToGoal(float sensors[]) ;
     
     virtual RobotState* statetransitions(float sensors[], float controls[]) = 0;

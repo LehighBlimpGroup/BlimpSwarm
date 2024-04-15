@@ -20,6 +20,7 @@ public:
     virtual bool update() override;
     virtual float* readValues(int& count) override;
     void getPreferences();
+    void changeNiclaMode(uint8_t setMode);
 };
 
 #endif

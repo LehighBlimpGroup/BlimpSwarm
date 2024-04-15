@@ -8,6 +8,7 @@ typedef struct {
     int n_max_x, n_max_y;
     float fx_togoal, fx_charge, fx_levy;
     float h_ratio, y_thresh, y_strength, x_strength;
+    float range_for_forward;
 } nicla_t;
 
 typedef struct {
@@ -18,6 +19,8 @@ typedef struct {
     float des_yaw = 0;
     float robot_to_goal = 0;
     float z_estimator = 0;
+    float forward_force = 0;
+    int nicla_flag = 0x40;
 } hist_t;
 
 class NiclaConfig : public IConfig<nicla_t> {
@@ -25,6 +28,7 @@ class NiclaConfig : public IConfig<nicla_t> {
         NiclaConfig();
         static NiclaConfig* instance;
         nicla_t configData;
+        nicla_t configDatab;
         hist_t historyData;
 
     public:

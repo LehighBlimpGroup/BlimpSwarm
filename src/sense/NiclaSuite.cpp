@@ -16,6 +16,10 @@ void NiclaSuite::startup() {
 }
 
 
+void NiclaSuite::changeNiclaMode(uint8_t setMode) {
+    nicla.update(setMode);
+}
+
 bool NiclaSuite::update() {
     bool updated = false;
     int tempCount = 0, offset = 0;

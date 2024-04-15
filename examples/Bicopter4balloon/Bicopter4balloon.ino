@@ -18,6 +18,8 @@
 // Robot
 Robot* myRobot = nullptr;
 
+//sensor
+Niclasuite* nicla = nullptr;
 
 nicla_t terms; 
 
@@ -55,9 +57,9 @@ void setup() {
 
     // init robot with new parameters
     myRobot = RobotFactory::createRobot("FullBicopter");
-    
+    nicla = &(myRobot->sensorsuite);
     paramUpdate();
-
+    nicla->changeNiclaMode(0x80);
     // updates the ground altitude for the ground feedback
     // TODO: make some way to access the actual ground height from robot
     int numSenses = myRobot->sense(senses);
@@ -176,6 +178,7 @@ void paramUpdate(){
     NiclaConfig::getInstance()->loadConfiguration();
     const nicla_t& config = NiclaConfig::getInstance()->getConfiguration();
     terms = config; // Copy configuration data
+    hist = NiclaConfig::getInstance()->getDynamicHistory();
     myRobot->getPreferences();
     baseComm->setMainBaseStation();
 
