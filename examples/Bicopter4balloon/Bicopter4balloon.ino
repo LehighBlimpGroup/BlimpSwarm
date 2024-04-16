@@ -18,6 +18,8 @@
 // Robot
 Robot* myRobot = nullptr;
 
+//sensor
+Niclasuite* nicla = nullptr;
 
 nicla_t terms; 
 
@@ -40,6 +42,8 @@ unsigned long clockTime;
 unsigned long printTime;
 
 int niclaOffset = 11;
+int old_flag = 0;
+float forward_force = 0.0;
 
 
 void setup() {
@@ -53,9 +57,9 @@ void setup() {
 
     // init robot with new parameters
     myRobot = RobotFactory::createRobot("FullBicopter");
-    
+    nicla = &(myRobot->sensorsuite);
     paramUpdate();
-
+    nicla->changeNiclaMode(0x80);
     // updates the ground altitude for the ground feedback
     // TODO: make some way to access the actual ground height from robot
     int numSenses = myRobot->sense(senses);
@@ -78,8 +82,9 @@ void loop() {
   rcv.values[1] = senses[5];  //yaw
   rcv.values[2] = senses[niclaOffset + 1];  //nicla x
   rcv.values[3] = senses[niclaOffset + 2];  //nicla y
-  rcv.values[4] = senses[niclaOffset + 3];  //nicla w
-  rcv.values[5] = senses[niclaOffset + 4];  //nicla h
+  rcv.values[4] = senses[niclaOffset + 9];  //nicla w
+  rcv.values[5] = senses[niclaOffset + 9];  //nicla h
+  // rcv.values[6] = senses[niclaOffset + 9];  //nicla confidence
   bool sent = baseComm->sendMeasurements(&rcv);
 
   // print sensor values every second
@@ -99,23 +104,38 @@ void loop() {
   // Nicla controller (when the incomming flag = 2)
   if (cmd.params[0] == 2) {
     int nicla_flag = (int)senses[niclaOffset + 0];
-    if (nicla_flag != 0) {// checks if new yaw occurs
-        float _yaw = senses[5];  
-        float _height = senses[1];  
-        float tracking_x = (float)senses[niclaOffset + 1];
-        float tracking_y = (float)senses[niclaOffset + 2];
-        
-        float x_cal = tracking_x / terms.n_max_x; // normalizes the pixles into a value between [0,1]
-        float des_yaw = ((x_cal - 0.5)) * terms.x_strength; // normalizes the normal to between [-.5, .5] to act as an offset for yaw
-        nicla_yaw = _yaw + des_yaw; // add the offset in yaw to the current yaw for movement.
-        float y_cal = tracking_y / terms.n_max_y;
-        if ( abs(x_cal - 0.5) < .16 && terms.y_strength != 0) { // makes sure yaw is in center before making height adjustments
-            z_estimator =  ( _height + terms.y_strength * (y_cal - terms.y_thresh)) ; // height control doenst work well when not 0 bouyant
+    float tracking_x = (float)senses[niclaOffset + 1];
+    if (nicla_flag & 0x40) {
+      // the second MSB of nicla flag is 1 for balloon detection
+      if (nicla_flag & 0b11 != old_flag & 0b11) {
+        // the last two MSBs of the flag toggles between 0b01 and 0b10 for new detections,
+        // and it toggles to 0b00 for new no-detection
+        old_flag = nicla_flag;
+        if (nicla_flag & 0b11) {
+          // if a new detection is fed in
+          float _yaw = senses[5];  
+          float _height = senses[1];  
+          float tracking_y = (float)senses[niclaOffset + 2];
+          
+          float x_cal = tracking_x / terms.n_max_x; // normalizes the pixles into a value between [0,1]
+          float des_yaw = ((x_cal - 0.5)) * terms.x_strength; // normalizes the normal to between [-.5, .5] to act as an offset for yaw
+          nicla_yaw = _yaw + des_yaw; // add the offset in yaw to the current yaw for movement.
+          float y_cal = tracking_y / terms.n_max_y;
+          if ( abs(x_cal - 0.5) < terms.fx_charge){// && terms.y_strength != 0) { // makes sure yaw is in center before making height adjustments
+              z_estimator =  ( _height + terms.y_strength * (y_cal - terms.y_thresh)) ; // height control doenst work well when not 0 bouyant
+              forward_force = terms.fx_togoal;
+          } else {
+              forward_force = 0.0;
+          }
+        } else {
+          // if new readings from the detction is no-detection, we reset the forward force
+          forward_force = 0.0;
+          nicla_yaw = 0.0;
         }
-    } 
-
+      }
+    }
     behave.params[0] = cmd.params[0]; // flag
-    behave.params[1] = cmd.params[1]; // fx ('meters'/second)
+    behave.params[1] = cmd.params[1] + forward_force; // fx ('meters'/second)
     behave.params[2] = cmd.params[2]; // fz (meters)
     behave.params[3] = 0; // tx (radians/second)
     behave.params[4] = nicla_yaw; // tz (radians)
@@ -123,6 +143,7 @@ void loop() {
   } else { // direct control with joystick if 'flag' is not 2
     z_estimator = cmd.params[2];
     nicla_yaw = cmd.params[4]; // autoset for when switch occurs
+    forward_force = 0;
     behave.params[0] = cmd.params[0]; //flag
     behave.params[1] = cmd.params[1]; //fx
     behave.params[2] = cmd.params[2]; //fz
@@ -157,6 +178,7 @@ void paramUpdate(){
     NiclaConfig::getInstance()->loadConfiguration();
     const nicla_t& config = NiclaConfig::getInstance()->getConfiguration();
     terms = config; // Copy configuration data
+    hist = NiclaConfig::getInstance()->getDynamicHistory();
     myRobot->getPreferences();
     baseComm->setMainBaseStation();
 
