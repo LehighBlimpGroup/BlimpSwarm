@@ -6,7 +6,7 @@
 RobotState* MoveToGoal::statetransitions(float sensors[], float controls[]) {
     int niclaOffset = 11;
     int nicla_flag = (int)sensors[niclaOffset + 0];
-    if (controls[0] != 2){
+    if (controls[0] < 2){
         hist->z_estimator = sensors[1];
         RobotState* manualState = new ManualState();
         return manualState;

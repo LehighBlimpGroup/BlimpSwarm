@@ -4,7 +4,7 @@
 #include "state/nicla/NiclaState.h"
 
 RobotState* LevyWalk::statetransitions(float sensors[], float controls[]) {
-    if (controls[0] != 2){
+    if (controls[0] < 2){
         hist->z_estimator = sensors[1];
         RobotState* manualState = new ManualState();
         return manualState;
@@ -18,11 +18,6 @@ RobotState* LevyWalk::statetransitions(float sensors[], float controls[]) {
         float x_cal = tracking_x / terms.n_max_x;
         hist->des_yaw = ((x_cal - 0.5)) * terms.x_strength;
         hist->robot_to_goal = _yaw + hist->des_yaw;
-        float y_cal = detection_y / terms.n_max_y;
-        if ( abs(x_cal - 0.5) < .16) { // makes sure yaw is in center before making height adjustments
-            // z_offset += 20*((y_cal - 0.5))* subdt / sideLength;//(.75 - max(detection_h, detection_w)/max_y);
-            hist->z_estimator =  ( _height + terms.y_strength * (y_cal - terms.y_thresh)) ; // integral must be on
-        }
         RobotState* moveToGoal = new MoveToGoal();
         return moveToGoal;
     }

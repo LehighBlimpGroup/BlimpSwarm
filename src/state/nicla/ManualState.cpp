@@ -4,7 +4,7 @@
 #include "state/nicla/NiclaState.h"
 
 RobotState* ManualState::statetransitions(float sensors[], float controls[]) {
-    if (controls[0] != 2){
+    if (controls[0] < 2){
         hist->z_estimator = sensors[1];
         return this;
     }
