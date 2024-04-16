@@ -52,7 +52,7 @@ void NiclaConfig::loadConfiguration() {
 const nicla_t& NiclaConfig::getConfiguration() const {
     if (historyData.nicla_flag & 0x80){
         return configData;
-    } else if (historyData.nicla_flag == 0x40){
+    } else if (historyData.nicla_flag & 0x40){
         return configDatab;
     } else {
         return configDatab;// temp until more states
