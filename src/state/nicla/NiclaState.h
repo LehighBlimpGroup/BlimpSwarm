@@ -39,6 +39,8 @@ protected:
 
     unsigned angleChangeCount;
     int currentDirection;
+    float angleProgress = 0.0, yawRate = 0.;
+
     
     RobotState* statetransitions(float sensors[], float controls[]) ;
 
