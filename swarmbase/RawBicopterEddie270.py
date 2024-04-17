@@ -20,7 +20,7 @@ if __name__ == "__main__":
     serial.manage_peer("G", ROBOT_MAC)
     time.sleep(.05)
     serial.send_preference(ROBOT_MAC, DataType_Boolean, "zEn", True)
-    serial.send_preference(ROBOT_MAC, DataType_Boolean, "rollEn", True)
+    serial.send_preference(ROBOT_MAC, DataType_Boolean, "rollEn", False)
     serial.send_preference(ROBOT_MAC, DataType_Boolean, "rotateEn", False)
     serial.send_preference(ROBOT_MAC, DataType_Boolean, "pitchEn", True)
     serial.send_preference(ROBOT_MAC, DataType_Boolean, "yawEn", True)
@@ -28,9 +28,9 @@ if __name__ == "__main__":
     
     # // PID terms
     serial.send_preference(ROBOT_MAC, DataType_Float, "kpyaw", 2) #2
-    serial.send_preference(ROBOT_MAC, DataType_Float, "kppyaw", 0.12) #2
-    serial.send_preference(ROBOT_MAC, DataType_Float, "kdyaw", .15)#.1
-    serial.send_preference(ROBOT_MAC, DataType_Float, "kddyaw", 0.12)#.1
+    serial.send_preference(ROBOT_MAC, DataType_Float, "kppyaw", 0.05) #.1
+    serial.send_preference(ROBOT_MAC, DataType_Float, "kdyaw", .05)#.1
+    serial.send_preference(ROBOT_MAC, DataType_Float, "kddyaw", 0.05)#.1
     serial.send_preference(ROBOT_MAC, DataType_Float, "kiyaw", 0)
     serial.send_preference(ROBOT_MAC, DataType_Float, "kiyawrate", 0)
 
@@ -46,12 +46,12 @@ if __name__ == "__main__":
     serial.send_preference(ROBOT_MAC, DataType_Float, "kproll", 0)
     serial.send_preference(ROBOT_MAC, DataType_Float, "kdroll", 0.2)
     serial.send_preference(ROBOT_MAC, DataType_Float, "kppitch", 0)
-    serial.send_preference(ROBOT_MAC, DataType_Float, "kdpitch", -.9)
+    serial.send_preference(ROBOT_MAC, DataType_Float, "kdpitch", -.4)
 
     # // Range terms for the integrals
     serial.send_preference(ROBOT_MAC, DataType_Float, "z_int_low", 0.0)
     serial.send_preference(ROBOT_MAC, DataType_Float, "z_int_high", 0.15)
-    serial.send_preference(ROBOT_MAC, DataType_Float, "yawRateIntRange", 0)
+    serial.send_preference(ROBOT_MAC, DataType_Float, "yawRateIntRange", 0.1)
 
     # // radius of the blimp
     serial.send_preference(ROBOT_MAC, DataType_Float, "lx", 0.15)
@@ -65,9 +65,11 @@ if __name__ == "__main__":
     serial.send_preference(ROBOT_MAC, DataType_Float, "pitchInvert", -1) #degrees
 
     # nicla parameters
-    serial.send_preference(ROBOT_MAC, DataType_Float, "y_thresh", 0.65)
+    # goals
+    serial.send_preference(ROBOT_MAC, DataType_Int, "state_flag", 0x80)
+    serial.send_preference(ROBOT_MAC, DataType_Float, "y_thresh", 0.50)
     serial.send_preference(ROBOT_MAC, DataType_Float, "y_strength", 2.5)
-    serial.send_preference(ROBOT_MAC, DataType_Float, "x_strength", 1.5)
+    serial.send_preference(ROBOT_MAC, DataType_Float, "x_strength", 1)
 
     serial.send_preference(ROBOT_MAC, DataType_Float, "fx_togoal", 0.15)
     serial.send_preference(ROBOT_MAC, DataType_Float, "fx_charge", 0.3)
@@ -76,6 +78,23 @@ if __name__ == "__main__":
     serial.send_preference(ROBOT_MAC, DataType_Int, "n_max_x", 240)
     serial.send_preference(ROBOT_MAC, DataType_Int, "n_max_y", 160)
     serial.send_preference(ROBOT_MAC, DataType_Float, "h_ratio", 0.8)
+    serial.send_preference(ROBOT_MAC, DataType_Float, "range_for_forward", 0.16)
+
+    # balloons
+    serial.send_preference(ROBOT_MAC, DataType_Float, "by_thresh", 0.42)
+    serial.send_preference(ROBOT_MAC, DataType_Float, "by_strength", 5)
+    serial.send_preference(ROBOT_MAC, DataType_Float, "bx_strength", 2)
+
+    serial.send_preference(ROBOT_MAC, DataType_Float, "bfx_togoal", .15)
+    serial.send_preference(ROBOT_MAC, DataType_Float, "bfx_charge", 0.05)
+    serial.send_preference(ROBOT_MAC, DataType_Float, "bfx_levy", 0.1)
+
+    serial.send_preference(ROBOT_MAC, DataType_Int, "bn_max_x", 240)
+    serial.send_preference(ROBOT_MAC, DataType_Int, "bn_max_y", 160)
+    serial.send_preference(ROBOT_MAC, DataType_Float, "bh_ratio", 0.8)
+
+    serial.send_preference(ROBOT_MAC, DataType_Float, "brange_for_forward", 0.16)
+    
     serial.send_control_params(ROBOT_MAC, (0,0,0,0, 0, 0, 0, 0, 0, 0, 0, 1, 0))
     time.sleep(.2)
 

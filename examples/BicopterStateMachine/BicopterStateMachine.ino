@@ -62,8 +62,9 @@ void setup() {
 
     nicla = &(myRobot->sensorsuite);
     stateMachine = new RobotStateMachine(new LevyWalk());
-    hist = NiclaConfig::getInstance()->getDynamicHistory();
+    
     paramUpdate();
+    hist->nicla_flag = 0x80;
 
     nicla->changeNiclaMode(0x80);
 
@@ -140,6 +141,7 @@ void paramUpdate(){
     baseComm->setMainBaseStation();
     NiclaConfig::getInstance()->loadConfiguration();
     
+    hist = NiclaConfig::getInstance()->getDynamicHistory();
     const nicla_t& config = NiclaConfig::getInstance()->getConfiguration();
     terms = config; // Copy configuration data
     

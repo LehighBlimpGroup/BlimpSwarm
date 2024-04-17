@@ -10,14 +10,8 @@ RobotState* LevyWalk::statetransitions(float sensors[], float controls[]) {
         return manualState;
     }
     else if (detected(sensors)) {
-        float _yaw = sensors[5];  
-        float _height = sensors[1];  
-        int niclaOffset = 11;
-        float tracking_x = (float)sensors[niclaOffset + 1];
-        float detection_y = (float)sensors[niclaOffset + 6];
-        float x_cal = tracking_x / terms.n_max_x;
-        hist->des_yaw = ((x_cal - 0.5)) * terms.x_strength;
-        hist->robot_to_goal = _yaw + hist->des_yaw;
+        hist->robot_to_goal = sensors[5];
+        hist->z_estimator = sensors[1];
         RobotState* moveToGoal = new MoveToGoal();
         return moveToGoal;
     }
@@ -31,7 +25,7 @@ void LevyWalk::behavior(float sensors[], float controls[], float outControls[]) 
     // Serial.println("Walking!");
     if (millis() - levyTimer > levyDuration) {// checks if duration for current yaw is over
         float _yaw = sensors[5];  
-        hist->z_estimator = sensors[1] + random(-4000, 10001) / 10000.0;
+        hist->z_estimator = sensors[1] + random(-2000, 4001) / 10000.0;
         levyTimer = millis();
         float lambda = 1.0 / 5000.0; // Adjust lambda for scaling; 5000 is the mean of the distribution
         float randomValue = random(1, 10001) / 10000.0; // Generate a random float between 0.0001 and 1
@@ -39,12 +33,12 @@ void LevyWalk::behavior(float sensors[], float controls[], float outControls[]) 
         // Ensure the duration is within the desired range (0 to 10,000 ms)
         duration = duration % 30001; // Modulo to restrict within range if necessary
         levyDuration = duration;
-        levyYaw = _yaw + random(-180, 180)/180.0f * 3.14;
+        levyYaw = _yaw + random(0, 180)/180.0f * 3.14;
     } 
     int dt = SpiralTimer - millis();
     SpiralTimer += dt;
     if (abs(yawCurr - levyYaw) >0){
-        yawCurr += (float) (1000.0f/(float)dt) * constrain(levyYaw - yawCurr, -.5, .5);
+        yawCurr += (float) (1000.0f/(float)dt) * constrain(levyYaw - yawCurr, -.35, .35);
     }
     
     outControls[0] = controls[0]; //ready

@@ -11,8 +11,11 @@ RobotState* MoveToGoal::statetransitions(float sensors[], float controls[]) {
         RobotState* manualState = new ManualState();
         return manualState;
     }
-    if (nicla_flag & 0x80) {
-        if (sensors[11] == 1.0f) { // no detection registered by nicla in flag
+    else if (hist->nicla_flag & 0x80) {
+        if (start == true){
+            return this;
+        }
+        else if (sensors[11] == 1.0f) { // no detection registered by nicla in flag
             RobotState* levyWalk = new LevyWalk();
             return levyWalk;
         }
@@ -23,7 +26,7 @@ RobotState* MoveToGoal::statetransitions(float sensors[], float controls[]) {
         else {
             return this; //pointer to itself
         }
-    } else if (nicla_flag & 0x40) { // state transition for balloon detection
+    } else if (hist->nicla_flag & 0x40) { // state transition for balloon detection
         if (!(nicla_flag & 0b11)) { // no detection registered by nicla in flag
             RobotState* levyWalk = new LevyWalk();
             return levyWalk;
@@ -42,7 +45,16 @@ RobotState* MoveToGoal::statetransitions(float sensors[], float controls[]) {
 void MoveToGoal::behavior(float sensors[], float controls[], float outControls[]) {
     int niclaOffset = 11;
     int edge = detected(sensors);
+    if (start){
+        
+        float _yaw = sensors[5];
+        float _height = sensors[1];
+        hist->z_estimator = _height;
+        hist->robot_to_goal = _yaw;
+        hist->forward_force = 0;
+    }
     if (edge == 1) {
+        start = false;
         // if a new detection is fed in
         float _yaw = sensors[5];
         float _height = sensors[1];
@@ -74,5 +86,6 @@ void MoveToGoal::behavior(float sensors[], float controls[], float outControls[]
 
 MoveToGoal::MoveToGoal() : NiclaState() {
     hist->forward_force = 0.0;
+    start = true;
 }
     

@@ -38,7 +38,7 @@ int FullBicopter::sense(float sensors[MAX_SENSORS]) {
 // Controls [Ready, Fx, height/Fz, Tz, Tx]
 bool FullBicopter::control(float sensors[MAX_SENSORS], float controls[], int size) {
     float outputs[5];
-    if (controls[0] == 0) {
+    if (controls[0] == 0 || sensors[10] < 3.7 || (controls[0] != 0 && sensors[10] < 3.5)) {
         outputs[0] = 0;
         outputs[1] = 0;
         // Checking for full rotations and adjusting t1 and t2
@@ -161,7 +161,7 @@ void FullBicopter::addFeedback(float sensors[MAX_SENSORS], float controls[], flo
         // initial absolute error for the yaw
         float e_yaw = controls[4] - sensors[5]; // Tz - Yaw
         e_yaw = atan2(sin(e_yaw), cos(e_yaw));
-        e_yaw = clamp(e_yaw, -PI/3, PI/3);
+        e_yaw = clamp(e_yaw, -PI/5, PI/5);
 
         // integral term for the absolute yaw
         yaw_integral += e_yaw * ((float)dt)/1000000.0f * PDterms.kiyaw;
@@ -226,7 +226,7 @@ void FullBicopter::getOutputs(float sensors[MAX_SENSORS], float controls[], floa
     //     fz = clamp(fz, 0.001, 2);
     // }
     float taux = clamp(controls[2], -l + 0.01f, l - 0.01f);
-    float tauz = clamp(controls[3], -1, 1);
+    float tauz = clamp(controls[3], -PDterms.yawRateIntRange, PDterms.yawRateIntRange);
 
     // Inverse A-Matrix calculations
     float term1 = l * l * fx * fx + l * l * fz * fz + taux * taux + tauz * tauz;

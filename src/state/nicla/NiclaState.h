@@ -63,7 +63,7 @@ public:
 // actively moves towards a detected goal
 class MoveToGoal : public NiclaState {
 protected:
-    
+    bool start = true;
     RobotState* statetransitions(float sensors[], float controls[]) ;
 
     // moves towards the observed goal in the environment
