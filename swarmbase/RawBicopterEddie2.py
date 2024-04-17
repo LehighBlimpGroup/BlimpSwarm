@@ -20,33 +20,33 @@ if __name__ == "__main__":
     serial.manage_peer("G", ROBOT_MAC)
     time.sleep(.05)
     serial.send_preference(ROBOT_MAC, DataType_Boolean, "zEn", True)
-    serial.send_preference(ROBOT_MAC, DataType_Boolean, "rollEn", True)
+    serial.send_preference(ROBOT_MAC, DataType_Boolean, "rollEn", False)
     serial.send_preference(ROBOT_MAC, DataType_Boolean, "rotateEn", False)
-    serial.send_preference(ROBOT_MAC, DataType_Boolean, "pitchEn", True)
+    serial.send_preference(ROBOT_MAC, DataType_Boolean, "pitchEn", False)
     serial.send_preference(ROBOT_MAC, DataType_Boolean, "yawEn", True)
 
     
     # // PID terms
-    serial.send_preference(ROBOT_MAC, DataType_Float, "kpyaw", 2) #2
+    serial.send_preference(ROBOT_MAC, DataType_Float, "kpyaw", 1) #2
     serial.send_preference(ROBOT_MAC, DataType_Float, "kppyaw", 0.1) #2
-    serial.send_preference(ROBOT_MAC, DataType_Float, "kdyaw", 0.13)#.1
-    serial.send_preference(ROBOT_MAC, DataType_Float, "kddyaw", 0.12)#.1
+    serial.send_preference(ROBOT_MAC, DataType_Float, "kdyaw", 0.2)#.1
+    serial.send_preference(ROBOT_MAC, DataType_Float, "kddyaw", 0.1)#.1
     serial.send_preference(ROBOT_MAC, DataType_Float, "kiyaw", 0)
     serial.send_preference(ROBOT_MAC, DataType_Float, "kiyawrate", 0)
 
     serial.send_preference(ROBOT_MAC, DataType_Float, "yawrate_gamma", 0.5)
-    serial.send_preference(ROBOT_MAC, DataType_Float, "rollrate_gamma", 0.9)
-    serial.send_preference(ROBOT_MAC, DataType_Float, "pitchrate_gamma", 0.9)
-    
+    serial.send_preference(ROBOT_MAC, DataType_Float, "rollrate_gamma", 0.85)
+    serial.send_preference(ROBOT_MAC, DataType_Float, "pitchrate_gamma", 0.7)
+
 
     serial.send_preference(ROBOT_MAC, DataType_Float, "kpz", 0.3)
     serial.send_preference(ROBOT_MAC, DataType_Float, "kdz", 0.8)
     serial.send_preference(ROBOT_MAC, DataType_Float, "kiz", 0.1)
-    
+
     serial.send_preference(ROBOT_MAC, DataType_Float, "kproll", 0)
-    serial.send_preference(ROBOT_MAC, DataType_Float, "kdroll", -0.3)
+    serial.send_preference(ROBOT_MAC, DataType_Float, "kdroll", 0.2)
     serial.send_preference(ROBOT_MAC, DataType_Float, "kppitch", 0)
-    serial.send_preference(ROBOT_MAC, DataType_Float, "kdpitch", .3)
+    serial.send_preference(ROBOT_MAC, DataType_Float, "kdpitch", -.5)
 
     # // Range terms for the integrals
     serial.send_preference(ROBOT_MAC, DataType_Float, "z_int_low", 0.0)

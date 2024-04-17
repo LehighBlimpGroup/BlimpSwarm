@@ -12,6 +12,7 @@ from gui.simpleGUIutils import *
 import time
 
 
+
 class SimpleGUI:
     def __init__(self):
         # Plotting initialization
