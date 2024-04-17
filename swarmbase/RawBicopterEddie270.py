@@ -94,7 +94,7 @@ if __name__ == "__main__":
     serial.send_preference(ROBOT_MAC, DataType_Float, "bh_ratio", 0.8)
 
     serial.send_preference(ROBOT_MAC, DataType_Float, "brange_for_forward", 0.16)
-    
+
     serial.send_control_params(ROBOT_MAC, (0,0,0,0, 0, 0, 0, 0, 0, 0, 0, 1, 0))
     time.sleep(.2)
 
@@ -161,7 +161,7 @@ if __name__ == "__main__":
             
             fx = - axis[2] + axis[5]
             if (fx < 0):
-                fx = fx * .8
+                fx = fx * .5
             
             #print(tz, ":", height)
             #print(height)
