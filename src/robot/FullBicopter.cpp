@@ -38,7 +38,7 @@ int FullBicopter::sense(float sensors[MAX_SENSORS]) {
 // Controls [Ready, Fx, height/Fz, Tz, Tx]
 bool FullBicopter::control(float sensors[MAX_SENSORS], float controls[], int size) {
     float outputs[5];
-    if (controls[0] == 0 || sensors[10] < 3.7 || (controls[0] != 0 && sensors[10] < 3.5)) {
+    if (controls[0] == 0 ) {
         outputs[0] = 0;
         outputs[1] = 0;
         // Checking for full rotations and adjusting t1 and t2

@@ -34,7 +34,7 @@ private:
 
 public:
     // Larger gamma (between 0,1) means more preference to old values
-    WeightedBatterySensor( float gamma = 0.975);
+    WeightedBatterySensor( float gamma = 0.999);
     ~WeightedBatterySensor();
     void startup(int pin, float referenceVoltage);
     void startup() override;
