@@ -61,8 +61,11 @@ if __name__ == "__main__":
     serial.send_preference(ROBOT_MAC, DataType_Float, "pitchInvert", -1) #degrees
 
     # nicla parameters
+    serial.send_preference(ROBOT_MAC, DataType_Int, "state_flag", 0x80)
+    serial.send_preference(ROBOT_MAC, DataType_Int, "num_captures", 4) # number of ball captures before going to goal
+    serial.send_preference(ROBOT_MAC, DataType_Int, "time_in_ball", 60) #in seconds
+
     # goals
-    serial.send_preference(ROBOT_MAC, DataType_Float, "state_flag", 0x40)
     serial.send_preference(ROBOT_MAC, DataType_Float, "y_thresh", 0.5)
     serial.send_preference(ROBOT_MAC, DataType_Float, "y_strength", 0)
     serial.send_preference(ROBOT_MAC, DataType_Float, "x_strength", 1)

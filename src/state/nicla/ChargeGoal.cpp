@@ -20,7 +20,13 @@ RobotState* ChargeGoal::statetransitions(float sensors[], float controls[]) {
             }
         } else if (hist->nicla_flag & 0x40) {
             if (millis() - charge_timer > 2000) {
-                // hist->nicla_flag = 0x40; // switch to balloon mode
+                hist->num_captures += 1;
+                if (hist->num_captures >= terms.num_captures || millis() - hist->start_ball_time > terms.time_in_ball * 1000) {
+                    hist->num_captures = 0;
+                    hist->nicla_desired = 0x80;
+                    hist->start_ball_time = millis();
+                }
+                
                 hist->z_estimator = sensors[1];
                 RobotState* levyWalk = new LevyWalk();
                 return levyWalk;

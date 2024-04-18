@@ -163,11 +163,13 @@ void niclaStateChange(int cmdFlag) {
       else if (hist->nicla_desired == 0) {
         if (nicla_flag & 0x80) {
           nicla->changeNiclaMode(0x40);
+          hist->start_ball_time= millis();
         }
       }
     } 
     else if (cmdFlag == 3) { //balloon only mode (enforce 0x40)
       hist->nicla_desired = 0;
+      hist->start_ball_time= millis();
       if (nicla_flag & 0x80) {
         nicla->changeNiclaMode(0x40);
       }

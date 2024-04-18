@@ -24,6 +24,7 @@ if __name__ == "__main__":
     serial.send_preference(ROBOT_MAC, DataType_Boolean, "rotateEn", False)
     serial.send_preference(ROBOT_MAC, DataType_Boolean, "pitchEn", True)
     serial.send_preference(ROBOT_MAC, DataType_Boolean, "yawEn", True)
+    serial.send_preference(ROBOT_MAC, DataType_Boolean, "calibrate", False)
 
     
     # // PID terms
@@ -65,15 +66,18 @@ if __name__ == "__main__":
     serial.send_preference(ROBOT_MAC, DataType_Float, "pitchInvert", -1) #degrees
 
     # nicla parameters
-    # goals
     serial.send_preference(ROBOT_MAC, DataType_Int, "state_flag", 0x80)
-    serial.send_preference(ROBOT_MAC, DataType_Float, "y_thresh", 0.60)
+    serial.send_preference(ROBOT_MAC, DataType_Int, "num_captures", 4) # number of ball captures before going to goal
+    serial.send_preference(ROBOT_MAC, DataType_Int, "time_in_ball", 60) #in seconds
+
+    # goals
+    serial.send_preference(ROBOT_MAC, DataType_Float, "y_thresh", 0.55)
     serial.send_preference(ROBOT_MAC, DataType_Float, "y_strength", 2.5)
     serial.send_preference(ROBOT_MAC, DataType_Float, "x_strength", 1)
 
-    serial.send_preference(ROBOT_MAC, DataType_Float, "fx_togoal", 0.15)
-    serial.send_preference(ROBOT_MAC, DataType_Float, "fx_charge", 0.3)
-    serial.send_preference(ROBOT_MAC, DataType_Float, "fx_levy", 0.1)
+    serial.send_preference(ROBOT_MAC, DataType_Float, "fx_togoal", 0.2)
+    serial.send_preference(ROBOT_MAC, DataType_Float, "fx_charge", 0.35)
+    serial.send_preference(ROBOT_MAC, DataType_Float, "fx_levy", 0.2)
 
     serial.send_preference(ROBOT_MAC, DataType_Int, "n_max_x", 240)
     serial.send_preference(ROBOT_MAC, DataType_Int, "n_max_y", 160)

@@ -9,6 +9,7 @@ typedef struct {
     float fx_togoal, fx_charge, fx_levy;
     float h_ratio, y_thresh, y_strength, x_strength;
     float range_for_forward;
+    int num_captures, time_in_ball;
 } nicla_t;
 
 typedef struct {
@@ -22,6 +23,8 @@ typedef struct {
     float forward_force = 0;
     int nicla_flag = 0x40;
     bool nicla_desired = 0;
+    int num_captures = 0;
+    unsigned long start_ball_time; 
 } hist_t;
 
 class NiclaConfig : public IConfig<nicla_t> {

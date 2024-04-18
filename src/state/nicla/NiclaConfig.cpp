@@ -17,6 +17,10 @@ void NiclaConfig::loadConfiguration() {
 
     historyData.nicla_flag = preferences.getInt("state_flag", 0x40);
 
+
+    configData.num_captures = preferences.getInt("num_captures", 4);
+    configData.time_in_ball = preferences.getInt("time_in_ball", 60);
+
     configData.y_thresh = preferences.getFloat("y_thresh", 0.65);
     configData.y_strength = preferences.getFloat("y_strength", 1);
     configData.x_strength = preferences.getFloat("x_strength", 1);
@@ -30,6 +34,9 @@ void NiclaConfig::loadConfiguration() {
     configData.h_ratio = preferences.getFloat("bh_ratio", 0.75f);
 
     configData.range_for_forward = preferences.getFloat("range_for_forward", 0.16);
+
+    configDatab.num_captures = preferences.getInt("num_captures", 4);
+    configDatab.time_in_ball = preferences.getInt("time_in_ball", 60);
 
     configDatab.y_thresh = preferences.getFloat("by_thresh", 0.65);
     configDatab.y_strength = preferences.getFloat("by_strength", 1);
