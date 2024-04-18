@@ -40,9 +40,10 @@ RobotState* MoveToGoal::statetransitions(float sensors[], float controls[]) {
             return this; //pointer to itself
         }
     } else {
+        start = true;
         // no detection at all
-        RobotState* levyWalk = new LevyWalk();
-        return levyWalk;
+        // RobotState* levyWalk = new LevyWalk();
+        // return levyWalk;
     }
 }
 
