@@ -8,14 +8,28 @@ RobotState* ChargeGoal::statetransitions(float sensors[], float controls[]) {
         hist->z_estimator = sensors[1];
         RobotState* manualState = new ManualState();
         return manualState;
-    }
-    else if (millis() - charge_timer > 10000) {
-        // hist->nicla_flag = 0x40; // switch to balloon mode
-        hist->z_estimator = sensors[1];
-        RobotState* levyWalk = new LevyWalk();
-        return levyWalk;
     } else {
-        return this;
+        if (hist->nicla_flag & 0x80) {
+            if (millis() - charge_timer > 10000) {
+                // hist->nicla_flag = 0x40; // switch to balloon mode
+                hist->z_estimator = sensors[1];
+                RobotState* levyWalk = new LevyWalk();
+                return levyWalk;
+            } else {
+                return this;
+            }
+        } else if (hist->nicla_flag & 0x40) {
+            if (millis() - charge_timer > 2000) {
+                // hist->nicla_flag = 0x40; // switch to balloon mode
+                hist->z_estimator = sensors[1];
+                RobotState* levyWalk = new LevyWalk();
+                return levyWalk;
+            } else {
+                return this;
+            }
+        } else {
+            return this;
+        }
     }
 }
 

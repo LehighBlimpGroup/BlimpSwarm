@@ -41,7 +41,7 @@ int NiclaState::detected(float sensors[]) {
     return detected;
 }
 
-// function which detects the positive edge of a new image
+// function which determines if the robot is close to a target
 bool NiclaState::closeToGoal(float sensors[]) {
     int niclaOffset = 11;
 

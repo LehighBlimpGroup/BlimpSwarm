@@ -26,10 +26,15 @@ RobotState* MoveToGoal::statetransitions(float sensors[], float controls[]) {
         else {
             return this; //pointer to itself
         }
-    } else if (hist->nicla_flag & 0x40) { // state transition for balloon detection
+    } else if (hist->nicla_flag & 0x40) {
+        // state transition for balloon detection
         if (!(nicla_flag & 0b11)) { // no detection registered by nicla in flag
             RobotState* levyWalk = new LevyWalk();
             return levyWalk;
+        }
+        else if (closeToGoal(sensors) ) {
+            RobotState* chargeGoal = new ChargeGoal();
+            return chargeGoal;
         }
         else {
             return this; //pointer to itself

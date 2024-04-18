@@ -78,19 +78,19 @@ if __name__ == "__main__":
     serial.send_preference(ROBOT_MAC, DataType_Float, "range_for_forward", 0.16)
 
     # balloons
-    serial.send_preference(ROBOT_MAC, DataType_Float, "by_thresh", 0.42)
-    serial.send_preference(ROBOT_MAC, DataType_Float, "by_strength", 5)
+    serial.send_preference(ROBOT_MAC, DataType_Float, "by_thresh", 0.4)
+    serial.send_preference(ROBOT_MAC, DataType_Float, "by_strength", 4)
     serial.send_preference(ROBOT_MAC, DataType_Float, "bx_strength", 2)
 
     serial.send_preference(ROBOT_MAC, DataType_Float, "bfx_togoal", .15)
-    serial.send_preference(ROBOT_MAC, DataType_Float, "bfx_charge", 0.05)
+    serial.send_preference(ROBOT_MAC, DataType_Float, "bfx_charge", 0.15)
     serial.send_preference(ROBOT_MAC, DataType_Float, "bfx_levy", 0.1)
 
     serial.send_preference(ROBOT_MAC, DataType_Int, "bn_max_x", 240)
     serial.send_preference(ROBOT_MAC, DataType_Int, "bn_max_y", 160)
-    serial.send_preference(ROBOT_MAC, DataType_Float, "bh_ratio", 0.8)
+    serial.send_preference(ROBOT_MAC, DataType_Float, "bh_ratio", 0.2)
 
-    serial.send_preference(ROBOT_MAC, DataType_Float, "brange_for_forward", 0.16)
+    serial.send_preference(ROBOT_MAC, DataType_Float, "brange_for_forward", 0.25)
     serial.send_control_params(ROBOT_MAC, (0,0,0,0, 0, 0, 0, 0, 0, 0, 0, 1, 0))
     time.sleep(.2)
 
@@ -106,6 +106,7 @@ if __name__ == "__main__":
         tz = sensors[1]
         height = sensors[0]
     ready = 0
+    old_a = 0
     old_b = 0
     old_x = 0
     fx_ave = 0
@@ -130,15 +131,25 @@ if __name__ == "__main__":
                 else:
                     ready = 1
             if buttons[2] == 1 and old_x == 0:
-                if ready == 2:
+                if ready == 3:
                     if (sensors) :
                         tz = sensors[1]
                         height = sensors[0]
-                    ready = 1
+                    ready = 0
                 else:
-                    ready = 2
+                    ready = 3
+
+            if buttons[0] == 1 and old_a == 0:
+                if ready == 4:
+                    if (sensors):
+                        tz = sensors[1]
+                        height = sensors[0]
+                    ready = 0
+                else:
+                    ready = 4
             old_x = buttons[2]
             old_b = buttons[1]
+            old_a = buttons[0]
             if PRINT_JOYSTICK:
                 print(" ".join(["{:.1f}".format(num) for num in axis]), buttons)
 
