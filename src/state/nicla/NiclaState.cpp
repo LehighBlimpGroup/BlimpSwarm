@@ -19,7 +19,7 @@ int NiclaState::detected(float sensors[]) {
     float detection_w = (float)sensors[niclaOffset + 7];
     float detection_h = (float)sensors[niclaOffset + 8];
 
-    if ((nicla_flag & 0b11000000 == 0) && (hist->nicla_flag & 0b11000000)){
+    if (!(nicla_flag & 0b11) && (hist->nicla_flag & 0b11)){
         // old flag indicated a detection while the new flag says no detection
         // that is a negative edge
         detected = -1;
@@ -50,7 +50,7 @@ bool NiclaState::closeToGoal(float sensors[]) {
 
     float sideLength = max(detection_h, detection_w);
     bool too_close = true;
-    // if the height of the goal is less than 75% of the height, then it is not too close; 
+    // if the height of the goal is less than 75% of the height, then it is not too close;
     if (sideLength < terms.h_ratio * (float)(terms.n_max_y)) {
         too_close = false;
     }
