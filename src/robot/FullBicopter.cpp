@@ -226,7 +226,7 @@ void FullBicopter::getOutputs(float sensors[MAX_SENSORS], float controls[], floa
     //     fz = clamp(fz, 0.001, 2);
     // }
     float taux = clamp(controls[2], -l + 0.01f, l - 0.01f);
-    float tauz = clamp(controls[3], -PDterms.yawRateIntRange, PDterms.yawRateIntRange);
+    float tauz = clamp(controls[3], -.1, .1);
 
     // Inverse A-Matrix calculations
     float term1 = l * l * fx * fx + l * l * fz * fz + taux * taux + tauz * tauz;
