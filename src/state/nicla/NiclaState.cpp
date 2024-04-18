@@ -32,7 +32,9 @@ int NiclaState::detected(float sensors[]) {
         }
     } else if (hist->nicla_flag & 0x80) {
         // goal mode
-        if (hist->last_tracking_x != tracking_x || hist->last_tracking_y != tracking_y || hist->last_detection_w != detection_w || hist->last_detection_h != detection_h) {
+        if (nicla_flag & 0b11 != hist->nicla_flag & 0b11) {
+            // the last two MSBs of the flag toggles between 0b01 and 0b10 for new detections,
+            // and it toggles to 0b00 for new no-detection
             detected = 1;
         }
     }

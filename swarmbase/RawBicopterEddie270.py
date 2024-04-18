@@ -67,7 +67,7 @@ if __name__ == "__main__":
     # nicla parameters
     # goals
     serial.send_preference(ROBOT_MAC, DataType_Int, "state_flag", 0x80)
-    serial.send_preference(ROBOT_MAC, DataType_Float, "y_thresh", 0.50)
+    serial.send_preference(ROBOT_MAC, DataType_Float, "y_thresh", 0.60)
     serial.send_preference(ROBOT_MAC, DataType_Float, "y_strength", 2.5)
     serial.send_preference(ROBOT_MAC, DataType_Float, "x_strength", 1)
 
@@ -110,6 +110,7 @@ if __name__ == "__main__":
         tz = sensors[1]
         height = sensors[0]
     ready = 0
+    old_a = 0
     old_b = 0
     old_x = 0
     fx_ave = 0
@@ -134,9 +135,12 @@ if __name__ == "__main__":
                 else:
                     ready = 1
             if buttons[2] == 1 and old_x == 0:
-                ready = 2
+                ready = 3
+            if buttons[0] == 1 and old_a == 0:
+                ready = 4
             old_x = buttons[2]
             old_b = buttons[1]
+            old_a = buttons[0]
             if PRINT_JOYSTICK:
                 print(" ".join(["{:.1f}".format(num) for num in axis]), buttons)
 

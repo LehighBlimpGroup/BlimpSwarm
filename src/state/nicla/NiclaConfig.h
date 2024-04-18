@@ -21,6 +21,7 @@ typedef struct {
     float z_estimator = 0;
     float forward_force = 0;
     int nicla_flag = 0x40;
+    bool nicla_desired = 0;
 } hist_t;
 
 class NiclaConfig : public IConfig<nicla_t> {

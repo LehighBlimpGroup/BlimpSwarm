@@ -15,7 +15,7 @@ RobotState* MoveToGoal::statetransitions(float sensors[], float controls[]) {
         if (start == true){
             return this;
         }
-        else if (sensors[11] == 1.0f) { // no detection registered by nicla in flag
+        else if (!(nicla_flag & 0b11)) { // no detection registered by nicla in flag
             RobotState* levyWalk = new LevyWalk();
             return levyWalk;
         }

@@ -44,6 +44,7 @@ int niclaOffset = 11;
 int dt = 1000;
 unsigned long clockTime;
 unsigned long printTime;
+unsigned long nicla_change_time;
 
 // int nicla_flag = 0;
 
@@ -148,60 +149,33 @@ void paramUpdate(){
 }
 
 void niclaStateChange(int cmdFlag) {
-  int detected = 0;
-  int nicla_flag = (int)senses[niclaOffset + 0];
-  float tracking_x = (float)senses[niclaOffset + 1];
-  float tracking_y =(float)senses[niclaOffset + 2];
-  float detection_w = (float)senses[niclaOffset + 7];
-  float detection_h = (float)senses[niclaOffset + 8];
 
-  if ((nicla_flag & 0b11000000 == 0) && (hist->nicla_flag & 0b11000000)){
-      // old flag indicated a detection while the new flag says no detection
-      // that is a negative edge
-      detected = -1;
-  } else if (nicla_flag & 0x40) {
-      // balloon mode
-      if (nicla_flag & 0b11 != hist->nicla_flag & 0b11) {
-          // the last two MSBs of the flag toggles between 0b01 and 0b10 for new detections,
-          // and it toggles to 0b00 for new no-detection
-          detected = 1;
-      }
-  } else if (nicla_flag & 0x80) {
-      // goal mode
-      if (hist->last_tracking_x != tracking_x || hist->last_tracking_y != tracking_y || hist->last_detection_w != detection_w || hist->last_detection_h != detection_h) {
-          detected = 1;
-      }
-  }
-  if (detected) { // positive edge to avoid spamming
+  int nicla_flag = senses[niclaOffset + 0];
+  if (micros() - nicla_change_time > 50000) { // positive edge to avoid spamming
+    nicla_change_time = micros();
     int hist_flag = hist->nicla_flag;
     if (cmdFlag == 2) {// normal state machine mode
-      if (hist->nicla_flag & 0x80) {
+      if (hist->nicla_desired == 1) {
         if (nicla_flag & 0x40) {
           nicla->changeNiclaMode(0x80);
         }
       } 
-      else if (hist->nicla_flag & 0x40) {
+      else if (hist->nicla_desired == 0) {
         if (nicla_flag & 0x80) {
           nicla->changeNiclaMode(0x40);
         }
       }
     } 
     else if (cmdFlag == 3) { //balloon only mode (enforce 0x40)
-      if (hist->nicla_flag & 0x80) {
-        hist->nicla_flag = 0x40;
-        NiclaConfig::getInstance()->loadConfiguration();
-      }
+      hist->nicla_desired = 0;
       if (nicla_flag & 0x80) {
         nicla->changeNiclaMode(0x40);
       }
     } 
     else if (cmdFlag == 4) { //goal only mode (enforce 0x80)
-      if (hist->nicla_flag & 0x40) {
-        hist->nicla_flag = 0x80;
-        NiclaConfig::getInstance()->loadConfiguration();
-      }
-      if (nicla_flag & 0x80) {
-        nicla->changeNiclaMode(0x40);
+      hist->nicla_desired = 1;
+      if (nicla_flag & 0x40) {
+        nicla->changeNiclaMode(0x80);
       }
     }
   }

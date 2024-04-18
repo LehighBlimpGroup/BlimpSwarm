@@ -52,11 +52,12 @@ bool Nicla::update() {
 
 //data = [flag, x_roi, y_roi, w_roi, h_roi, x_value, y_value, w_value, h_value, dis]
 bool Nicla::update(uint8_t setMode) {
-    if (setMode != mode) {
-        mode = setMode;
-        MySerial0.write(mode); 
-        sendTime = micros();
-    }
+    // if (setMode != mode) {
+    //     mode = setMode;
+    //     MySerial0.write(mode); 
+    //     sendTime = micros();
+    // }
+    MySerial0.write(setMode); 
 
     return Nicla::update();
     
