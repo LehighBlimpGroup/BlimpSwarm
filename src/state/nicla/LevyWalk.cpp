@@ -72,8 +72,12 @@ void LevyWalk::behavior(float sensors[], float controls[], float outControls[]) 
     // Levy Walk state
     else {
         if (millis() - levyTimer > levyDuration) {// checks if duration for current yaw is over
-            float _yaw = sensors[5];  
-            hist->z_estimator = sensors[1] + random(-2000, 4001) / 10000.0;
+            float _yaw = sensors[5];
+            if (hist->nicla_desired == 1){ // goal mode
+                hist->z_estimator = terms.goal_height + random(-15000, 15000) / 10000.0f;
+            } else { // ball mode
+                hist->z_estimator = constrain(sensors[1] + random(-1000, 9001) / 10000.0, 1, terms.goal_height-1);
+            }
             levyTimer = millis();
             float lambda = 1.0 / 5000.0; // Adjust lambda for scaling; 5000 is the mean of the distribution
             float randomValue = random(1, 10001) / 10000.0; // Generate a random float between 0.0001 and 1
