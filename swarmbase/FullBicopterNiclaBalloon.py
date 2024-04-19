@@ -135,22 +135,12 @@ if __name__ == "__main__":
                 else:
                     ready = 1
             if buttons[2] == 1 and old_x == 0:
-                if ready == 3:
-                    if (sensors) :
-                        tz = sensors[1]
-                        height = sensors[0]
-                    ready = 0
-                else:
+                if ready != 3:
                     ready = 3
-
-            if buttons[0] == 1 and old_a == 0:
-                if ready == 4:
-                    if (sensors):
-                        tz = sensors[1]
-                        height = sensors[0]
-                    ready = 0
                 else:
                     ready = 4
+            if buttons[0] == 1 and old_a == 0:
+                ready = 2
             old_x = buttons[2]
             old_b = buttons[1]
             old_a = buttons[0]

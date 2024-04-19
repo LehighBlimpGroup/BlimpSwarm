@@ -68,7 +68,8 @@ if __name__ == "__main__":
     # nicla parameters
     serial.send_preference(ROBOT_MAC, DataType_Int, "state_flag", 0x80)
     serial.send_preference(ROBOT_MAC, DataType_Int, "num_captures", 4) # number of ball captures before going to goal
-    serial.send_preference(ROBOT_MAC, DataType_Int, "time_in_ball", 60) #in seconds
+    serial.send_preference(ROBOT_MAC, DataType_Int, "time_in_ball", 30) #in seconds
+    serial.send_preference(ROBOT_MAC, DataType_Float, "goal_height", 5) #in meters
 
     # goals
     serial.send_preference(ROBOT_MAC, DataType_Float, "y_thresh", 0.55)
@@ -139,9 +140,12 @@ if __name__ == "__main__":
                 else:
                     ready = 1
             if buttons[2] == 1 and old_x == 0:
-                ready = 3
+                if ready != 3:
+                    ready = 3
+                else:
+                    ready = 4
             if buttons[0] == 1 and old_a == 0:
-                ready = 4
+                ready = 2
             old_x = buttons[2]
             old_b = buttons[1]
             old_a = buttons[0]
