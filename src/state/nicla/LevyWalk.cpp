@@ -90,6 +90,7 @@ void LevyWalk::behavior(float sensors[], float controls[], float outControls[]) 
 
               isSpinning = true;  // Stop spinning after completing the duration
               yawRate = 0.5;
+              angleProgress = sensors[5];
 //        }
 //        currentYaw = levyYaw;
     }
