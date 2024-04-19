@@ -9,9 +9,17 @@ RobotState* LevyWalk::statetransitions(float sensors[], float controls[]) {
         RobotState* manualState = new ManualState();
         return manualState;
     }
-    else if (detected(sensors)) {
-        hist->robot_to_goal = sensors[5];
-        hist->z_estimator = sensors[1];
+    else if (detected(sensors)) {        
+        float _yaw = sensors[5];
+        
+        int nicla_flag = (int)sensors[11 + 0];
+        float tracking_x = (float)sensors[11 + 1];
+        
+        float x_cal = tracking_x / terms.n_max_x; // normalizes the pixles into a value between [0,1]
+
+        hist->des_yaw = ((x_cal - 0.5)) * terms.x_strength;
+        hist->robot_to_goal = _yaw + hist->des_yaw;
+        
         RobotState* moveToGoal = new MoveToGoal();
         return moveToGoal;
     } else if (millis() - hist->start_ball_time > terms.time_in_ball * 1000) {
@@ -63,50 +71,21 @@ void LevyWalk::behavior(float sensors[], float controls[], float outControls[]) 
 
     // Levy Walk state
     else {
-//        if (currentTime - levyTimer > spinDuration) {
-//
-////            float _yaw = sensors[5];
-////            hist->z_estimator = sensors[1] + random(-4000, 10001) / 10000.0;
-////            levyTimer = millis();
-////            float lambda = 1.0 / 5000.0; // Adjust lambda for scaling; 5000 is the mean of the distribution
-////            float randomValue = random(1, 10001) / 10000.0; // Generate a random float between 0.0001 and 1
-////            unsigned long duration = (unsigned long)(-log(randomValue) / lambda);
-////            // Ensure the duration is within the desired range (0 to 10,000 ms)
-////            duration = duration % 30001; // Modulo to restrict within range if necessary
-////            levyDuration = duration;
-////            levyYaw = _yaw + random(-180, 180)/180.0f * 3.14;
-//
-//            targetYaw = sensors[5] + static_cast<float>(random(-180, 180)) / 180.0f * 3.14159;  // Compute new target yaw in radians
-//            levyTimer = currentTime;  // Reset levyTimer after Levy Walk completes
-            yawRate = 0.5;
-            isSpinning = true;  // Prepare to start spinning after Levy Walk
-            SpiralTimer = currentTime;  // Start timing the spin
-//        }
-
-//        // Smooth transition to new yaw
-//        if (fabs(currentYaw - targetYaw) > maxYawIncrement) {
-//            currentYaw += (currentYaw < targetYaw ? maxYawIncrement : -maxYawIncrement);
-//        } else {
-//            currentYaw = targetYaw;  // If the difference is very small, directly set to target
-//        }
+        if (millis() - levyTimer > levyDuration) {// checks if duration for current yaw is over
+            float _yaw = sensors[5];  
+            hist->z_estimator = sensors[1] + random(-2000, 4001) / 10000.0;
+            levyTimer = millis();
+            float lambda = 1.0 / 5000.0; // Adjust lambda for scaling; 5000 is the mean of the distribution
+            float randomValue = random(1, 10001) / 10000.0; // Generate a random float between 0.0001 and 1
+            unsigned long duration = (unsigned long)(-log(randomValue) / lambda);
+            // Ensure the duration is within the desired range (0 to 10,000 ms)
+            duration = duration % 30001; // Modulo to restrict within range if necessary
+            levyDuration = duration;
+            levyYaw = _yaw + random(0, 180)/180.0f * 3.14;
+        } 
+        currentYaw = levyYaw;
     }
-    // if (millis() - levyTimer > levyDuration) {// checks if duration for current yaw is over
-    //     float _yaw = sensors[5];  
-    //     hist->z_estimator = sensors[1] + random(-2000, 4001) / 10000.0;
-    //     levyTimer = millis();
-    //     float lambda = 1.0 / 5000.0; // Adjust lambda for scaling; 5000 is the mean of the distribution
-    //     float randomValue = random(1, 10001) / 10000.0; // Generate a random float between 0.0001 and 1
-    //     unsigned long duration = (unsigned long)(-log(randomValue) / lambda);
-    //     // Ensure the duration is within the desired range (0 to 10,000 ms)
-    //     duration = duration % 30001; // Modulo to restrict within range if necessary
-    //     levyDuration = duration;
-    //     levyYaw = _yaw + random(0, 180)/180.0f * 3.14;
-    // } 
-    // int dt = SpiralTimer - millis();
-    // SpiralTimer += dt;
-    // if (abs(yawCurr - levyYaw) >0){
-    //     yawCurr += (float) (1000.0f/(float)dt) * constrain(levyYaw - yawCurr, -.35, .35);
-    // }
+
 
     // Set control outputs for both behaviors
     outControls[0] = controls[0]; //ready
