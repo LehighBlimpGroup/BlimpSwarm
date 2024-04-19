@@ -9,7 +9,7 @@ typedef struct {
     float fx_togoal, fx_charge, fx_levy;
     float h_ratio, y_thresh, y_strength, x_strength;
     float range_for_forward;
-    int num_captures, time_in_ball;
+    int num_captures, time_in_ball, goal_height;
 } nicla_t;
 
 typedef struct {

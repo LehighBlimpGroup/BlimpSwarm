@@ -23,7 +23,7 @@ RobotState* ChargeGoal::statetransitions(float sensors[], float controls[]) {
                 hist->num_captures += 1;
                 if (hist->num_captures >= terms.num_captures || millis() - hist->start_ball_time > terms.time_in_ball * 1000) {
                     hist->num_captures = 0;
-                    hist->nicla_desired = 0x80;
+                    hist->nicla_desired = 1;
                     hist->start_ball_time = millis();
                 }
                 

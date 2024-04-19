@@ -20,6 +20,7 @@ void NiclaConfig::loadConfiguration() {
 
     configData.num_captures = preferences.getInt("num_captures", 4);
     configData.time_in_ball = preferences.getInt("time_in_ball", 60);
+    configData.goal_height = preferences.getFloat("goal_height", 5);
 
     configData.y_thresh = preferences.getFloat("y_thresh", 0.65);
     configData.y_strength = preferences.getFloat("y_strength", 1);
@@ -37,6 +38,7 @@ void NiclaConfig::loadConfiguration() {
 
     configDatab.num_captures = preferences.getInt("num_captures", 4);
     configDatab.time_in_ball = preferences.getInt("time_in_ball", 60);
+    configDatab.goal_height = preferences.getFloat("goal_height", 5);
 
     configDatab.y_thresh = preferences.getFloat("by_thresh", 0.65);
     configDatab.y_strength = preferences.getFloat("by_strength", 1);

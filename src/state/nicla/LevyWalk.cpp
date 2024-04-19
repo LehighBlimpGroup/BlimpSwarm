@@ -14,6 +14,11 @@ RobotState* LevyWalk::statetransitions(float sensors[], float controls[]) {
         hist->z_estimator = sensors[1];
         RobotState* moveToGoal = new MoveToGoal();
         return moveToGoal;
+    } else if (millis() - hist->start_ball_time > terms.time_in_ball * 1000) {
+        hist->num_captures = 0;
+        hist->nicla_desired = 1;
+        hist->start_ball_time = millis();
+        return this;
     }
     else {
         return this; //pointer to itself

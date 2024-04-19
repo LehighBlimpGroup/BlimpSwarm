@@ -44,6 +44,7 @@ RobotState* MoveToGoal::statetransitions(float sensors[], float controls[]) {
         // no detection at all
         // RobotState* levyWalk = new LevyWalk();
         // return levyWalk;
+        return this;
     }
 }
 

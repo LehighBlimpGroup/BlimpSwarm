@@ -64,6 +64,7 @@ if __name__ == "__main__":
     serial.send_preference(ROBOT_MAC, DataType_Int, "state_flag", 0x80)
     serial.send_preference(ROBOT_MAC, DataType_Int, "num_captures", 4) # number of ball captures before going to goal
     serial.send_preference(ROBOT_MAC, DataType_Int, "time_in_ball", 60) #in seconds
+    serial.send_preference(ROBOT_MAC, DataType_Float, "goal_height", 5.0) #in meters
 
     # goals
     serial.send_preference(ROBOT_MAC, DataType_Float, "y_thresh", 0.5)

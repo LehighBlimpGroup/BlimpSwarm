@@ -158,6 +158,7 @@ void niclaStateChange(int cmdFlag) {
       if (hist->nicla_desired == 1) {
         if (nicla_flag & 0x40) {
           nicla->changeNiclaMode(0x80);
+          hist->z_estimator = terms.goal_height;
         }
       } 
       else if (hist->nicla_desired == 0) {
