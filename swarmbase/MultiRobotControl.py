@@ -77,6 +77,8 @@ def main():
                 break
             if buttons[1] and not old_buttons[1]:  # B toggles pause
                 ready = 0 if ready else 1
+                if sensors:
+                    height, tz = (sensors[0], sensors[1])
             if buttons[2] and not old_buttons[2]:  # X toggles special mode
                 ready = 3 if ready != 3 else 4
             if buttons[0] and not old_buttons[0]:  # A sets specific ready state

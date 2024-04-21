@@ -37,6 +37,9 @@ int NiclaState::detected(float sensors[]) {
             // and it toggles to 0b00 for new no-detection
             detected = 1;
         }
+        // if (hist->last_tracking_x != tracking_x || hist->last_tracking_y != tracking_y || hist->last_detection_w != detection_w || hist->last_detection_h != detection_h) {
+        //     detected = 1;
+        // }
     }
     return detected;
 }

@@ -37,9 +37,9 @@ if __name__ == "__main__":
         {"data_type": DataType_Boolean, "key": "yawEn", "value": True},
 
         {"data_type": DataType_Float, "key": "kpyaw", "value": 2},
-        {"data_type": DataType_Float, "key": "kppyaw", "value": 0.04},
-        {"data_type": DataType_Float, "key": "kdyaw", "value": 0.07},
-        {"data_type": DataType_Float, "key": "kddyaw", "value": 0.04},
+        {"data_type": DataType_Float, "key": "kppyaw", "value": 0.03},
+        {"data_type": DataType_Float, "key": "kdyaw", "value": 0.035},
+        {"data_type": DataType_Float, "key": "kddyaw", "value": 0.03},
         {"data_type": DataType_Float, "key": "kiyaw", "value": 0},
         {"data_type": DataType_Float, "key": "kiyawrate", "value": 0},
 
@@ -54,7 +54,7 @@ if __name__ == "__main__":
         {"data_type": DataType_Float, "key": "kproll", "value": 0},
         {"data_type": DataType_Float, "key": "kdroll", "value": 0},
         {"data_type": DataType_Float, "key": "kppitch", "value": 0},
-        {"data_type": DataType_Float, "key": "kdpitch", "value": 0},
+        {"data_type": DataType_Float, "key": "kdpitch", "value": -0.3},
 
         {"data_type": DataType_Float, "key": "z_int_low", "value": 0},
         {"data_type": DataType_Float, "key": "z_int_high", "value": 0.15},
@@ -72,7 +72,7 @@ if __name__ == "__main__":
         {"data_type": DataType_Int, "key": "time_in_ball", "value": 60},
         {"data_type": DataType_Float, "key": "goal_height", "value": 8.0},
 
-        {"data_type": DataType_Float, "key": "y_thresh", "value": 0.6},
+        {"data_type": DataType_Float, "key": "y_thresh", "value": 0.68},
         {"data_type": DataType_Float, "key": "y_strength", "value": 2.5},
         {"data_type": DataType_Float, "key": "x_strength", "value": 1},
         {"data_type": DataType_Float, "key": "fx_togoal", "value": 0.15},

@@ -30,9 +30,9 @@ void NiclaConfig::loadConfiguration() {
     configData.fx_charge = preferences.getFloat("fx_charge", -0.4f);
     configData.fx_levy = preferences.getFloat("fx_levy", -0.1f);
 
-    configData.n_max_x = preferences.getInt("bn_max_x", 240);
-    configData.n_max_y = preferences.getInt("bn_max_y", 160);
-    configData.h_ratio = preferences.getFloat("bh_ratio", 0.75f);
+    configData.n_max_x = preferences.getInt("n_max_x", 240);
+    configData.n_max_y = preferences.getInt("n_max_y", 160);
+    configData.h_ratio = preferences.getFloat("h_ratio", 0.75f);
 
     configData.range_for_forward = preferences.getFloat("range_for_forward", 0.16);
 
