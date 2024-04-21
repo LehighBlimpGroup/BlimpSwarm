@@ -96,7 +96,7 @@ def main():
             if ready != 5:
                 # Control inputs to the robot
                 height += -axis[0] * dt if abs(axis[0]) >= 0.15 else 0
-                height = max(min(height, 15), -3)
+                height = max(min(height, 15), -10)
                 tz += -axis[4] * 1.2 * dt if abs(axis[4]) >= 0.15 else 0
             else:
                 # Control inputs to the robot
