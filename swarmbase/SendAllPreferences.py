@@ -72,27 +72,27 @@ if __name__ == "__main__":
         {"data_type": DataType_Int, "key": "time_in_ball", "value": 60},
         {"data_type": DataType_Float, "key": "goal_height", "value": 8.0},
 
-        {"data_type": DataType_Float, "key": "y_thresh", "value": 0.68},
-        {"data_type": DataType_Float, "key": "y_strength", "value": 2.5},
+        {"data_type": DataType_Float, "key": "y_thresh", "value": 0.5},
+        {"data_type": DataType_Float, "key": "y_strength", "value": 3},
         {"data_type": DataType_Float, "key": "x_strength", "value": 1},
         {"data_type": DataType_Float, "key": "fx_togoal", "value": 0.15},
-        {"data_type": DataType_Float, "key": "fx_charge", "value": 0.35},
-        {"data_type": DataType_Float, "key": "fx_levy", "value": 0.15},
+        {"data_type": DataType_Float, "key": "fx_charge", "value": 0.5},
+        {"data_type": DataType_Float, "key": "fx_levy", "value": 0.4},
         {"data_type": DataType_Int, "key": "n_max_x", "value": 240},
         {"data_type": DataType_Int, "key": "n_max_y", "value": 160},
         {"data_type": DataType_Float, "key": "h_ratio", "value": 0.8},
         {"data_type": DataType_Float, "key": "range_for_forward", "value": 0.16},
 
-        {"data_type": DataType_Float, "key": "by_thresh", "value": 0.3},
-        {"data_type": DataType_Float, "key": "by_strength", "value": 1.5},
+        {"data_type": DataType_Float, "key": "by_thresh", "value": 0.2},
+        {"data_type": DataType_Float, "key": "by_strength", "value": 2},
         {"data_type": DataType_Float, "key": "bx_strength", "value": 1},
         {"data_type": DataType_Float, "key": "bfx_togoal", "value": 0.2},
         {"data_type": DataType_Float, "key": "bfx_charge", "value": 0.4},
         {"data_type": DataType_Float, "key": "bfx_levy", "value": 0.13},
         {"data_type": DataType_Int, "key": "bn_max_x", "value": 240},
         {"data_type": DataType_Int, "key": "bn_max_y", "value": 160},
-        {"data_type": DataType_Float, "key": "bh_ratio", "value": 0.1},
-        {"data_type": DataType_Float, "key": "brange_for_forward", "value": 0.35}
+        {"data_type": DataType_Float, "key": "bh_ratio", "value": 0.2},
+        {"data_type": DataType_Float, "key": "brange_for_forward", "value": 0.5}
     ]
 
     # Sending common preferences to all robots

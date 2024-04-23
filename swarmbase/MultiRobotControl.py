@@ -29,7 +29,7 @@ def main():
     ready = 0
     old_buttons = [0] * 4  # A, B, X, Y
     fx_ave = 0
-    dt = 0.1
+    dt = 0.3
 
     try:
         running = True
@@ -104,7 +104,7 @@ def main():
                 # Control inputs to the robot
                 height = -axis[0] * .5 * dt if abs(axis[0]) >= 0.15 else 0
                 tz = -axis[4] * .5 * dt if abs(axis[4]) >= 0.15 else 0
-            fx = (-axis[2] + axis[5]) * 0.2
+            fx = (-axis[2] + axis[5]) * 0.5
             fx_ave = fx_ave * 0.8 + fx * 0.2
 
             sensors = serial.getSensorData()
