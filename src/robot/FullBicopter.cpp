@@ -11,8 +11,8 @@ FullBicopter::FullBicopter(){
 }
 
 void FullBicopter::startup() {
-    sensorsuite.startup();
     RawBicopter::startup();
+    sensorsuite.startup();
     float senses[MAX_SENSORS];
     FullBicopter::sense(senses);
 }
