@@ -70,7 +70,7 @@ if __name__ == "__main__":
         {"data_type": DataType_Int, "key": "state_flag", "value": 0x40},
         {"data_type": DataType_Int, "key": "num_captures", "value": 4},
         {"data_type": DataType_Int, "key": "time_in_ball", "value": 60},
-        {"data_type": DataType_Float, "key": "goal_height", "value": 8.0},
+        {"data_type": DataType_Float, "key": "goal_height", "value": 6.0},
 
         {"data_type": DataType_Float, "key": "y_thresh", "value": 0.5},
         {"data_type": DataType_Float, "key": "y_strength", "value": 3},

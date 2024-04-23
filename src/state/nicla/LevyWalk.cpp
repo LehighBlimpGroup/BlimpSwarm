@@ -71,27 +71,31 @@ void LevyWalk::behavior(float sensors[], float controls[], float outControls[]) 
 
     // Levy Walk state
     else {
-//        if (millis() - levyTimer > levyDuration) {// checks if duration for current yaw is over
-//            float _yaw = sensors[5];
-//            if (hist->nicla_desired == 1){ // goal mode
-//                hist->z_estimator = terms.goal_height + random(-15000, 15000) / 10000.0f;
-//            } else { // ball mode
-//                hist->z_estimator = constrain(sensors[1] + random(-1000, 9001) / 10000.0, 1, terms.goal_height-1);
-//            }
-//            levyTimer = millis();
-//            float lambda = 1.0 / 5000.0; // Adjust lambda for scaling; 5000 is the mean of the distribution
-//            float randomValue = random(1, 10001) / 10000.0; // Generate a random float between 0.0001 and 1
-//            unsigned long duration = (unsigned long)(-log(randomValue) / lambda);
-            // Ensure the duration is within the desired range (0 to 10,000 ms)
-//            duration = duration % 30001; // Modulo to restrict within range if necessary
-//            levyDuration = duration;
-//            levyYaw = _yaw + random(0, 180)/180.0f * 3.14;
+        if (hist->nicla_desired == 1){
+            if (millis() - levyTimer > levyDuration) {// checks if duration for current yaw is over
+                float _yaw = sensors[5];
+                levyTimer = millis();
+                float lambda = 1.0 / 5000.0; // Adjust lambda for scaling; 5000 is the mean of the distribution
+                float randomValue = random(1, 10001) / 10000.0; // Generate a random float between 0.0001 and 1
+                unsigned long duration = (unsigned long)(-log(randomValue) / lambda);
+                    // Ensure the duration is within the desired range (0 to 10,000 ms)
+                duration = duration % 30001; // Modulo to restrict within range if necessary
+                levyDuration = duration;
+                levyYaw = _yaw + random(10, 170)/180.0f * 3.14;
+                if (hist->nicla_desired == 1){ // goal mode
+                    hist->z_estimator = terms.goal_height + random(-15000, 15000) / 10000.0f;
+                    // float levy_error_direction = hist->goal_direction -levyYaw;
+                    // levyDuration = levyDuration * (2-abs(atan2(sin(levy_error_direction), cos(levy_error_direction))/3.1415f))/2 ;
+                } else { // ball mode
+                    hist->z_estimator = constrain(sensors[1] + random(-3000, 9001) / 10000.0, 1, terms.goal_height-1);
+                }
+            }
+            currentYaw = levyYaw;
 
-
+        } else {
               isSpinning = true;  // Stop spinning after completing the duration
               yawRate = 0.5;
-//        }
-//        currentYaw = levyYaw;
+        }
     }
 
 

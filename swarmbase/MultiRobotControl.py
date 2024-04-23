@@ -73,14 +73,14 @@ def main():
             axis, buttons = joystick.getJoystickInputs()
             
             # Button press logic
-            if buttons[3]:  # Y stops the program
-                break
+            if buttons[3] and not old_buttons[3]:  # Y puts into goal mode
+                ready = 4 #if ready != 3 else 4
             if buttons[1] and not old_buttons[1]:  # B toggles pause
                 ready = 0 if ready else 1
                 if sensors:
                     height, tz = (sensors[0], sensors[1])
-            if buttons[2] and not old_buttons[2]:  # X toggles special mode
-                ready = 3 if ready != 3 else 4
+            if buttons[2] and not old_buttons[2]:  # X puts into ball mode
+                ready = 3 #if ready != 3 else 4
             if buttons[0] and not old_buttons[0]:  # A sets specific ready state
                 ready = 2
 
@@ -105,7 +105,7 @@ def main():
                 height = -axis[0] * .5 * dt if abs(axis[0]) >= 0.15 else 0
                 tz = -axis[4] * .5 * dt if abs(axis[4]) >= 0.15 else 0
             fx = (-axis[2] + axis[5]) * 0.5
-            fx_ave = fx_ave * 0.8 + fx * 0.2
+            fx_ave = fx_ave * 0.67 + fx * 0.33
 
             sensors = serial.getSensorData()
             if sensors:

@@ -10,11 +10,13 @@ RobotState* ManualState::statetransitions(float sensors[], float controls[]) {
     }
     else if (detected(sensors)) {
         hist->z_estimator = sensors[1];
+        hist->robot_to_goal = sensors[5];
         RobotState* moveToGoal = new MoveToGoal();
         return moveToGoal;
     }
     else {
         hist->z_estimator = sensors[1];
+        hist->robot_to_goal = sensors[5];
         RobotState* levyWalk = new LevyWalk();
         return levyWalk;
     }

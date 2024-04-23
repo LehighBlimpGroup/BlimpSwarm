@@ -193,6 +193,9 @@ void niclaStateChange(int cmdFlag) {
       }
     } 
     else if (cmdFlag == 4) { //goal only mode (enforce 0x80)
+      if (hist_flag != 4) {
+        hist->goal_direction = senses[5];
+      }
       hist->nicla_desired = 1;
       if (nicla_flag & 0x40) {
         nicla->changeNiclaMode(0x80);

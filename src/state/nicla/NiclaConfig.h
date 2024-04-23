@@ -24,6 +24,7 @@ typedef struct {
     int nicla_flag = 0x40;
     bool nicla_desired = 0;
     int num_captures = 0;
+    float goal_direction = -5;
     unsigned long start_ball_time; 
 } hist_t;
 
