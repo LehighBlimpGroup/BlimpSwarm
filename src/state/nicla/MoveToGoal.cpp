@@ -32,7 +32,7 @@ RobotState* MoveToGoal::statetransitions(float sensors[], float controls[]) {
             RobotState* levyWalk = new LevyWalk();
             return levyWalk;
         }
-        else if (closeToGoal(sensors) ) {
+        else if (closeToGoal(sensors) && abs(hist->last_tracking_x/terms.n_max_x - 0.5) < terms.range_for_forward*0.6) {
             RobotState* chargeGoal = new ChargeGoal();
             return chargeGoal;
         }
