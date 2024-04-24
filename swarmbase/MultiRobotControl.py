@@ -6,6 +6,7 @@ from gui.niclaGUI import NiclaBox
 import time
 from user_parameters import ROBOT_MACS,  SERIAL_PORT, PRINT_JOYSTICK
 ROBOT_MAC = None
+PUMP_MAC = "48:27:E2:E6:E6:44"
 def main():
     serial = SerialController(SERIAL_PORT, timeout=0.5)
     joystick = JoystickManager()
@@ -17,12 +18,13 @@ def main():
     current_robot_index = 0
     ROBOT_MAC = robots[current_robot_index]
 
+
     # Setup communication with robot
     for robot_mac in robots:
         serial.manage_peer("A", robot_mac)
         #serial.send_control_params(ROBOT_MAC, (2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)) send nicla autonomous to all robots or optionally whatever constants
         time.sleep(0.05)
-    
+    serial.manage_peer("A", PUMP_MAC)
     sensors = serial.getSensorData()
     # Initialize control variables
     height, tz =  (0, 0)
@@ -30,12 +32,58 @@ def main():
     old_buttons = [0] * 4  # A, B, X, Y
     fx_ave = 0
     dt = 0.3
+    
 
     try:
         running = True
         while running:
             for event in pygame.event.get():
                 if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_GREATER:
+                        serial.send_control_params(PUMP_MAC, (1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0))
+                    elif event.key == pygame.K_LESS:
+                        serial.send_control_params(PUMP_MAC, (0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0))
+
+                    # QWERTY row for setting flag 2
+                    elif event.key == pygame.K_q: # Flag 2 to blimp 0
+                        serial.send_control_params(robots[0], (2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0))
+                    elif event.key == pygame.K_w: # Flag 2 to blimp 1
+                        serial.send_control_params(robots[1], (2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0))
+                    elif event.key == pygame.K_e: # Flag 2 to blimp 2
+                        serial.send_control_params(robots[2], (2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0))
+                    elif event.key == pygame.K_r: # Flag 2 to blimp 3
+                        serial.send_control_params(robots[3], (2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0))
+                    elif event.key == pygame.K_t: # Flag 2 to blimp 4
+                        serial.send_control_params(robots[4], (2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0))
+                    elif event.key == pygame.K_y: # Flag 2 to blimp 5
+                        serial.send_control_params(robots[5], (2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0))
+
+                    # ASDFGH row for setting flag 3
+                    elif event.key == pygame.K_a: # Flag 3 to blimp 0
+                        serial.send_control_params(robots[0], (3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0))
+                    elif event.key == pygame.K_s: # Flag 3 to blimp 1
+                        serial.send_control_params(robots[1], (3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0))
+                    elif event.key == pygame.K_d: # Flag 3 to blimp 2
+                        serial.send_control_params(robots[2], (3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0))
+                    elif event.key == pygame.K_f: # Flag 3 to blimp 3
+                        serial.send_control_params(robots[3], (3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0))
+                    elif event.key == pygame.K_g: # Flag 3 to blimp 4
+                        serial.send_control_params(robots[4], (3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0))
+                    elif event.key == pygame.K_h: # Flag 3 to blimp 5
+                        serial.send_control_params(robots[5], (3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0))
+
+                    # ZXCVB row for setting flag 4
+                    elif event.key == pygame.K_z: # Flag 4 to blimp 0
+                        serial.send_control_params(robots[0], (4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0))
+                    elif event.key == pygame.K_x: # Flag 4 to blimp 1
+                        serial.send_control_params(robots[1], (4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0))
+                    elif event.key == pygame.K_c: # Flag 4 to blimp 2
+                        serial.send_control_params(robots[2], (4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0))
+                    elif event.key == pygame.K_v: # Flag 4 to blimp 3
+                        serial.send_control_params(robots[3], (4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0))
+                    elif event.key == pygame.K_b: # Flag 4 to blimp 4
+                        serial.send_control_params(robots[4], (4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0))
+
                     if event.key == pygame.K_SPACE:
                         
                         for robot_mac in robots:
@@ -158,6 +206,7 @@ def main():
     for robot_mac in robots:
         serial.send_control_params(robot_mac, (0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0))
         time.sleep(.1)
+    serial.send_control_params(PUMP_MAC, (0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0))
 
 if __name__ == "__main__":
     main()

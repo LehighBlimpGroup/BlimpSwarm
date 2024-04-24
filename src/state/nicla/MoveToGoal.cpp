@@ -80,7 +80,7 @@ void MoveToGoal::behavior(float sensors[], float controls[], float outControls[]
         float y_cal = detection_y / terms.n_max_y;
         if ( abs(x_cal - 0.5) < terms.range_for_forward) { // makes sure yaw is in center before making height adjustments
             // z_offset += 20*((y_cal - 0.5))* subdt / sideLength;//(.75 - max(detection_h, detection_w)/max_y);
-            hist->z_estimator =  ( _height + constrain(terms.y_strength * (y_cal - terms.y_thresh), -.5, .5)) ; // integral must be on
+            hist->z_estimator =  ( _height + terms.y_strength * (y_cal - terms.y_thresh)) ; // integral must be on
             hist->forward_force = terms.fx_togoal;
         } else if (nicla_flag & 0x40) {
             // balloon case
