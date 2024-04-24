@@ -127,11 +127,13 @@ LevyWalk::LevyWalk() : NiclaState() {
     levyYaw = hist->robot_to_goal;
     yawCurr = hist->robot_to_goal;
     currentYaw = hist->robot_to_goal;
+    angleProgress = hist->robot_to_goal;
     levyTimer = millis();
     isSpinning = true;
     spinTimer = millis();
 //    spinDuration = ;
-    yawRate = 0.5;
+    yawRate = 0.2;
+    spinDuration = 5000;
     angleChangeCount = 0;
     currentDirection = 1; // Initial direction for spinning
 }
