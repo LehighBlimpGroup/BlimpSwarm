@@ -36,7 +36,33 @@ def main():
         while running:
             for event in pygame.event.get():
                 if event.type == pygame.KEYDOWN:
-                    if event.key == pygame.K_ESCAPE:
+                    if event.key == pygame.K_SPACE:
+                        
+                        for robot_mac in robots:
+                            serial.send_control_params(robot_mac, (2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0))
+                            time.sleep(.1)
+
+                        ready = 2
+                    elif event.key == pygame.K_p:
+                        
+                        for robot_mac in robots:
+                            serial.send_control_params(robot_mac, (0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0))
+                            time.sleep(.1)
+                        ready = 0
+                        
+                    elif event.key == pygame.K_o:
+                        
+                        for robot_mac in robots:
+                            serial.send_control_params(robot_mac, (4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0))
+                            time.sleep(.1)
+                            
+                    elif event.key == pygame.K_i:
+                        
+                        for robot_mac in robots:
+                            serial.send_control_params(robot_mac, (3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0))
+                            time.sleep(.1)
+                            
+                    elif event.key == pygame.K_ESCAPE:
                         running = False
                     elif pygame.K_0 <= event.key <= pygame.K_9:
                         index = event.key - pygame.K_0 - 1
@@ -120,7 +146,11 @@ def main():
         print("Stopping!")
     
     for robot_mac in robots:
-        serial.send_control_params(ROBOT_MAC, (0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0))
+        serial.send_control_params(robot_mac, (0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0))
+        time.sleep(.1)
+    for robot_mac in robots:
+        serial.send_control_params(robot_mac, (0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0))
+        time.sleep(.1)
 
 if __name__ == "__main__":
     main()
