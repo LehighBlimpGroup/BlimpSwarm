@@ -39,6 +39,9 @@ def main():
                     if event.key == pygame.K_SPACE:
                         
                         for robot_mac in robots:
+                            serial.send_control_params(robot_mac, (3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0))
+                            time.sleep(.1)
+                        for robot_mac in robots:
                             serial.send_control_params(robot_mac, (2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0))
                             time.sleep(.1)
 
@@ -61,7 +64,11 @@ def main():
                         for robot_mac in robots:
                             serial.send_control_params(robot_mac, (3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0))
                             time.sleep(.1)
-                            
+                    elif event.key == pygame.K_u:
+                        
+                        for robot_mac in robots:
+                            serial.send_control_params(robot_mac, (2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0))
+                            time.sleep(.1)       
                     elif event.key == pygame.K_ESCAPE:
                         running = False
                     elif pygame.K_0 <= event.key <= pygame.K_9:
