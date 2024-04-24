@@ -16,7 +16,7 @@ def main():
     # Get all Robot Mac addresses
     robots = ROBOT_MACS
     current_robot_index = 0
-    ROBOT_MAC = robots[current_robot_index]
+    ROBOT_MAC = "00:00:00:00:00:00"#robots[current_robot_index]
 
 
     # Setup communication with robot
@@ -39,9 +39,11 @@ def main():
         while running:
             for event in pygame.event.get():
                 if event.type == pygame.KEYDOWN:
-                    if event.key == pygame.K_GREATER:
+                    if event.key == pygame.K_PERIOD:
+                        print("Pump On")
                         serial.send_control_params(PUMP_MAC, (1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0))
-                    elif event.key == pygame.K_LESS:
+                    elif event.key == pygame.K_COMMA:
+                        print("Pump Off")
                         serial.send_control_params(PUMP_MAC, (0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0))
 
                     # QWERTY row for setting flag 2
@@ -123,7 +125,7 @@ def main():
                         index = event.key - pygame.K_0 - 1
                         if 0 <= index < len(robots):
                             current_robot_index = index
-                            print("index ", current_robot_index)
+                            
                             if ready == 5:
                                 serial.send_control_params(ROBOT_MAC, (6, fx_ave, height, 0, tz, -buttons[2], 0, 0, 0, 0, 0, 0, 0))
                             else:
