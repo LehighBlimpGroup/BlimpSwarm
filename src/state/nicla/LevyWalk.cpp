@@ -9,6 +9,11 @@ RobotState* LevyWalk::statetransitions(float sensors[], float controls[]) {
         RobotState* manualState = new ManualState();
         return manualState;
     }
+    else if (terms.state != hist->nicla_desired) {
+        
+        RobotState* levyWalk = new LevyWalk();
+        return levyWalk;
+    }
     else if (detected(sensors)) {        
         float _yaw = sensors[5];
         

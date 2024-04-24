@@ -9,6 +9,7 @@ protected:
 
     hist_t* hist;
     nicla_t terms; 
+    
 
     int detected(float sensors[]) ;
     bool closeToGoal(float sensors[]) ;

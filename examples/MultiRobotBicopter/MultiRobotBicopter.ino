@@ -166,7 +166,14 @@ void paramUpdate(){
 }
 
 void niclaStateChange(int cmdFlag) {
-
+  if (cmdFlag == 3) { //balloon only mode (enforce 0x40)
+    hist->nicla_desired = 0;
+    hist->start_ball_time= millis();
+    hist->num_captures = 0;
+  } 
+  else if (cmdFlag == 4) { //goal only mode (enforce 0x80)
+    hist->nicla_desired = 1;
+  }
   int nicla_flag = senses[niclaOffset + 0];
   if (micros() - nicla_change_time > 50000) { // positive edge to avoid spamming
     nicla_change_time = micros();
@@ -186,9 +193,6 @@ void niclaStateChange(int cmdFlag) {
       }
     } 
     else if (cmdFlag == 3) { //balloon only mode (enforce 0x40)
-      hist->nicla_desired = 0;
-      hist->start_ball_time= millis();
-      hist->num_captures = 0;
       if (nicla_flag & 0x80) {
         nicla->changeNiclaMode(0x40);
       }
@@ -197,7 +201,6 @@ void niclaStateChange(int cmdFlag) {
       if (hist_flag != 4) {
         hist->goal_direction = senses[5];
       }
-      hist->nicla_desired = 1;
       if (nicla_flag & 0x40) {
         nicla->changeNiclaMode(0x80);
       }

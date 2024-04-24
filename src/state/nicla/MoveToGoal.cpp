@@ -11,6 +11,11 @@ RobotState* MoveToGoal::statetransitions(float sensors[], float controls[]) {
         RobotState* manualState = new ManualState();
         return manualState;
     }
+    else if (terms.state != hist->nicla_desired) { // reload terms for important movements
+        
+        RobotState* moveToGoal = new MoveToGoal();
+        return moveToGoal;
+    }
     else if (hist->nicla_flag & 0x80) {
         if (start == true){
             return this;

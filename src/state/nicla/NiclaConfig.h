@@ -5,6 +5,7 @@
 
 // nicla_t definition
 typedef struct {
+    bool state;
     int n_max_x, n_max_y;
     float fx_togoal, fx_charge, fx_levy;
     float h_ratio, y_thresh, y_strength, x_strength;

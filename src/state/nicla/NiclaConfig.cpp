@@ -17,7 +17,7 @@ void NiclaConfig::loadConfiguration() {
 
     historyData.nicla_flag = preferences.getInt("state_flag", 0x40);
 
-
+    configData.state = 1;
     configData.num_captures = preferences.getInt("num_captures", 4);
     configData.time_in_ball = preferences.getInt("time_in_ball", 60);
     configData.goal_height = preferences.getFloat("goal_height", 5);
@@ -36,6 +36,7 @@ void NiclaConfig::loadConfiguration() {
 
     configData.range_for_forward = preferences.getFloat("range_for_forward", 0.16);
 
+    configDatab.state = 0;
     configDatab.num_captures = preferences.getInt("num_captures", 4);
     configDatab.time_in_ball = preferences.getInt("time_in_ball", 60);
     configDatab.goal_height = preferences.getFloat("goal_height", 5);
@@ -59,9 +60,11 @@ void NiclaConfig::loadConfiguration() {
 
 // Implementation of getConfiguration
 const nicla_t& NiclaConfig::getConfiguration() const {
-    if (historyData.nicla_desired == 1){
+    if (historyData.nicla_desired == 1) {
+        Serial.println("loaded GOAL config");
         return configData;
-    } else if (historyData.nicla_desired == 0){
+    } else if (historyData.nicla_desired == 0) {
+        Serial.println("loaded BALL config");
         return configDatab;
     } else {
         return configDatab;// temp until more states
