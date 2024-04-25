@@ -17,40 +17,64 @@ if __name__ == "__main__":
     robots = [
         # # blue robot with skates and no net
         {"mac": "34:85:18:8D:A0:D4", "preferences": [
-    {"data_type": DataType_Float, "key": "y_thresh", "value": 0.65},
-            {"data_type": DataType_Float, "key": "bh_ratio", "value": 0.35},
-            {"data_type": DataType_Float, "key": "brange_for_forward", "value": 0.2},
-            {"data_type": DataType_Float, "key": "by_strength", "value": 2},
-            {"data_type": DataType_Float, "key": "by_thresh", "value": 0.3},
-            {"data_type": DataType_Float, "key": "bx_strength", "value": 1},
+            {"data_type": DataType_Float, "key": "by_strength", "value": 2.5},
+            {"data_type": DataType_Float, "key": "bx_strength", "value": 1.4},
+            {"data_type": DataType_Float, "key": "bfx_togoal", "value": 0.32},
+            {"data_type": DataType_Float, "key": "bfx_charge", "value": 0.3},
+            {"data_type": DataType_Float, "key": "bfx_levy", "value": 0.3},
+            {"data_type": DataType_Int, "key": "bn_max_x", "value": 240},
+            {"data_type": DataType_Int, "key": "bn_max_y", "value": 160},
+            {"data_type": DataType_Float, "key": "bh_ratio", "value": 0.8},
+            {"data_type": DataType_Float, "key": "brange_for_forward", "value": 0.34},
             # Add more preferences here
         ]},
         {"mac": "34:85:18:AB:FE:68", "preferences": [
-    {"data_type": DataType_Float, "key": "y_thresh", "value": 0.75},
-            {"data_type": DataType_Float, "key": "bh_ratio", "value": 0.35},
-            {"data_type": DataType_Float, "key": "brange_for_forward", "value": 0.2},
-            {"data_type": DataType_Float, "key": "by_strength", "value": 2},
-            {"data_type": DataType_Float, "key": "by_thresh", "value": 0.3},
-            {"data_type": DataType_Float, "key": "bx_strength", "value": 1},
+            {"data_type": DataType_Float, "key": "by_strength", "value": 2.5},
+            {"data_type": DataType_Float, "key": "bx_strength", "value": 1.4},
+            {"data_type": DataType_Float, "key": "bfx_togoal", "value": 0.32},
+            {"data_type": DataType_Float, "key": "bfx_charge", "value": 0.3},
+            {"data_type": DataType_Float, "key": "bfx_levy", "value": 0.3},
+            {"data_type": DataType_Int, "key": "bn_max_x", "value": 240},
+            {"data_type": DataType_Int, "key": "bn_max_y", "value": 160},
+            {"data_type": DataType_Float, "key": "bh_ratio", "value": 0.8},
+            {"data_type": DataType_Float, "key": "brange_for_forward", "value": 0.34},
             # Custom preferences for MAC2
         ]},
         {"mac": "34:85:18:91:24:F0", "preferences": [
-    {"data_type": DataType_Float, "key": "y_thresh", "value": 0.65},
-            {"data_type": DataType_Float, "key": "bh_ratio", "value": 0.35},
-            {"data_type": DataType_Float, "key": "brange_for_forward", "value": 0.2},
-            {"data_type": DataType_Float, "key": "by_strength", "value": 2},
-            {"data_type": DataType_Float, "key": "by_thresh", "value": 0.3},
-            {"data_type": DataType_Float, "key": "bx_strength", "value": 1},
+            {"data_type": DataType_Float, "key": "by_strength", "value": 2.5},
+            {"data_type": DataType_Float, "key": "bx_strength", "value": 1.4},
+            {"data_type": DataType_Float, "key": "bfx_togoal", "value": 0.32},
+            {"data_type": DataType_Float, "key": "bfx_charge", "value": 0.3},
+            {"data_type": DataType_Float, "key": "bfx_levy", "value": 0.3},
+            {"data_type": DataType_Int, "key": "bn_max_x", "value": 240},
+            {"data_type": DataType_Int, "key": "bn_max_y", "value": 160},
+            {"data_type": DataType_Float, "key": "bh_ratio", "value": 0.8},
+            {"data_type": DataType_Float, "key": "brange_for_forward", "value": 0.34},
             # Custom preferences for MAC2
         ]},
         {"mac": "48:27:E2:E6:EC:CC", "preferences": [
-    {"data_type": DataType_Float, "key": "y_thresh", "value": 0.65},
-            {"data_type": DataType_Float, "key": "bh_ratio", "value": 0.35},
-            {"data_type": DataType_Float, "key": "brange_for_forward", "value": 0.2},
-            {"data_type": DataType_Float, "key": "by_strength", "value": 2},
-            {"data_type": DataType_Float, "key": "by_thresh", "value": 0.3},
-            {"data_type": DataType_Float, "key": "bx_strength", "value": 1},
+    # {"data_type": DataType_Float, "key": "y_thresh", "value": 0.65},
+    #         {"data_type": DataType_Float, "key": "bh_ratio", "value": 0.35},
+    #         {"data_type": DataType_Float, "key": "brange_for_forward", "value": 0.5},
+    #         {"data_type": DataType_Float, "key": "bfx_togoal", "value": 0.2},
+    #         {"data_type": DataType_Float, "key": "by_thresh", "value": 0.3},
+    #         {"data_type": DataType_Float, "key": "bx_strength", "value": 1},
+    #         {"data_type": DataType_Float, "key": "y_strength", "value": 2.5},
+    #         {"data_type": DataType_Float, "key": "by_strength", "value": 20},
             # Custom preferences for MAC2
+            {"data_type": DataType_Float, "key": "by_thresh", "value": 0.42}, 
+            {"data_type": DataType_Float, "key": "by_strength", "value": 3.25},
+            {"data_type": DataType_Float, "key": "bx_strength", "value": 1.4},
+            {"data_type": DataType_Float, "key": "bfx_togoal", "value": 0.42}, #0.32
+            {"data_type": DataType_Float, "key": "bfx_charge", "value": 0.55}, #0.3
+            {"data_type": DataType_Float, "key": "bfx_levy", "value": 0.0   }, #0.3
+            {"data_type": DataType_Int, "key": "bn_max_x", "value": 240},
+            {"data_type": DataType_Int, "key": "bn_max_y", "value": 160},
+            {"data_type": DataType_Float, "key": "bh_ratio", "value": 0.6},
+            {"data_type": DataType_Float, "key": "brange_for_forward", "value": 0.34},
+            {"data_type": DataType_Float, "key": "kppyaw", "value": 0.04},
+            {"data_type": DataType_Float, "key": "kddyaw", "value": 0.05},
+            
         ]}
     ]
 
@@ -73,8 +97,8 @@ if __name__ == "__main__":
     {"data_type": DataType_Float, "key": "rollrate_gamma", "value": 0.85},
     {"data_type": DataType_Float, "key": "pitchrate_gamma", "value": 0.7},
 
-    {"data_type": DataType_Float, "key": "kpz", "value": 0.3},
-    {"data_type": DataType_Float, "key": "kdz", "value": 0.6},
+    {"data_type": DataType_Float, "key": "kpz", "value": 0.7},
+    {"data_type": DataType_Float, "key": "kdz", "value": 1.2},
     {"data_type": DataType_Float, "key": "kiz", "value": 0},
 
     {"data_type": DataType_Float, "key": "kproll", "value": 0},
@@ -94,11 +118,11 @@ if __name__ == "__main__":
     {"data_type": DataType_Float, "key": "pitchInvert", "value": -1},
 
     {"data_type": DataType_Int, "key": "state_flag", "value": 0x40},
-    {"data_type": DataType_Int, "key": "num_captures", "value": 8},
-    {"data_type": DataType_Int, "key": "time_in_ball", "value": 300},
-    {"data_type": DataType_Float, "key": "goal_height", "value": 7.0},
+    {"data_type": DataType_Int, "key": "num_captures", "value": 5},
+    {"data_type": DataType_Int, "key": "time_in_ball", "value": 200},
+    {"data_type": DataType_Float, "key": "goal_height", "value": 6.0},
 
-    {"data_type": DataType_Float, "key": "y_thresh", "value": 0.65},
+    {"data_type": DataType_Float, "key": "y_thresh", "value": 0.5},
     {"data_type": DataType_Float, "key": "y_strength", "value": 2.5},
     {"data_type": DataType_Float, "key": "x_strength", "value": 1},
     {"data_type": DataType_Float, "key": "fx_togoal", "value": 0.15},
@@ -109,7 +133,7 @@ if __name__ == "__main__":
     {"data_type": DataType_Float, "key": "h_ratio", "value": 0.8},
     {"data_type": DataType_Float, "key": "range_for_forward", "value": 0.16},
 
-    {"data_type": DataType_Float, "key": "by_thresh", "value": 0.3},
+    {"data_type": DataType_Float, "key": "by_thresh", "value": 0.4},
     {"data_type": DataType_Float, "key": "by_strength", "value": 1.5},
     {"data_type": DataType_Float, "key": "bx_strength", "value": 1},
     {"data_type": DataType_Float, "key": "bfx_togoal", "value": 0.2},
