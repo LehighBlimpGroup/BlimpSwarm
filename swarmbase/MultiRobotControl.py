@@ -41,38 +41,50 @@ def main():
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_PERIOD:
                         print("Pump On")
-                        serial.send_control_params(PUMP_MAC, (1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0))
+                        serial.send_control_params(PUMP_MAC, (1, 0, 0, 0, 0, 250, 0, 0, 0, 0, 0, 0, 0))
                     elif event.key == pygame.K_COMMA:
                         print("Pump Off")
                         serial.send_control_params(PUMP_MAC, (0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0))
 
                     # QWERTY row for setting flag 2
                     elif event.key == pygame.K_q: # Flag 2 to blimp 0
+                        serial.send_control_params(robots[0], (3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0))
+                        time.sleep(.1)
                         serial.send_control_params(robots[0], (2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0))
                     elif event.key == pygame.K_w: # Flag 2 to blimp 1
+                        serial.send_control_params(robots[1], (3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0))
+                        time.sleep(.1)
                         serial.send_control_params(robots[1], (2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0))
                     elif event.key == pygame.K_e: # Flag 2 to blimp 2
+                        serial.send_control_params(robots[2], (3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0))
+                        time.sleep(.1)
                         serial.send_control_params(robots[2], (2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0))
                     elif event.key == pygame.K_r: # Flag 2 to blimp 3
+                        serial.send_control_params(robots[3], (3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0))
+                        time.sleep(.1)
                         serial.send_control_params(robots[3], (2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0))
                     elif event.key == pygame.K_t: # Flag 2 to blimp 4
+                        serial.send_control_params(robots[4], (3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0))
+                        time.sleep(.1)
                         serial.send_control_params(robots[4], (2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0))
                     elif event.key == pygame.K_y: # Flag 2 to blimp 5
+                        serial.send_control_params(robots[5], (3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0))
+                        time.sleep(.1)
                         serial.send_control_params(robots[5], (2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0))
 
-                    # ASDFGH row for setting flag 3
+                    # ASDFGH row for setting flag 0
                     elif event.key == pygame.K_a: # Flag 3 to blimp 0
-                        serial.send_control_params(robots[0], (3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0))
+                        serial.send_control_params(robots[0], (0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0))
                     elif event.key == pygame.K_s: # Flag 3 to blimp 1
-                        serial.send_control_params(robots[1], (3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0))
+                        serial.send_control_params(robots[1], (0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0))
                     elif event.key == pygame.K_d: # Flag 3 to blimp 2
-                        serial.send_control_params(robots[2], (3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0))
+                        serial.send_control_params(robots[2], (0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0))
                     elif event.key == pygame.K_f: # Flag 3 to blimp 3
-                        serial.send_control_params(robots[3], (3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0))
+                        serial.send_control_params(robots[3], (0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0))
                     elif event.key == pygame.K_g: # Flag 3 to blimp 4
-                        serial.send_control_params(robots[4], (3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0))
+                        serial.send_control_params(robots[4], (0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0))
                     elif event.key == pygame.K_h: # Flag 3 to blimp 5
-                        serial.send_control_params(robots[5], (3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0))
+                        serial.send_control_params(robots[5], (0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0))
 
                     # ZXCVB row for setting flag 4
                     elif event.key == pygame.K_z: # Flag 4 to blimp 0
@@ -88,7 +100,7 @@ def main():
 
                     if event.key == pygame.K_SPACE:
                         
-                        for robot_mac in robots:
+                        for robot_mac in robots[:-1]:
                             serial.send_control_params(robot_mac, (3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0))
                             time.sleep(.1)
                         for robot_mac in robots:
@@ -98,25 +110,25 @@ def main():
                         ready = 2
                     elif event.key == pygame.K_p:
                         
-                        for robot_mac in robots:
+                        for robot_mac in robots[:-1]:
                             serial.send_control_params(robot_mac, (0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0))
                             time.sleep(.1)
                         ready = 0
                         
                     elif event.key == pygame.K_o:
                         
-                        for robot_mac in robots:
+                        for robot_mac in robots[:-1]:
                             serial.send_control_params(robot_mac, (4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0))
                             time.sleep(.1)
                             
                     elif event.key == pygame.K_i:
                         
-                        for robot_mac in robots:
+                        for robot_mac in robots[:-1]:
                             serial.send_control_params(robot_mac, (3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0))
                             time.sleep(.1)
                     elif event.key == pygame.K_u:
                         
-                        for robot_mac in robots:
+                        for robot_mac in robots[:-1]:
                             serial.send_control_params(robot_mac, (2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0))
                             time.sleep(.1)       
                     elif event.key == pygame.K_ESCAPE:
@@ -126,31 +138,31 @@ def main():
                         if 0 <= index < len(robots):
                             current_robot_index = index
                             
-                            if ready == 5:
-                                serial.send_control_params(ROBOT_MAC, (6, fx_ave, height, 0, tz, -buttons[2], 0, 0, 0, 0, 0, 0, 0))
-                            else:
-                                serial.send_control_params(ROBOT_MAC, (ready, fx_ave, height, 0, tz, -buttons[2], 0, 0, 0, 0, 0, 0, 0))
+                            # if ready == 5:
+                            #     serial.send_control_params(ROBOT_MAC, (6, fx_ave, height, 0, tz, -buttons[2], 0, 0, 0, 0, 0, 0, 0))
+                            # else:
+                            #     serial.send_control_params(ROBOT_MAC, (ready, fx_ave, height, 0, tz, -buttons[2], 0, 0, 0, 0, 0, 0, 0))
 
                             ROBOT_MAC = robots[current_robot_index]
                             sensors = serial.getSensorData()
-                            ready = 5
-                            serial.send_control_params(ROBOT_MAC, (5, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0))
+                            ready = 1
+                            # serial.send_control_params(ROBOT_MAC, (5, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0))
                             
-                            time.sleep(.3)
+                            # time.sleep(.3)
                             sensor_update = sensors == serial.getSensorData() 
-                            counter = 0
-                            while (sensor_update and counter < 5):
-                                serial.send_control_params(ROBOT_MAC, (5, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0))
-                                counter += 1
+                            # counter = 0
+                            # while (sensor_update and counter < 5):
+                            #     serial.send_control_params(ROBOT_MAC, (5, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0))
+                            #     counter += 1
                                 
-                                time.sleep(.3)
-                                sensor_update = sensors == serial.getSensorData() 
+                            #     time.sleep(.3)
+                            #     sensor_update = sensors == serial.getSensorData() 
                             if not sensor_update:
                                 sensors = serial.getSensorData()
                                 ready = 1
                                 height, tz = (sensors[0], sensors[1])
                             else:
-                                ready = 5 
+                                ready = 1 
                             
                             print(f"Switched to robot {ROBOT_MAC}")
             axis, buttons = joystick.getJoystickInputs()
@@ -160,8 +172,8 @@ def main():
                 ready = 4 #if ready != 3 else 4
             if buttons[1] and not old_buttons[1]:  # B toggles pause
                 ready = 0 if ready else 1
-                if sensors:
-                    height, tz = (sensors[0], sensors[1])
+                # if sensors:
+                #     height, tz = (sensors[0], sensors[1])
             if buttons[2] and not old_buttons[2]:  # X puts into ball mode
                 ready = 3 #if ready != 3 else 4
             if buttons[0] and not old_buttons[0]:  # A sets specific ready state
@@ -202,13 +214,13 @@ def main():
     except KeyboardInterrupt:
         print("Stopping!")
     
-    for robot_mac in robots:
-        serial.send_control_params(robot_mac, (0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0))
-        time.sleep(.1)
-    for robot_mac in robots:
-        serial.send_control_params(robot_mac, (0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0))
-        time.sleep(.1)
-    serial.send_control_params(PUMP_MAC, (0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0))
+    # for robot_mac in robots:
+    #     serial.send_control_params(robot_mac, (0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0))
+    #     time.sleep(.1)
+    # for robot_mac in robots:
+    #     serial.send_control_params(robot_mac, (0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0))
+    #     time.sleep(.1)
+    # serial.send_control_params(PUMP_MAC, (0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0))
 
 if __name__ == "__main__":
     main()
