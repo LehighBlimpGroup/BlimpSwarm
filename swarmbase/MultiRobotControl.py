@@ -7,6 +7,7 @@ import time
 from user_parameters import ROBOT_MACS,  SERIAL_PORT, PRINT_JOYSTICK
 ROBOT_MAC = None
 PUMP_MAC = "48:27:E2:E6:E6:44"
+
 def main():
     serial = SerialController(SERIAL_PORT, timeout=0.5)
     joystick = JoystickManager()
@@ -15,7 +16,7 @@ def main():
     pygame.init()
     # Get all Robot Mac addresses
     robots = ROBOT_MACS
-    current_robot_index = 0
+    current_robot_index = 5
     ROBOT_MAC = "00:00:00:00:00:00"#robots[current_robot_index]
 
 
@@ -45,6 +46,10 @@ def main():
                     elif event.key == pygame.K_COMMA:
                         print("Pump Off")
                         serial.send_control_params(PUMP_MAC, (0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0))
+                    elif event.key == pygame.K_m:
+                        serial.send_control_params(robots[4], (1, 0, 5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0))
+                    elif event.key == pygame.K_k:
+                        serial.send_control_params(robots[2], (1, 0, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0))
 
                     # QWERTY row for setting flag 2
                     elif event.key == pygame.K_q: # Flag 2 to blimp 0
@@ -100,7 +105,7 @@ def main():
 
                     if event.key == pygame.K_SPACE:
                         
-                        for robot_mac in robots[:-1]:
+                        for robot_mac in robots[:-2]:
                             serial.send_control_params(robot_mac, (3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0))
                             time.sleep(.1)
                         for robot_mac in robots:
@@ -110,25 +115,25 @@ def main():
                         ready = 2
                     elif event.key == pygame.K_p:
                         
-                        for robot_mac in robots[:-1]:
+                        for robot_mac in robots[:-2]:
                             serial.send_control_params(robot_mac, (0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0))
                             time.sleep(.1)
                         ready = 0
                         
                     elif event.key == pygame.K_o:
                         
-                        for robot_mac in robots[:-1]:
+                        for robot_mac in robots[:-2]:
                             serial.send_control_params(robot_mac, (4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0))
                             time.sleep(.1)
                             
                     elif event.key == pygame.K_i:
                         
-                        for robot_mac in robots[:-1]:
+                        for robot_mac in robots[:-2]:
                             serial.send_control_params(robot_mac, (3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0))
                             time.sleep(.1)
                     elif event.key == pygame.K_u:
                         
-                        for robot_mac in robots[:-1]:
+                        for robot_mac in robots[:-2]:
                             serial.send_control_params(robot_mac, (2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0))
                             time.sleep(.1)       
                     elif event.key == pygame.K_ESCAPE:
@@ -137,6 +142,7 @@ def main():
                         index = event.key - pygame.K_0 - 1
                         if 0 <= index < len(robots):
                             current_robot_index = index
+                            height = 3
                             
                             # if ready == 5:
                             #     serial.send_control_params(ROBOT_MAC, (6, fx_ave, height, 0, tz, -buttons[2], 0, 0, 0, 0, 0, 0, 0))
@@ -208,7 +214,7 @@ def main():
                     niclaGUI.update(x=sensors[2], y=sensors[3], width=sensors[4], height=sensors[4])
                 mygui.update(cur_yaw=sensors[1], des_yaw=tz, cur_height=sensors[0], des_height=height, battery=sensors[5], distance=0, connection_status=True)
             # send control parameters
-            serial.send_control_params(ROBOT_MAC, (ready, fx_ave, height, 0, tz, -buttons[2], 1, 0, 0, 0, 0, 0, 0))
+            serial.send_control_params(ROBOT_MAC, (ready, fx_ave, height, 0, tz, -buttons[2], 0, 0, 0, 0, 0, 0, 0))
             
             time.sleep(dt)
     except KeyboardInterrupt:

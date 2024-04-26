@@ -10,7 +10,7 @@ RobotState* ChargeGoal::statetransitions(float sensors[], float controls[]) {
         return manualState;
     } else {
         if (hist->nicla_flag & 0x80) {
-            if (millis() - charge_timer > 10000) {
+            if (millis() - charge_timer > 15000) {
                 // hist->nicla_flag = 0x40; // switch to balloon mode
                 hist->z_estimator = sensors[1];
                 RobotState* levyWalk = new LevyWalk();

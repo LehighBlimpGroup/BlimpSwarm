@@ -125,7 +125,7 @@ void loop() {
 
 
   // adjusts the state based on several factors
-  niclaStateChange((int)(cmd.params[0]));
+  niclaStateChange((int)(cmd.params[0]), (int)(cmd.params[7]));
 
   // Create Behavior based on sensory input to put into behave
   stateMachine->update(senses, cmd.params, behave.params);
@@ -165,35 +165,40 @@ void paramUpdate(){
     
 }
 
-void niclaStateChange(int cmdFlag) {
-  if (cmdFlag == 3) { //balloon only mode (enforce 0x40)
-    hist->nicla_desired = 0;
-    hist->start_ball_time= millis();
-    hist->num_captures = 0;
-  } 
-  else if (cmdFlag == 4) { //goal only mode (enforce 0x80)
-    hist->nicla_desired = 1;
-  }
+void niclaStateChange(int cmdFlag, int target_color) {
+
   int nicla_flag = senses[niclaOffset + 0];
   if (micros() - nicla_change_time > 50000) { // positive edge to avoid spamming
     nicla_change_time = micros();
     int hist_flag = hist->nicla_flag;
-    if (cmdFlag == 2) {// normal state machine mode
+    if (cmdFlag == 2) { // normal state machine mode
       if (hist->nicla_desired == 1) {
         if (nicla_flag & 0x40) {
-          nicla->changeNiclaMode(0x80);
+          if (target_color == 1) {
+            Serial.println("go to goal");
+            nicla->changeNiclaMode(0x81);
+
+          } else {
+            Serial.println("go to goal");
+            nicla->changeNiclaMode(0x80);
+          }
           hist->z_estimator = terms.goal_height;
         }
       } 
       else if (hist->nicla_desired == 0) {
         if (nicla_flag & 0x80) {
+          Serial.println("go to ball");
           nicla->changeNiclaMode(0x40);
           hist->start_ball_time= millis();
         }
       }
     } 
     else if (cmdFlag == 3) { //balloon only mode (enforce 0x40)
+      hist->nicla_desired = 0;
+      hist->start_ball_time= millis();
+      hist->num_captures = 0;
       if (nicla_flag & 0x80) {
+        Serial.println("go to ball");
         nicla->changeNiclaMode(0x40);
       }
     } 
@@ -201,8 +206,16 @@ void niclaStateChange(int cmdFlag) {
       if (hist_flag != 4) {
         hist->goal_direction = senses[5];
       }
+      hist->nicla_desired = 1;
       if (nicla_flag & 0x40) {
-        nicla->changeNiclaMode(0x80);
+        if (target_color == 1){
+          Serial.println("go to goal");
+          nicla->changeNiclaMode(0x81);
+
+        } else {
+          Serial.println("go to goal");
+          nicla->changeNiclaMode(0x80);
+        }
       }
     }
   }

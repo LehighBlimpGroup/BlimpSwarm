@@ -70,7 +70,7 @@ void MoveToGoal::behavior(float sensors[], float controls[], float outControls[]
         float _yaw = sensors[5];
         float _height = sensors[1];
         int nicla_flag = (int)sensors[niclaOffset + 0];
-        float tracking_x = (float)sensors[niclaOffset + 1];
+        float tracking_x = (float)sensors[niclaOffset + 5];
         float tracking_y = (float)sensors[niclaOffset + 2];
         float detection_y = (float)sensors[niclaOffset + 6];
         float x_cal = tracking_x / terms.n_max_x; // normalizes the pixles into a value between [0,1]
