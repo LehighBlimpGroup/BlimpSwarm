@@ -4,9 +4,8 @@ from joystick.JoystickManager import JoystickManager
 from gui.simpleGUI import SimpleGUI
 from gui.niclaGUI import NiclaBox
 import time
-from user_parameters import ROBOT_MACS,  SERIAL_PORT, PRINT_JOYSTICK
+from user_parameters import ROBOT_MACS,  SERIAL_PORT, PRINT_JOYSTICK, PUMP_MAC
 ROBOT_MAC = None
-PUMP_MAC = "48:27:E2:E6:E6:44"
 
 def main():
     serial = SerialController(SERIAL_PORT, timeout=0.5)
@@ -16,16 +15,17 @@ def main():
     pygame.init()
     # Get all Robot Mac addresses
     robots = ROBOT_MACS
-    current_robot_index = 5
+    current_robot_index = -1
     ROBOT_MAC = "00:00:00:00:00:00"#robots[current_robot_index]
 
 
     # Setup communication with robot
     for robot_mac in robots:
         serial.manage_peer("A", robot_mac)
-        #serial.send_control_params(ROBOT_MAC, (2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)) send nicla autonomous to all robots or optionally whatever constants
         time.sleep(0.05)
+    # Setup communication with pump
     serial.manage_peer("A", PUMP_MAC)
+    
     sensors = serial.getSensorData()
     # Initialize control variables
     height, tz =  (0, 0)
@@ -39,7 +39,7 @@ def main():
         running = True
         while running:
             for event in pygame.event.get():
-                if event.type == pygame.KEYDOWN:
+                if event.type == pygame.KEYDOWN: # If a keyboard button is pressed
                     if event.key == pygame.K_PERIOD:
                         print("Pump On")
                         serial.send_control_params(PUMP_MAC, (1, 0, 0, 0, 0, 250, 0, 0, 0, 0, 0, 0, 0))
@@ -141,36 +141,20 @@ def main():
                     elif pygame.K_0 <= event.key <= pygame.K_9:
                         index = event.key - pygame.K_0 - 1
                         if 0 <= index < len(robots):
-                            current_robot_index = index
-                            height = 3
-                            
-                            # if ready == 5:
-                            #     serial.send_control_params(ROBOT_MAC, (6, fx_ave, height, 0, tz, -buttons[2], 0, 0, 0, 0, 0, 0, 0))
-                            # else:
-                            #     serial.send_control_params(ROBOT_MAC, (ready, fx_ave, height, 0, tz, -buttons[2], 0, 0, 0, 0, 0, 0, 0))
-
-                            ROBOT_MAC = robots[current_robot_index]
-                            sensors = serial.getSensorData()
-                            ready = 1
-                            # serial.send_control_params(ROBOT_MAC, (5, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0))
-                            
-                            # time.sleep(.3)
-                            sensor_update = sensors == serial.getSensorData() 
-                            # counter = 0
-                            # while (sensor_update and counter < 5):
-                            #     serial.send_control_params(ROBOT_MAC, (5, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0))
-                            #     counter += 1
-                                
-                            #     time.sleep(.3)
-                            #     sensor_update = sensors == serial.getSensorData() 
-                            if not sensor_update:
-                                sensors = serial.getSensorData()
-                                ready = 1
-                                height, tz = (sensors[0], sensors[1])
+                            if current_robot_index == index:
+                                print("Already set to that robot.")
                             else:
-                                ready = 1 
-                            
-                            print(f"Switched to robot {ROBOT_MAC}")
+                                serial.send_control_params(ROBOT_MAC, (5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0))
+                                
+                                current_robot_index = index
+                                ROBOT_MAC = robots[current_robot_index]
+                                serial.send_control_params(ROBOT_MAC, (5, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0))
+                                time.sleep(0.1)
+                                sensors = serial.getSensorData()
+                                (height, tz) = (sensors[0], sensors[1])
+                                print(height, tz)
+                                
+                                print(f"Switched to robot {ROBOT_MAC}")
             axis, buttons = joystick.getJoystickInputs()
             
             # Button press logic
@@ -192,10 +176,6 @@ def main():
             if PRINT_JOYSTICK:
                 print(" ".join(["{:.1f}".format(num) for num in axis]), buttons)
 
-            if sensors != serial.getSensorData() and ready == 5:
-                sensors = serial.getSensorData()
-                ready = 1
-                height, tz = (sensors[0], sensors[1])
             if ready != 5:
                 # Control inputs to the robot
                 height += -axis[0] * dt if abs(axis[0]) >= 0.15 else 0
@@ -214,19 +194,18 @@ def main():
                     niclaGUI.update(x=sensors[2], y=sensors[3], width=sensors[4], height=sensors[4])
                 mygui.update(cur_yaw=sensors[1], des_yaw=tz, cur_height=sensors[0], des_height=height, battery=sensors[5], distance=0, connection_status=True)
             # send control parameters
-            serial.send_control_params(ROBOT_MAC, (ready, fx_ave, height, 0, tz, -buttons[2], 0, 0, 0, 0, 0, 0, 0))
+            serial.send_control_params(ROBOT_MAC, (ready, fx_ave, height, 0, tz, -buttons[2], 1, 0, 0, 0, 0, 0, 0))
             
             time.sleep(dt)
     except KeyboardInterrupt:
         print("Stopping!")
-    
-    # for robot_mac in robots:
-    #     serial.send_control_params(robot_mac, (0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0))
-    #     time.sleep(.1)
-    # for robot_mac in robots:
-    #     serial.send_control_params(robot_mac, (0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0))
-    #     time.sleep(.1)
-    # serial.send_control_params(PUMP_MAC, (0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0))
+    finally:
+        serial.send_control_params(ROBOT_MAC, (5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0))
+        for robot_mac in robots:
+            serial.send_control_params(robot_mac, (0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0))
+            time.sleep(0.05)
+        serial.send_control_params(PUMP_MAC, (0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0))
+        time.sleep(0.05)
 
 if __name__ == "__main__":
     main()

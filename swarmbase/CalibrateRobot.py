@@ -15,7 +15,7 @@ and you will probobly not need to run this program again.
 from comm.Serial import SerialController, DataType_Int, DataType_Float, DataType_Boolean
 from joystick.JoystickManager import JoystickManager
 import time
-from user_parameters import ROBOT_MAC, SERIAL_PORT
+from user_parameters import ROBOT_MACS, SERIAL_PORT
 
 
 
@@ -27,6 +27,8 @@ BaseStationAddress = "" # you do not need this, just make sure your DroneMacAddr
 if __name__ == "__main__":
     # Communication
     serial = SerialController(SERIAL_PORT, timeout=.1)  # 5-second timeout
-    serial.manage_peer("A", ROBOT_MAC)
-    serial.send_preference(ROBOT_MAC, DataType_Boolean, "calibrate", True)
+    for robot_mac in ROBOT_MACS:
+        serial.manage_peer("A", robot_mac)
+        serial.send_preference(robot_mac, DataType_Boolean, "calibrate", True)
+        print(f"Sending calibration to {robot_mac}")
     serial.close()

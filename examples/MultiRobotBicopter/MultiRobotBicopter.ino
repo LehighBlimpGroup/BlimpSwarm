@@ -84,7 +84,7 @@ void loop() {
   int numSenses = myRobot->sense(senses);
   
   // send values to ground station
-  if (cmd.params[0] == 5) {
+  if (cmd.params[0] == 5 && cmd.params[6] == 1) { 
     rcv.flag = 1;
     rcv.values[0] = senses[1];  //height
     rcv.values[1] = senses[5];  //yaw
@@ -92,15 +92,19 @@ void loop() {
     rcv.values[3] = senses[niclaOffset + 6];  //y
     rcv.values[4] = senses[niclaOffset + 7];  //w
     rcv.values[5] = senses[10];  //battery
+    Serial.println("Sending Feedback.");
     bool sent = baseComm->sendMeasurements(&rcv);
     cmd.params[0] = 1; // temp assign manual control with these new params for retaining stillness
     cmd.params[2] += senses[1]; // set height to height
     cmd.params[4] += senses[5]; // set yaw to yaw
-  } else if (cmd.params[0] == 6) {
+  } else if(cmd.params[0] == 5 && cmd.params[6] == 0) {
+    rcv.flag = 0;
+    Serial.println("Stopping Feedback");
     cmd.params[0] = 1; // temp assign manual control with these new params for retaining stillness
     cmd.params[2] += senses[1]; // set height to height
     cmd.params[4] += senses[5]; // set yaw to yaw
   } else if (cmd.params[6] == 1){
+    rcv.flag = 1;
     rcv.values[0] = senses[1];  //height
     rcv.values[1] = senses[5];  //yaw
     rcv.values[2] = senses[niclaOffset + 5];  //x

@@ -1,13 +1,15 @@
 ##### Insert your robot's MAC ADDRESS here ####
 ## (you can get it by running your arduino and looking at the serial monitor for your flying drone) ##
-# ROBOT_MAC = "DC:54:75:D7:B3:E8" # "DC:54:75:D7:B3:E8"
-ROBOT_MAC ="30:30:F9:34:66:FC"#"DC:DA:0C:57:4B:94" # "30:30:F9:34:66:FC"
-ROBOT_MACS =["34:85:18:8d:a0:d4", "dc:da:0c:57:ae:2c"]#"DC:DA:0C:57:4B:94" # "30:30:F9:34:66:FC"
-### Insert your SERIAL PORT here ###
+
+
+ROBOT_MAC ="34:85:18:8F:36:B0"#"DC:DA:0C:57:4B:94" # "30:30:F9:34:66:FC"
+ROBOT_MACS =["34:85:18:8F:36:B0", "48:27:E2:E6:EC:CC"]### Insert your SERIAL PORT here ###
 ## may look like "COM5" in windows or "/dev/tty.usbmodem14301" in mac  #
 ## look in arduino for the port that your specific transeiver is connected to  ##
 ## Note: make sure that your serial monitor is OFF in arduino or else you will get "access is denied" error. ##
-SERIAL_PORT = "COM8"
+SERIAL_PORT = "COM16"
+
+PUMP_MAC = "48:27:E2:E6:E6:44"
 
 
 
