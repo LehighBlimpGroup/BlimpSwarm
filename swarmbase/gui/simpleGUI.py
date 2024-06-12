@@ -41,6 +41,8 @@ class SimpleGUI:
         update_battery(self, battery)
         update_distance(self, distance)
         update_connection_status(self, connection_status)
+        plt.draw()
+        plt.pause(0.001)
 
 
 if __name__ == "__main__":
