@@ -11,7 +11,7 @@ port = "COM6" # may look like "COM5" or "/dev/tty.usbmodem14301", look in arduin
 #note: make sure that your serial monitor is OFF on your base station in arduino or else you will get "access is denied" error
 
 class JoystickManager:
-    def __init__(self):
+    def __init__(self, joystick_num=0):
 
         # Initialize Pygame for joystick handling
         pygame.init()
@@ -19,7 +19,7 @@ class JoystickManager:
 
         # Assuming there's at least one joystick connected
         if pygame.joystick.get_count() > 0:
-            self.joystick = pygame.joystick.Joystick(0)  # Initialize the first joystick
+            self.joystick = pygame.joystick.Joystick(joystick_num)  # Initialize the first joystick
             self.joystick.init()
         else:
             print("No joystick detected!")
