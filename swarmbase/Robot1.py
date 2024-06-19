@@ -2,10 +2,20 @@ from comm.Serial import SerialController, DataType_Int, DataType_Float, DataType
 from joystick.JoystickManager import JoystickManager
 import time
 
+# 1. 34:85:18:AC:C2:6C
+# 2. 34:85:18:91:38:60
+# 3. .
+# 4. 34:85:18:91:49:C0
+# 5. 34:85:18:91:B7:4C
+# 6. 34:85:18:91:CF:40
+# 7. 34:85:18:91:CE:FC
+# 8. .
+# 9. 34:85:18:AB:EF:E8
+# 10. 34:85:18:8D:A0:D4
 
-ROBOT_MAC ="DC:DA:0C:57:AE:2C"
-SERIAL_PORT = "COM16"
-PRINT_JOYSTICK = True
+ROBOT_MAC ="34:85:18:AC:C2:6C"
+SERIAL_PORT = "COM15"
+PRINT_JOYSTICK = False
 
 if __name__ == "__main__":
     # Communication
@@ -13,7 +23,7 @@ if __name__ == "__main__":
     serial.manage_peer("A", ROBOT_MAC)
     serial.manage_peer("G", ROBOT_MAC)
     time.sleep(.05)
-    serial.send_preference(ROBOT_MAC, DataType_Boolean, "zEn", False)
+    serial.send_preference(ROBOT_MAC, DataType_Boolean, "zEn", True)
     serial.send_preference(ROBOT_MAC, DataType_Boolean, "rollEn", False)
     serial.send_preference(ROBOT_MAC, DataType_Boolean, "rotateEn", False)
     serial.send_preference(ROBOT_MAC, DataType_Boolean, "pitchEn", False)
