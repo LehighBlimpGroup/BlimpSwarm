@@ -19,12 +19,12 @@ RawBicopter::RawBicopter(){
 }
 
 void RawBicopter::startup() {
-    servo1 = new AServo(0, 1, 0, SERVO1);
-    servo2 = new AServo(0, 1, 0, SERVO2);
-    motor1 = new BLMotor(0, 1, 0, THRUST1, 55);
-    motor2 = new BLMotor(0, 1, 0, THRUST2, 58);
+    servo1 = new AServo(SERVO1);
+    servo2 = new AServo(SERVO2);
+    motor1 = new BLMotor(1100, 2000, 0, THRUST1, 55);
+    motor2 = new BLMotor(1100, 2000, 0, THRUST2, 58);
     // On board LED light
-    led = new LED(0, 1, 0, LED_BUILTIN);
+    led = new LED(LED_BUILTIN);
 
 
     ESP32PWM::allocateTimer(0);
@@ -39,8 +39,7 @@ void RawBicopter::startup() {
         //calibrate brushless motors
         calibrate();
         preferences.putBool("calibrate", false);
-    }
-    else {
+    } else {
         // Arm brushless motors
         arm();
     }
@@ -82,10 +81,6 @@ void RawBicopter::getPreferences() {
 }
 
 void RawBicopter::calibrate(){
-//    motor1->calibrate();
-//    motor2->calibrate();
-
-
     delay(1000);
     Serial.println("Calibrating ESCs....");
     // ESC arming sequence for BLHeli S
@@ -101,6 +96,7 @@ void RawBicopter::calibrate(){
     delay(1000);
     Serial.println("Calibration completed");
 }
+
 void RawBicopter::arm(){
 // ESC arming sequence for BLHeli S
     motor1->act(0);
@@ -114,28 +110,9 @@ void RawBicopter::arm(){
         motor2->act((i-1000)/1000);
         delay(6);
     }
-    // Sweep down
-    // for (int i = 1500; i > 1050; i--)
-    // {
-    //     thrust.writeMicroseconds(i);
-    //     delay(6);
-    // }
+
     // Back to minimum value
     motor1->act(0);
     motor2->act(0);
     delay(1000);
 }
-//void RawBicopter::testActuators(float actuationCmd[4]) {
-//    int servo_delta = 1;
-//    int motor_delta = 10;
-//
-//    if (actuationCmd[0] < 180) {
-//        actuationCmd[0] += servo_delta;
-//    } else if (actuationCmd[1] < 180) {
-//        actuationCmd[1] += servo_delta;
-//    } else if (actuationCmd[2] < 2000) {
-//        actuationCmd[2] += motor_delta;
-//    } else if (actuationCmd[3] < 2000) {
-//        actuationCmd[3] += motor_delta;
-//
-//}

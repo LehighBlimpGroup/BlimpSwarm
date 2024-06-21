@@ -19,12 +19,12 @@ SBlimp::SBlimp(){
 
 void SBlimp::startup() {
 
-    motor1 = new BLMotor(0, 1, 0, THRUST1, 50);
-    motor2 = new BLMotor(0, 1, 0, THRUST2, 50);
-    motor3 = new BLMotor(0, 1, 0, SERVO1, 55);
-    motor4 = new BLMotor(0, 1, 0, SERVO2, 58);
+    motor1 = new BLMotor(1100, 2000, 0, THRUST1, 50);
+    motor2 = new BLMotor(1100, 2000, 0, THRUST2, 50);
+    motor3 = new BLMotor(1100, 2000, 0, SERVO1, 55);
+    motor4 = new BLMotor(1100, 2000, 0, SERVO2, 58);
     // On board LED light
-    led = new LED(0, 1, 0, LED_BUILTIN);
+    led = new LED(LED_BUILTIN);
 
 
     ESP32PWM::allocateTimer(0);
@@ -85,9 +85,6 @@ void SBlimp::getPreferences() {
 }
 
 void SBlimp::calibrate(){
-//    motor1->calibrate();
-//    motor2->calibrate();
-
 
     delay(1000);
     Serial.println("Calibrating ESCs....");
@@ -108,17 +105,3 @@ void SBlimp::calibrate(){
     delay(1000);
     Serial.println("Calibration completed");
 }
-//void RawBicopter::testActuators(float actuationCmd[4]) {
-//    int servo_delta = 1;
-//    int motor_delta = 10;
-//
-//    if (actuationCmd[0] < 180) {
-//        actuationCmd[0] += servo_delta;
-//    } else if (actuationCmd[1] < 180) {
-//        actuationCmd[1] += servo_delta;
-//    } else if (actuationCmd[2] < 2000) {
-//        actuationCmd[2] += motor_delta;
-//    } else if (actuationCmd[3] < 2000) {
-//        actuationCmd[3] += motor_delta;
-//
-//}

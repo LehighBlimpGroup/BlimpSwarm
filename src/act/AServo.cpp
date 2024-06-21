@@ -1,22 +1,30 @@
-//
-// Created by dav on 2/9/24.
-//
+/**
+ * @file AServo.cpp
+ * @author David Saldana
+ * @brief Implementation of Aservo.h
+ * @version 0.1
+ * @date 2024-02-09
+ * 
+ * @copyright Copyright (c) 2024
+ * 
+ */
 
 #include "AServo.h"
 
 
 
-AServo::AServo(int minVal, int maxVal, int offsetVal, int pinVal): Actuator(minVal, maxVal, offsetVal, pinVal) {
-    // Additional initialization specific to SpecificActuator
+AServo::AServo(int minVal, int maxVal, int offsetVal, int pinVal, int periodHertz): Actuator(minVal, maxVal, offsetVal, pinVal) {
+    // Additional initialization specific to servos
+    this->period_hertz = periodHertz;
+    pinMode(this->pin, OUTPUT);
+    servo.attach(this->pin, this->min, this->max);
+    servo.setPeriodHertz(this->period_hertz);
+}
 
-    pinMode(pinVal, OUTPUT);
-
-
-
-    servo.attach(pinVal, servo_min, servo_max);
-
-//    this->thrust.setPeriodHertz(periodHertz);
-
+AServo::AServo(int pinVal): Actuator(550, 2450, 0, pinVal) {
+    // Additional initialization specific to servos
+    pinMode(this->pin, OUTPUT);
+    servo.attach(this->pin, this->min, this->max);
     servo.setPeriodHertz(50); // Standard 50hz servo
 }
 

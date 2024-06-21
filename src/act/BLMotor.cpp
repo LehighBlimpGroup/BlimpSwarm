@@ -1,6 +1,13 @@
-//
-// Created by dav on 2/9/24.
-//
+/**
+ * @file BLMotor.cpp
+ * @author David Saldana
+ * @brief Implementation of BLMotor.h
+ * @version 0.1
+ * @date 2024-02-09
+ * 
+ * @copyright Copyright (c) 2024
+ * 
+ */
 
 #include "BLMotor.h"
 #include <Arduino.h>
@@ -10,18 +17,23 @@
 BLMotor::BLMotor(int minVal, int maxVal, int offsetVal, int pinVal, int periodHertz)
         : Actuator(minVal, maxVal, offsetVal, pinVal) {
     // Additional initialization specific to SpecificActuator
+    this->period_hertz = periodHertz;
+    pinMode(this->pin, OUTPUT);
 
+    this->thrust.attach(this->pin, this->min, this->max);
+    this->thrust.setPeriodHertz(this->period_hertz);
+}
+
+BLMotor::BLMotor(int pinVal)
+        : Actuator(1100, 2000, 0, pinVal) {
+    // Additional initialization specific to SpecificActuator
     pinMode(pinVal, OUTPUT);
-
-    this->thrust.attach(pinVal, 1000, 2000);  //TODO 1000 and 2000 should be parameters
-    this->thrust.setPeriodHertz(periodHertz);
+    this->thrust.attach(this->pin, this->min, this->max);
+    this->thrust.setPeriodHertz(50);
 }
 
 
 void BLMotor::act(float value){
-    if (value < 0){
-        value = 0;
-    }
     value = constrain(value, 0, 1);
 
     // Force to PWM
@@ -36,12 +48,11 @@ void BLMotor::calibrate(){
 
     delay(1000);
     Serial.println("Calibrating ESCs....");
-    // ESC arming sequence for BLHeli S
-    thrust.writeMicroseconds(2000);
+    thrust.writeMicroseconds(this->max);
     delay(8000);
 
     // Back to minimum value
-    thrust.writeMicroseconds(1100);
+    thrust.writeMicroseconds(this->min);
     delay(8000);
     thrust.writeMicroseconds(0);
     delay(1000);
@@ -51,7 +62,7 @@ void BLMotor::calibrate(){
 
 void BLMotor::arm(){
 // ESC arming sequence for BLHeli S
-    thrust.writeMicroseconds(1000);
+    thrust.writeMicroseconds(this->min);
     delay(10);
 
     // Sweep up
@@ -60,13 +71,7 @@ void BLMotor::arm(){
         thrust.writeMicroseconds(i);
         delay(6);
     }
-    // Sweep down
-    // for (int i = 1500; i > 1050; i--)
-    // {
-    //     thrust.writeMicroseconds(i);
-    //     delay(6);
-    // }
-    // Back to minimum value
+
     thrust.writeMicroseconds(1000);
-    delay(100);
+    delay(1000);
 }

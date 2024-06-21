@@ -53,6 +53,8 @@ void setup() {
   if (esp_now_init() != ESP_OK) {
     Serial.println("Error initializing ESP-NOW");
     return;
+  } else {
+    Serial.println("ESP-NOW initialized");
   }
 
   esp_now_register_send_cb(onDataSend);
