@@ -1,6 +1,13 @@
-//
-// Created by edward on 3/1/24.
-//
+/**
+ * @file FullBicopter.h
+ * @author Edward Jeff
+ * @brief Robot class that includes all aspect of robot including motors, servos, IMU, and Nicla Vision
+ * @version 0.1
+ * @date 2024-06-21
+ * 
+ * @copyright Copyright (c) 2024
+ * 
+ */
 
 #ifndef BLIMPSWARM_FULLBICOPTER_H
 #define BLIMPSWARM_FULLBICOPTER_H
@@ -9,6 +16,7 @@
 
 #include "RawBicopter.h"
 #include "sense/NiclaSuite.h"
+#include "util/DataTypes.h"
 #include <Arduino.h>
 
 
@@ -18,18 +26,9 @@ class FullBicopter : public RawBicopter {
 public:
     FullBicopter();
     int sense(float sensors[MAX_SENSORS]) override;
-    bool control(float sensors[MAX_SENSORS], float controls[], int size ) override;
+    void control(float sensors[MAX_SENSORS], float controls[], int size ) override;
     void getPreferences() override;
     void startup() override;
-
-    typedef struct feedback_s {
-        bool zEn, yawEn, rollEn, pitchEn, rotateEn;
-        float kpyaw, kppyaw, kdyaw, kddyaw, kiyaw, kiyawrate, yawRateIntRange;
-        float kpz, kdz, kiz, z_int_low, z_int_high;
-        float kproll, kdroll, kppitch, kdpitch;
-        float servoBeta, servoRange, servo_move_min, botZlim, pitchOffset, pitchInvert;
-        float lx;
-    } feedback_t;
     
     // Sensor interface
     NiclaSuite sensorsuite; 

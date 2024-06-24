@@ -7,7 +7,7 @@
 
 #include <cstdint>
 #include "LowLevelComm.h"
-#include "util/data_types.h"
+#include "util/DataTypes.h"
 #include "util/ParamManager.h"
 #include <Preferences.h>
 

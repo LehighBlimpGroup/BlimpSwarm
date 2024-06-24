@@ -17,9 +17,10 @@ public:
     SBlimp();
     void startup() override;
     int sense(float sensors[MAX_SENSORS]) override;
-    bool actuate(const float actuators[], int size) override;
-    bool control(float sensors[MAX_SENSORS], float controls[], int size ) override;
+    void actuate(const float actuators[], int size) override;
+    void control(float sensors[MAX_SENSORS], float controls[], int size ) override;
     void calibrate() override;
+    void arm() override;
     void getPreferences() override;
     //void testActuators(float actuationCmd[4]) override;
 

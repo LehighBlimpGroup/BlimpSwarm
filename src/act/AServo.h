@@ -1,7 +1,7 @@
 /**
  * @file AServo.h
  * @author David Saldana
- * @brief Class for the actuation of servo motors for a XIAO ESP32S3
+ * @brief Actuation of servo motors for a XIAO ESP32S3
  * @version 0.1
  * @date 2024-02-09
  * 

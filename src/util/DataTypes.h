@@ -1,5 +1,3 @@
-
-
 #ifndef __DATA_TYPES_H__
 #define __DATA_TYPES_H__
 //
@@ -70,13 +68,15 @@
 //} actuation_t;
 //
 //
-//typedef struct feedback_s {
-//    bool roll, pitch, yaw, x, y, z, rotation;
-//    float Croll, Cpitch, Cyaw, Cx, Cy, Cz, Cabsz;
-//    float kproll, kdroll, kppitch, kdpitch, kpyaw, kdyaw;
-//    float kpx, kdx, kpy, kdy, kpz, kdz;
-//    float lx;
-//} feedback_t;
+
+typedef struct feedback_t {
+    bool zEn, yawEn, rollEn, pitchEn, rotateEn;
+    float kpyaw, kppyaw, kdyaw, kddyaw, kiyaw, kiyawrate, yawRateIntRange;
+    float kpz, kdz, kiz, z_int_low, z_int_high;
+    float kproll, kdroll, kppitch, kdpitch;
+    float servoBeta, servoRange, servo_move_min, botZlim, pitchOffset, pitchInvert;
+    float lx;
+} feedback_t;
 
 
 

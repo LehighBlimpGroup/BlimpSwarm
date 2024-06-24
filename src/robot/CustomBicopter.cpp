@@ -12,7 +12,7 @@ CustomBicopter::CustomBicopter(): FullBicopter() {
 
 
 // Controls [Ready, Fx, height/Fz, Tz, Tx]
-bool CustomBicopter::control(float sensors[MAX_SENSORS], float controls[], int size) {
+void CustomBicopter::control(float sensors[MAX_SENSORS], float controls[], int size) {
     float outputs[5];
     // When control[0] == 0, the robot stops its motors and sets servos to 90 degrees
     if (controls[0] == 0) {
@@ -32,7 +32,7 @@ bool CustomBicopter::control(float sensors[MAX_SENSORS], float controls[], int s
     CustomBicopter::getOutputs(sensors, feedbackControls,  outputs);
     
 
-    return FullBicopter::actuate(outputs, size);
+    FullBicopter::actuate(outputs, size);
 }
 
 void CustomBicopter::getPreferences() {

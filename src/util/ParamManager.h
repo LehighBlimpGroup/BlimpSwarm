@@ -9,7 +9,7 @@
 #include <Preferences.h>
 #include <Arduino.h>
 #include <float.h>
-#include "util/data_types.h"
+#include "util/DataTypes.h"
 
 // Other robot types would be included here
 

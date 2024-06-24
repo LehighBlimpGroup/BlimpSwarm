@@ -1,7 +1,7 @@
 /**
  * @file LED.h
  * @author David Saldana
- * @brief Class for the actuation of LEDS 
+ * @brief Actuation of LEDS 
  * @version 0.1
  * @date 2024-02-09
  * 

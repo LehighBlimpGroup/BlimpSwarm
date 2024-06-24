@@ -11,8 +11,8 @@ FullBicopter::FullBicopter(){
 }
 
 void FullBicopter::startup() {
-    RawBicopter::startup();
-    sensorsuite.startup();
+    RawBicopter::startup(); // Initializes the servos and motors
+    sensorsuite.startup(); // Initializes the Nicla and the other sensors
     float senses[MAX_SENSORS];
     FullBicopter::sense(senses);
 }
@@ -26,18 +26,15 @@ int FullBicopter::sense(float sensors[MAX_SENSORS]) {
     float* sensorsValues = sensorsuite.readValues(numSenses);
     for (int i = 0; i < numSenses; i++) {
         sensors[i] = sensorsValues[i];
-        // Serial.print(sensors[i]);
-        // Serial.print(",");
     }
-    // Serial.println();
-    // Implementation for sensing - fill the sensors array
-    // Return the number of sensors used
-    return numSenses; // Placeholder return value
+    return numSenses; 
 }
 
 // Controls [Ready, Fx, height/Fz, Tz, Tx]
-bool FullBicopter::control(float sensors[MAX_SENSORS], float controls[], int size) {
+void FullBicopter::control(float sensors[MAX_SENSORS], float controls[], int size) {
     float outputs[5];
+
+    // When control[0] == 0, the robot stops its motors and sets servos to facing vertically upward
     if (controls[0] == 0 ) {
         outputs[0] = 0;
         outputs[1] = 0;
@@ -60,22 +57,12 @@ bool FullBicopter::control(float sensors[MAX_SENSORS], float controls[], int siz
     
     outputs[4] = 1;
     FullBicopter::getOutputs(sensors, feedbackControls,  outputs);
-    // Serial.print(outputs[0]);
-    // Serial.print(",");
-    // Serial.print(outputs[1]);
-    // Serial.print(",");
-    // Serial.print(outputs[2]);
-    // Serial.print(",");
-    // Serial.print(outputs[3]);
-    // Serial.print(",");
-    // Serial.println(outputs[4]);
-    // delay(100);
-    return FullBicopter::actuate(outputs, size);
+    RawBicopter::actuate(outputs, size);
 }
 
 void FullBicopter::getPreferences() {
     //calls the getPreferences of the superclass object to reduce the number of getPreferences calls
-    RawBicopter::getPreferences();
+    // RawBicopter::getPreferences();
     sensorsuite.getPreferences();
     // Implementation for reading values from non-volatile storage (NVS)
     // must manually enter keys and default values for every variable.

@@ -1,7 +1,7 @@
 /**
  * @file BLMotor.h
  * @author David Saldana
- * @brief Class for the actuation of brushless motors for a XIAO ESP32S3
+ * @brief Actuation of brushless motors for a XIAO ESP32S3
  * @version 0.1
  * @date 2024-02-09
  * 

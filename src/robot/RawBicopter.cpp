@@ -1,6 +1,13 @@
-//
-// Created by dav on 1/20/24.
-//
+/**
+ * @file RawBicopter.cpp
+ * @author your name (you@domain.com)
+ * @brief 
+ * @version 0.1
+ * @date 2024-01-20
+ * 
+ * @copyright Copyright (c) 2024
+ * 
+ */
 
 
 #include "RawBicopter.h"
@@ -23,7 +30,6 @@ void RawBicopter::startup() {
     servo2 = new AServo(SERVO2);
     motor1 = new BLMotor(1100, 2000, 0, THRUST1, 55);
     motor2 = new BLMotor(1100, 2000, 0, THRUST2, 58);
-    // On board LED light
     led = new LED(LED_BUILTIN);
 
 
@@ -36,47 +42,36 @@ void RawBicopter::startup() {
     
     preferences.begin("params", false); //true means read-only
     if (preferences.getBool("calibrate", false)){
-        //calibrate brushless motors
+        //calibrate brushless motors simultaneously
         calibrate();
         preferences.putBool("calibrate", false);
     } else {
-        // Arm brushless motors
+        // Arm brushless motors simulataneously
         arm();
     }
-    preferences.end(); //true means read-only
+    preferences.end();
 }
 
 int RawBicopter::sense(float sensors[MAX_SENSORS]) {
-    // Implementation for sensing - fill the sensors array
-    // Return the number of sensors used
-    return 0; // Placeholder return value
+    return 0;
 }
 
-bool RawBicopter::actuate(const float actuators[], int size) {
+void RawBicopter::actuate(const float actuators[], int size) {
     servo1->act(actuators[2]);
     servo2->act(actuators[3]);
     motor1->act(actuators[0]);
     motor2->act(actuators[1]);
     led->act(actuators[4]);
-
-    return true;
 }
 
 
-bool RawBicopter::control(float sensors[MAX_SENSORS], float controls[], int size) {
-    return RawBicopter::actuate(controls, size);
+void RawBicopter::control(float sensors[MAX_SENSORS], float controls[], int size) {
+    RawBicopter::actuate(controls, size);
 }
 
 void RawBicopter::getPreferences() {
-    
-    // Implementation for reading values from non-volatile storage (NVS)
-    // must manually enter keys and default values for every variable.
-    Preferences preferences; //initialize the preferences 
-    preferences.begin("params", true); //true means read-only
-
-    //value = preferences.getInt("value", default_value); //(value is an int) (default_value is manually set)
-    
-
+    Preferences preferences;
+    preferences.begin("params", true); // Initializes the preferences in read-only mode   
     preferences.end();
 }
 
@@ -98,7 +93,7 @@ void RawBicopter::calibrate(){
 }
 
 void RawBicopter::arm(){
-// ESC arming sequence for BLHeli S
+    // ESC arming sequence for BLHeli S
     motor1->act(0);
     motor2->act(0);
     delay(10);

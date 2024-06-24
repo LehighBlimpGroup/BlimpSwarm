@@ -17,7 +17,7 @@ class CustomBicopter : public FullBicopter {
 public:
     CustomBicopter();
     
-    bool control(float sensors[MAX_SENSORS], float controls[], int size ) override;
+    void control(float sensors[MAX_SENSORS], float controls[], int size ) override;
     void getPreferences() override;
     
     
