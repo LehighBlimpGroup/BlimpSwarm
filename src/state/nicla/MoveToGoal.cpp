@@ -1,12 +1,22 @@
-
-
-#include "state/nicla/NiclaState.h"
+/**
+ * @file MoveToGoal.cpp
+ * @author Swarms Lab
+ * @brief Implementation of MoveToGoal.h
+ * @version 0.1
+ * @date 2024-01-01
+ * 
+ * @copyright Copyright (c) 2024
+ * 
+ */
+#include "state/nicla/MoveToGoal.h"
+#include "state/nicla/ManualState.h"
+#include "state/nicla/ChargeGoal.h"
 
     
 RobotState* MoveToGoal::statetransitions(float sensors[], float controls[]) {
-    int niclaOffset = 11;
-    int nicla_flag = (int)sensors[niclaOffset + 0];
+    int nicla_flag = (int)sensors[NICLA_OFFSET + 0];
     if (controls[0] < 2){
+        // If the ground station requests the robot to transition to manual
         hist->z_estimator = sensors[1];
         RobotState* manualState = new ManualState();
         return manualState;
@@ -55,7 +65,6 @@ RobotState* MoveToGoal::statetransitions(float sensors[], float controls[]) {
 
 // levy walk is a random levy walk algorithm which is good for 'hunting' in a random environment
 void MoveToGoal::behavior(float sensors[], float controls[], float outControls[]) {
-    int niclaOffset = 11;
     int edge = detected(sensors);
     if (start){
         
@@ -69,10 +78,10 @@ void MoveToGoal::behavior(float sensors[], float controls[], float outControls[]
         // if a new detection is fed in
         float _yaw = sensors[5];
         float _height = sensors[1];
-        int nicla_flag = (int)sensors[niclaOffset + 0];
-        float tracking_x = (float)sensors[niclaOffset + 5];
-        float tracking_y = (float)sensors[niclaOffset + 2];
-        float detection_y = (float)sensors[niclaOffset + 6];
+        int nicla_flag = (int)sensors[NICLA_OFFSET + 0];
+        float tracking_x = (float)sensors[NICLA_OFFSET + 5];
+        float tracking_y = (float)sensors[NICLA_OFFSET + 2];
+        float detection_y = (float)sensors[NICLA_OFFSET + 6];
         float x_cal = tracking_x / terms.n_max_x; // normalizes the pixles into a value between [0,1]
 
         hist->des_yaw = ((x_cal - 0.5)) * terms.x_strength;

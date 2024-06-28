@@ -1,10 +1,20 @@
-
-
-
-#include "state/nicla/NiclaState.h"
+/**
+ * @file LevyWalk.cpp
+ * @author Edward Jeff
+ * @brief Implementation of LevyWalk.h
+ * @version 0.1
+ * @date 2024-01-01
+ * 
+ * @copyright Copyright (c) 2024
+ * 
+ */
+#include "state/nicla/LevyWalk.h"
+#include "state/nicla/ManualState.h"
+#include "state/nicla/MoveToGoal.h"
 
 RobotState* LevyWalk::statetransitions(float sensors[], float controls[]) {
     if (controls[0] < 2){
+        // If the ground station requests the robot to transition to manual
         hist->z_estimator = sensors[1];
         RobotState* manualState = new ManualState();
         return manualState;
