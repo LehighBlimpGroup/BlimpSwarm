@@ -1,6 +1,15 @@
+/**
+ * @file Spiral.h
+ * @author Swarms Lab
+ * @brief Spiral algorithm which systematically searches
+ * @version 0.1
+ * @date 2024-01-01
+ * 
+ * @copyright Copyright (c) 2024
+ * 
+ */
 #include "state/nicla/NiclaState.h"
 
-// activates a spiral algorithm which systematically searches
 class Spiral : public NiclaState {
     public:
         /**

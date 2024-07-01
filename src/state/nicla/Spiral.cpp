@@ -18,13 +18,11 @@ RobotState* Spiral::statetransitions(float sensors[], float controls[]) {
         hist->z_estimator = sensors[1];
         RobotState* manualState = new ManualState();
         return manualState;
-    }
-    else if (detected(sensors)) {
+    } else if (detected(sensors)) {
         float _yaw = sensors[5];  
         float _height = sensors[1];  
-        int niclaOffset = 11;
-        float tracking_x = (float)sensors[niclaOffset + 1];
-        float detection_y = (float)sensors[niclaOffset + 6];
+        float tracking_x = (float)sensors[NICLA_OFFSET + 1];
+        float detection_y = (float)sensors[NICLA_OFFSET + 6];
         float x_cal = tracking_x / terms.n_max_x;
         hist->des_yaw = ((x_cal - 0.5)) * terms.x_strength;
         hist->robot_to_goal = _yaw + hist->des_yaw;
@@ -35,13 +33,11 @@ RobotState* Spiral::statetransitions(float sensors[], float controls[]) {
         }
         RobotState* moveToGoal = new MoveToGoal();
         return moveToGoal;
-    }
-    else {
+    } else {
         return this; //pointer to itself
     }
 }
 
-// levy walk is a random levy walk algorithm which is good for 'hunting' in a random environment
 void Spiral::behavior(float sensors[], float controls[], float outControls[]) {
     // Serial.println("Walking!");
     int dt = SpiralTimer - millis();

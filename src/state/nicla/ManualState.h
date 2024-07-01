@@ -24,7 +24,9 @@ protected:
     RobotState* statetransitions(float sensors[], float controls[]) ;
 
     /**
-     * @copydoc NiclaState::behavior();
+     * @copydoc NiclaState::behavior()
+     * 
+     * @brief Behavior is determined directly by the ground station input device
      */
     void behavior(float sensors[], float controls[], float outControls[]) ;
 

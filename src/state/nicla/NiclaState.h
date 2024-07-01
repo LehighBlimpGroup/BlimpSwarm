@@ -21,7 +21,7 @@
 #define NICLA_OFFSET 11
 #define BALLOON_MODE 0x40
 #define GOAL_MODE 0x80
-#define DETECTED 0x11
+#define DETECTED 0b11
 
 class NiclaState : public RobotState {
     public:
