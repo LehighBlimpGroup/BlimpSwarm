@@ -42,12 +42,13 @@ RobotState* NiclaState::update(float sensors[], float controls[], float outContr
 
 int NiclaState::detected(float sensors[]) {
     int detected = 0;
+    int nicla_flag = (int)sensors[NICLA_OFFSET + 0];
 
     if (!(nicla_flag & DETECTED) && (hist->nicla_flag & DETECTED)) {
         // old flag indicated a detection while the new flag says no detection
         // that is a negative edge
         detected = -1;
-    } else(hist->nicla_flag & BALLOON_MODE) {
+    } else {
         if (nicla_flag & DETECTED != hist->nicla_flag & DETECTED) {
             // the last two MSBs of the flag toggles between 0b01 and 0b10 for new detections,
             // and it toggles to 0b00 for new no-detection

@@ -1,10 +1,16 @@
-//
-// Created by dav on 1/28/24.
-//
+/**
+ * @file BaseCommunicator.cpp
+ * @author David Saldana
+ * @brief Implementation of BaseCommunicator.h
+ * @version 0.1
+ * @date 2024-01-28
+ * 
+ * @copyright Copyright (c) 2024
+ * 
+ */
 
 #include "BaseCommunicator.h"
 
-//
 uint8_t receivedData[MAX_DATA_SIZE];
 int receivedDataLength;
 

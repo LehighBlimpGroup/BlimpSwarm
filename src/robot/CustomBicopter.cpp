@@ -1,7 +1,13 @@
-//
-// Created by edward on 3/1/24.
-//
-
+/**
+ * @file CustomBicopter.cpp
+ * @author Edward Jeff
+ * @brief Implementation of CustomBicopter.h
+ * @version 0.1
+ * @date 2024-03-01
+ * 
+ * @copyright Copyright (c) 2024
+ * 
+ */
 
 #include "CustomBicopter.h"
 
@@ -81,8 +87,6 @@ void CustomBicopter::addFeedback(float sensors[MAX_SENSORS], float controls[], f
     feedbackControls[2] = tx;
     feedbackControls[3] = tz;
     feedbackControls[4] = 1;
-    
-    
 }
 
 

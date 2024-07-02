@@ -13,24 +13,26 @@
 
 
 class ManualState : public NiclaState {
-protected:
-    
-    /**
-     * @copydoc NiclaState::statetransitions()
-     * 
-     * @brief Can transition to MoveToGoal or LevyWalk. If the target is detected,
-     * it will transition to MoveToGoal.
-     */
-    RobotState* statetransitions(float sensors[], float controls[]) ;
+    public:
+        /**
+         * @brief Construct a new Manual State object
+         * 
+         */
+        ManualState();
+    protected:
+        
+        /**
+         * @copydoc NiclaState::statetransitions()
+         * 
+         * @brief Can transition to MoveToGoal or LevyWalk. If the target is detected,
+         * it will transition to MoveToGoal.
+         */
+        RobotState* statetransitions(float sensors[], float controls[]) ;
 
-    /**
-     * @copydoc NiclaState::behavior()
-     * 
-     * @brief Behavior is determined directly by the ground station input device
-     */
-    void behavior(float sensors[], float controls[], float outControls[]) ;
-
-
-public:
-    ManualState();
+        /**
+         * @copydoc NiclaState::behavior()
+         * 
+         * @brief Behavior is determined directly by the ground station input device
+         */
+        void behavior(float sensors[], float controls[], float outControls[]) ;
 };

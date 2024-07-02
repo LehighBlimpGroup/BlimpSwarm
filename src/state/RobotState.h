@@ -10,21 +10,21 @@
  */
 
 class RobotState {
-public:
-    /**
-     * @brief Destroy the Robot State object
-     * 
-     */
-    virtual ~RobotState() {}
+    public:
+        /**
+         * @brief Destroy the Robot State object
+         * 
+         */
+        virtual ~RobotState() {}
 
-    /**
-     * @brief Virtual function to update state based on sensors and controls
-     * 
-     * @param sensors Values received from the sensors attacted to the robot
-     * @param controls Control commands from the ground station
-     * @param outControls Result of conversion from control commands to proper behavior of state
-     * @return RobotState* Returns a RobotState representing the state of the robot
-     */
-    virtual RobotState* update(float sensors[], float controls[], float outControls[]) = 0;
+        /**
+         * @brief Virtual function to update state based on sensors and controls
+         * 
+         * @param sensors Values received from the sensors attacted to the robot
+         * @param controls Control commands from the ground station
+         * @param outControls Result of conversion from control commands to proper behavior of state
+         * @return RobotState* Returns a RobotState representing the state of the robot
+         */
+        virtual RobotState* update(float sensors[], float controls[], float outControls[]) = 0;
 
 };

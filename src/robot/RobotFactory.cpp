@@ -1,6 +1,13 @@
-//
-// Created by dav on 1/20/24.
-//
+/**
+ * @file RobotFactory.cpp
+ * @author David Saldana
+ * @brief 
+ * @version 0.1
+ * @date 2024-01-20
+ * 
+ * @copyright Copyright (c) 2024
+ * 
+ */
 
 
 #include "RobotFactory.h"
@@ -14,11 +21,11 @@ Robot* RobotFactory::createRobot(const String& type) {
         Robot* robot = new FullBicopter();
         robot->startup();
         return robot;
-    }else if (type== "CustomBicopter") {
+    } else if (type== "CustomBicopter") {
         Robot* robot = new CustomBicopter();
         robot->startup();
         return robot;
-    }else if (type== "SBlimp") {
+    } else if (type== "SBlimp") {
         Robot* robot = new SBlimp();
         robot->startup();
         return robot;

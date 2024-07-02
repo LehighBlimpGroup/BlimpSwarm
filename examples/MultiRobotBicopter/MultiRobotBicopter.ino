@@ -6,7 +6,7 @@
 
 #include "BlimpSwarm.h"
 #include "robot/RobotFactory.h"
-#include "state/nicla/NiclaState.h"
+#include "state/nicla/ManualState.h"
 #include "comm/BaseCommunicator.h"
 #include "comm/LLC_ESPNow.h"
 #include "util/Print.h"
@@ -62,7 +62,7 @@ void setup() {
     myRobot->startup();
 
     nicla = &(myRobot->sensorsuite);
-    stateMachine = new RobotStateMachine(new LevyWalk());
+    stateMachine = new RobotStateMachine(new ManualState());
     
     paramUpdate();
     hist->nicla_flag = 0x80;

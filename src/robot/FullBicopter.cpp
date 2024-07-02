@@ -1,6 +1,13 @@
-//
-// Created by edward on 3/1/24.
-//
+/**
+ * @file FullBicopter.cpp
+ * @author Edward Jeff
+ * @brief Implementation of FullBicopter.h
+ * @version 0.1
+ * @date 2024-03-01
+ * 
+ * @copyright Copyright (c) 2024
+ * 
+ */
 
 
 #include "FullBicopter.h"
@@ -116,9 +123,6 @@ void FullBicopter::getPreferences() {
     preferences.end();
 }
 
-
-
-//adds sensor feedback into the control values
 void FullBicopter::addFeedback(float sensors[MAX_SENSORS], float controls[], float feedbackControls[]) {
     
     float fx = controls[1]; // Fx
@@ -198,7 +202,6 @@ void FullBicopter::addFeedback(float sensors[MAX_SENSORS], float controls[], flo
     
     
 }
-
 
 void FullBicopter::getOutputs(float sensors[MAX_SENSORS], float controls[], float out[]) {
     // Assuming PDterms, kf1, kf2, servo1offset, servo2offset, and feedbackPD.pitch are defined elsewhere

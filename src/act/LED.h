@@ -15,20 +15,20 @@
 #include "Actuator.h"
 
 class LED : public Actuator{
-public:
-    /**
-     * @brief Construct a new LED object
-     * 
-     * @param pinVal Pin used for the component
-     */
-    LED(int pinVal);
+    public:
+        /**
+         * @brief Construct a new LED object
+         * 
+         * @param pinVal Pin used for the component
+         */
+        LED(int pinVal);
 
-    /**
-     * @brief Actuates the value given to the LED => (a value > 0 is on, otherwise off) 
-     * 
-     * @param value The value to actuate
-     */
-    void act(float value);
+        /**
+         * @brief Actuates the value given to the LED => (a value > 0 is on, otherwise off) 
+         * 
+         * @param value The value to actuate
+         */
+        void act(float value);
 };
 
 

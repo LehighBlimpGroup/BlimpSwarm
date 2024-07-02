@@ -11,6 +11,7 @@
 #include "state/nicla/MoveToGoal.h"
 #include "state/nicla/ManualState.h"
 #include "state/nicla/ChargeGoal.h"
+#include "state/nicla/LevyWalk.h"
 
     
 RobotState* MoveToGoal::statetransitions(float sensors[], float controls[]) {

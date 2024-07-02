@@ -1,6 +1,13 @@
-//
-// Created by dav on 1/20/24.
-//
+/**
+ * @file SBlimp.cpp
+ * @author David Saldana
+ * @brief Impementation of SBlimp.h
+ * @version 0.1
+ * @date 2024-01-20
+ * 
+ * @copyright Copyright (c) 2024
+ * 
+ */
 
 
 #include "SBlimp.h"

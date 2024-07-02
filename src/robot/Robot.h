@@ -16,65 +16,65 @@
 #define PI 3.1416
 
 class Robot {
-private:
-    // Pure virtual function for variable settings
+    private:
+        // Pure virtual function for variable settings
 
-public:
-    // Assume a fixed maximum size for the arrays
-    static const int MAX_SENSORS = 21;
+    public:
+        // Assume a fixed maximum size for the arrays
+        static const int MAX_SENSORS = 21;
 
-    /**
-     * @brief Pure virtual function for sensing
-     * 
-     * @param sensors Float array reprensenting the values of sensors attached to the robot
-     * @return int The number of elements filled in the array
-     */
-    virtual int sense(float sensors[MAX_SENSORS]) = 0;
+        /**
+         * @brief Function for retrieving sensor values
+         * 
+         * @param sensors Float array reprensenting the values of sensors attached to the robot
+         * @return int The number of elements filled in the array
+         */
+        virtual int sense(float sensors[MAX_SENSORS]) = 0;
 
-    /**
-     * @brief Pure virtual function for actuating
-     * 
-     * @param actuators Float array representing the desired values of the actuators
-     * @param size The size of the array inputed
-     */
-    virtual void actuate(const float actuators[], int size) = 0;
+        /**
+         * @brief Function for the actuation of commands
+         * 
+         * @param actuators Float array representing the desired values of the actuators
+         * @param size The size of the array inputed
+         */
+        virtual void actuate(const float actuators[], int size) = 0;
 
-    /**
-     * @brief Function that starts up the robot and initializes associated variables
-     * 
-     */
-    virtual void startup();
+        /**
+         * @brief Function that starts up the robot and initializes associated variables
+         * 
+         */
+        virtual void startup();
 
-    /**
-     * @brief Takes the sensor array, an array of higher-level control commands, and its size.
-     * Converts sensor and control commands into actuation
-     * 
-     * @param sensors Float array of values received from sensors
-     * @param controls Float array of values received from controller input
-     * @param size The size of the control array
-     */
-    virtual void control(float sensors[MAX_SENSORS], float controls[], int size ) = 0;
+        /**
+         * @brief Takes the sensor array, an array of higher-level control commands, and its size.
+         * Converts sensor and control commands into actuation
+         * 
+         * @param sensors Float array of values received from sensors
+         * @param controls Float array of values received from controller input
+         * @param size The size of the control array
+         */
+        virtual void control(float sensors[MAX_SENSORS], float controls[], int size ) = 0;
 
-    /**
-     * @brief Calibrates the brushless motors
-     * 
-     */
-    virtual void calibrate();
+        /**
+         * @brief Calibrates the brushless motors
+         * 
+         */
+        virtual void calibrate();
 
-    /**
-     * @brief Arms the brushless motors
-     * 
-     */
-    virtual void arm();
+        /**
+         * @brief Arms the brushless motors
+         * 
+         */
+        virtual void arm();
 
-    /**
-     * @brief Reads values from non-volatile storage (NVS).
-     * Must manually enter keys and default values for every variable.
-     * 
-     */
-    virtual void getPreferences();
+        /**
+         * @brief Reads values from non-volatile storage (NVS).
+         * Must manually enter keys and default values for every variable.
+         * 
+         */
+        virtual void getPreferences();
 
-    virtual ~Robot() {}
+        virtual ~Robot() {}
 };
 
 
