@@ -125,7 +125,7 @@ void FullBicopter::getPreferences() {
 
 void FullBicopter::addFeedback(float sensors[MAX_SENSORS], float controls[], float feedbackControls[]) {
     
-    float fx = controls[1]; // Fx
+    float fx = -controls[1]; // Fx
     float fz = controls[2]; // Fz/height
     float tx = controls[3]; // tx
     float tz = controls[4]; // tz

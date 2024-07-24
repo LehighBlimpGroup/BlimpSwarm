@@ -53,6 +53,20 @@ RobotState* ChargeGoal::statetransitions(float sensors[], float controls[]) {
 }
 
 void ChargeGoal::behavior(float sensors[], float controls[], float outControls[]) {
+    int edge = detected(sensors);
+    if (edge == 1) {
+        // if a new detection is fed in
+        float _yaw = sensors[5];
+        float _height = sensors[1];
+        int nicla_flag = (int)sensors[NICLA_OFFSET + 0];
+        float tracking_x = (float)sensors[NICLA_OFFSET + 5];
+        float tracking_y = (float)sensors[NICLA_OFFSET + 2];
+        float detection_y = (float)sensors[NICLA_OFFSET + 6];
+        float x_cal = tracking_x / terms.n_max_x; // normalizes the pixles into a value between [0,1]
+
+        hist->des_yaw = ((x_cal - 0.5)) * terms.x_strength;
+        hist->robot_to_goal = _yaw + hist->des_yaw;
+    }
     outControls[0] = controls[0]; //ready
     outControls[1] = terms.fx_charge; //fx
     outControls[2] = hist->z_estimator; //fz

@@ -9,6 +9,8 @@ ROBOT_MAC = None
 
 def main():
     serial = SerialController(SERIAL_PORT, timeout=0.5)
+    if serial.serial is None:
+        return
     joystick = JoystickManager()
     mygui = SimpleGUI()
     niclaGUI = NiclaBox(max_x=240, max_y=160, x=120, y=80, width=120, height=80)
@@ -29,10 +31,11 @@ def main():
     sensors = serial.getSensorData()
     # Initialize control variables
     height, tz =  (0, 0)
-    ready = 0
+    ready = [0] * len(robots)
     old_buttons = [0] * 4  # A, B, X, Y
     fx_ave = 0
     dt = 0.3
+    pump = False
     
 
     try:
@@ -112,13 +115,13 @@ def main():
                             serial.send_control_params(robot_mac, (2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0))
                             time.sleep(.1)
 
-                        ready = 2
+                        ready[current_robot_index] = 2
                     elif event.key == pygame.K_p:
                         
-                        for robot_mac in robots[:-2]:
+                        for robot_mac in robots:
                             serial.send_control_params(robot_mac, (0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0))
                             time.sleep(.1)
-                        ready = 0
+                        ready[current_robot_index] = 0
                         
                     elif event.key == pygame.K_o:
                         
@@ -128,7 +131,7 @@ def main():
                             
                     elif event.key == pygame.K_i:
                         
-                        for robot_mac in robots[:-2]:
+                        for robot_mac in robots:
                             serial.send_control_params(robot_mac, (3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0))
                             time.sleep(.1)
                     elif event.key == pygame.K_u:
@@ -144,30 +147,44 @@ def main():
                             if current_robot_index == index:
                                 print("Already set to that robot.")
                             else:
-                                serial.send_control_params(ROBOT_MAC, (5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0))
-                                
+                                serial.send_control_params(ROBOT_MAC, (5, fx_ave, height, 0, tz, 0, 0, 0, 0, 0, 0, 0, 0))
+                                serial.send_control_params(ROBOT_MAC, (ready[current_robot_index], fx_ave, height, 0, tz, 0, 0, 0, 0, 0, 0, 0, 0))
                                 current_robot_index = index
                                 ROBOT_MAC = robots[current_robot_index]
                                 serial.send_control_params(ROBOT_MAC, (5, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0))
                                 time.sleep(0.1)
                                 sensors = serial.getSensorData()
-                                (height, tz) = (sensors[0], sensors[1])
-                                print(height, tz)
+                                if sensors is None:
+                                    height, tz = 0, 0
+                                else:
+                                    height, tz = (sensors[0], sensors[1])
                                 
                                 print(f"Switched to robot {ROBOT_MAC}")
             axis, buttons = joystick.getJoystickInputs()
+
+            sensors = serial.getSensorData()
+            if sensors:
+                s = ''
+                for senses in sensors:
+                    s += str(senses) + ' '
+                print(s)
+                if sensors[2] < 300:
+                    niclaGUI.update(x=sensors[2], y=sensors[3], width=sensors[4], height=sensors[4])
+                mygui.update(cur_yaw=sensors[1], des_yaw=tz, cur_height=sensors[0], des_height=height,
+                             battery=sensors[5], distance=0, connection_status=True)
             
             # Button press logic
             if buttons[3] and not old_buttons[3]:  # Y puts into goal mode
-                ready = 4 #if ready != 3 else 4
+                ready[current_robot_index] = 4 #if ready != 3 else 4
             if buttons[1] and not old_buttons[1]:  # B toggles pause
-                ready = 0 if ready else 1
-                # if sensors:
-                #     height, tz = (sensors[0], sensors[1])
+                ready[current_robot_index] = 0 if ready[current_robot_index] else 1
+                if sensors:
+                    height, tz = (sensors[0], sensors[1])
             if buttons[2] and not old_buttons[2]:  # X puts into ball mode
-                ready = 3 #if ready != 3 else 4
+                ready[current_robot_index] = 3
+                height, tz = (sensors[0], sensors[1])
             if buttons[0] and not old_buttons[0]:  # A sets specific ready state
-                ready = 2
+                ready[current_robot_index] = 2
 
             # Update old button states
             old_buttons = buttons[:]
@@ -176,7 +193,7 @@ def main():
             if PRINT_JOYSTICK:
                 print(" ".join(["{:.1f}".format(num) for num in axis]), buttons)
 
-            if ready != 5:
+            if ready[current_robot_index] != 5:
                 # Control inputs to the robot
                 height += -axis[0] * dt if abs(axis[0]) >= 0.15 else 0
                 height = max(min(height, 15), -10)
@@ -188,13 +205,8 @@ def main():
             fx = (-axis[2] + axis[5]) * 0.65
             fx_ave = fx_ave * 0.67 + fx * 0.33
 
-            sensors = serial.getSensorData()
-            if sensors:
-                if sensors[2] < 300:
-                    niclaGUI.update(x=sensors[2], y=sensors[3], width=sensors[4], height=sensors[4])
-                mygui.update(cur_yaw=sensors[1], des_yaw=tz, cur_height=sensors[0], des_height=height, battery=sensors[5], distance=0, connection_status=True)
             # send control parameters
-            serial.send_control_params(ROBOT_MAC, (ready, fx_ave, height, 0, tz, -buttons[2], 1, 0, 0, 0, 0, 0, 0))
+            serial.send_control_params(ROBOT_MAC, (ready[current_robot_index], fx_ave, height, 0, tz, -buttons[2], 1, 0, 0, 0, 0, 0, 0))
             
             time.sleep(dt)
     except KeyboardInterrupt:
