@@ -13,9 +13,9 @@ import time
 # 9. 34:85:18:AB:EF:E8
 # 10. 34:85:18:8D:A0:D4
 
-ROBOT_MAC ="34:85:18:AC:C2:6C"
-SERIAL_PORT = "COM15"
-PRINT_JOYSTICK = False
+ROBOT_MAC =" 34:85:18:91:38:60      "
+SERIAL_PORT = "COM5"
+PRINT_JOYSTICK = True
 
 if __name__ == "__main__":
     # Communication

@@ -15,8 +15,8 @@ import time
 # 10. 34:85:18:8D:A0:D4
 
 
-ROBOT_MAC = "DC:DA:0C:57:AE:2C"
-SERIAL_PORT = "COM16"
+ROBOT_MAC = "34:85:18:91:B7:4C"
+SERIAL_PORT = "COM10"
 PRINT_JOYSTICK = True
 
 if __name__ == "__main__":
@@ -108,7 +108,7 @@ if __name__ == "__main__":
     time.sleep(.2)
 
     # Joystick
-    joystick = JoystickManager()
+    joystick = JoystickManager(0)
 
     sensors = serial.getSensorData()
     height = 0
