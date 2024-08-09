@@ -10,7 +10,7 @@
 
 /**
  * @dir src/behavior
- * @brief Contains source files relating to the behaviors of the robot.
+ * @brief Legacy folder. Contains source files relating to the behaviors of the robot.
  */
 
 /**
@@ -31,6 +31,16 @@
 /**
  * @dir src/state
  * @brief Contains source files relating to the states a robot can be in.
+ */
+
+/**
+ * @dir src/state/custom
+ * @brief Contains template for creating a custom configuration for the robot.
+ */
+
+/**
+ * @dir src/state/nicla
+ * @brief Contains all the configurations and behaviours of a robot with a Nicla Vision.
  */
 
 /**

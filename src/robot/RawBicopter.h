@@ -17,6 +17,7 @@
 #include "act/AServo.h"
 #include "act/LED.h"
 #include <Preferences.h>
+#include "util/DataTypes.h"
 
 class RawBicopter : public Robot {
 public:
@@ -72,7 +73,27 @@ public:
      */
     void getPreferences() override;
 
+    /**
+     * @brief Adjusts the servo deadzone to be in the correct place.
+     * 
+     * @param angle The current angle of the motor
+     * @return float The angle value after adjustment is made
+     */
+    float adjustAngle(float angle);
+    
+    /**
+     * @brief Clamps a value between a minimum and maximum.
+     * 
+     * @param val Value to be clamped.
+     * @param minVal Minimum value that val can be.
+     * @param maxVal Maximum value that val can be.
+     * @return float Returns the val if within range, otherwise returns min or max.
+     */
+    float clamp(float val, float minVal, float maxVal);
+
 private:
+    feedback_t PDterms;
+    float servoDiff = 0;
     BLMotor* motor1;
     BLMotor* motor2;
     AServo* servo1;

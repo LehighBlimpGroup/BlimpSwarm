@@ -1,4 +1,13 @@
-
+/**
+ * @file NiclaConfig.cpp
+ * @author David Saldana
+ * @brief Implementation of NiclaConfig.h
+ * @version 0.1
+ * @date 2024-01-01
+ * 
+ * @copyright Copyright (c) 2024
+ * 
+ */
 #include "state/nicla/NiclaConfig.h"
 
 NiclaConfig* NiclaConfig::instance = nullptr;

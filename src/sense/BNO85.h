@@ -1,7 +1,7 @@
 /**
  * @file BNO85.h
  * @author David Saldana
- * @brief 
+ * @brief Manages the sensor values from the BNO85
  * @version 0.1
  * @date 2024-01-01
  * 

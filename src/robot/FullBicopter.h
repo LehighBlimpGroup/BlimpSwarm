@@ -16,7 +16,6 @@
 
 #include "RawBicopter.h"
 #include "sense/NiclaSuite.h"
-#include "util/DataTypes.h"
 #include <Arduino.h>
 
 
@@ -67,7 +66,6 @@ public:
     float z_integral = 0;
     float yaw_integral = 0;
     float yawrate_integral = 0;
-    float servoDiff = 0;//2*PI - PDterms.servoRange * PI/180;
     float servo_old1 = 0;
     float servo_old2 = 0;
     
@@ -90,24 +88,6 @@ private:
      * @param outputs The resulting control array after controlled
      */
     void getOutputs(float sensors[MAX_SENSORS], float controls[], float outputs[]);
-
-    /**
-     * @brief Clamps a value between a minimum and maximum.
-     * 
-     * @param val Value to be clamped.
-     * @param minVal Minimum value that val can be.
-     * @param maxVal Maximum value that val can be.
-     * @return float Returns the val if within range, otherwise returns min or max.
-     */
-    float clamp(float val, float minVal, float maxVal);
-
-    /**
-     * @brief Adjusts the servo deadzone to be in the correct place.
-     * 
-     * @param angle The current angle of the motor
-     * @return float The angle value after adjustment is made
-     */
-    float adjustAngle(float angle);
 };
 
 

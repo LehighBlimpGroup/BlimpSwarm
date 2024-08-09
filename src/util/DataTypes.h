@@ -1,3 +1,13 @@
+/**
+ * @file DataTypes.h
+ * @author David Saldana
+ * @brief Contains all datatypes used throughout the project
+ * @version 0.1
+ * @date 2024-01-01
+ * 
+ * @copyright Copyright (c) 2024
+ * 
+ */
 #ifndef __DATA_TYPES_H__
 #define __DATA_TYPES_H__
 //
@@ -69,6 +79,7 @@
 //
 //
 
+// All possible parameters that can be stored in the flash memory of the esp32
 typedef struct feedback_t {
     bool zEn, yawEn, rollEn, pitchEn, rotateEn;
     float kpyaw, kppyaw, kdyaw, kddyaw, kiyaw, kiyawrate, yawRateIntRange;
@@ -79,7 +90,7 @@ typedef struct feedback_t {
 } feedback_t;
 
 
-
+// Flag for determining which type of data was received
 enum DataType : uint8_t {
     DataType_Int = 0x01,
     DataType_Float = 0x02,
@@ -88,17 +99,18 @@ enum DataType : uint8_t {
     // Add more datatypes as needed
 };
 
+// float array containing all the input values
 typedef struct ControlInput {
     float params[13]; //FIXME magic number
 } ControlInput;
 
-
+// Structor for receiving data
 typedef struct ReceivedData {
     int flag;
     float values[6];  //FIXME magic number
 } ReceivedData;
 
-// nicla_t definition
+// Additional parameters for the Nicla Vision. Also stored in the esp32's flash memory
 typedef struct {
     bool state;
     int n_max_x, n_max_y;
@@ -108,6 +120,7 @@ typedef struct {
     int num_captures, time_in_ball, goal_height;
 } nicla_t;
 
+// Struct that keeps track of prior values received by the Nicla Vision
 typedef struct {
     float last_detection_w = 0;
     float last_detection_h = 0;
