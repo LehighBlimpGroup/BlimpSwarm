@@ -1,11 +1,19 @@
-//
-// Created by eddie on 2/28/24.
-//
+/**
+ * @file BatterySensor.cpp
+ * @author Edward Jeff
+ * @brief Implementation of BatterySensor.h
+ * @version 0.1
+ * @date 2024-02-28
+ * 
+ * @copyright Copyright (c) 2024
+ * 
+ */
 
 #include "BatterySensor.h"
 
 BatterySensor::BatterySensor(int pin, float referenceVoltage) : pin(pin), referenceVoltage(referenceVoltage) {
 }
+
 void BatterySensor::startup() {
     BatterySensor::getPreferences();
     pinMode(pin, INPUT);
@@ -23,7 +31,6 @@ float* BatterySensor::readValues(int& count) {
 
 void BatterySensor::getPreferences(){
     return;
-
 }
 
 WeightedBatterySensor::WeightedBatterySensor( float gamma)

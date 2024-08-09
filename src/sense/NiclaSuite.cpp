@@ -1,12 +1,16 @@
-
-
+/**
+ * @file NiclaSuite.cpp
+ * @author David Saldana
+ * @brief Implementation of NiclaSuite.h
+ * @version 0.1
+ * @date 2024-01-01
+ * 
+ * @copyright Copyright (c) 2024
+ * 
+ */
 #include "NiclaSuite.h"
 
-
 void NiclaSuite::startup() {
-    // bnoSensor = new BNO85();
-    // barometer = new Barometer();
-    // batterySensor = new WeightedBatterySensor();
     NiclaSuite::getPreferences();
     nicla.startup();
     sensorSuite.startup();
@@ -14,7 +18,6 @@ void NiclaSuite::startup() {
         sensorValues[i] = 0;
     }
 }
-
 
 void NiclaSuite::changeNiclaMode(uint8_t setMode) {
     nicla.update(setMode);
@@ -54,7 +57,6 @@ float* NiclaSuite::readValues(int& count) {
     count = valueCount; // Return the count of valid sensor values
     return sensorValues; // Return the array of sensor values
 }
-
 
 void NiclaSuite::getPreferences(){
     nicla.getPreferences();

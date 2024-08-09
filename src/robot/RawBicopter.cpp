@@ -1,7 +1,7 @@
 /**
  * @file RawBicopter.cpp
- * @author your name (you@domain.com)
- * @brief 
+ * @author Edward Jeff
+ * @brief Implementation of RawBicopter.h
  * @version 0.1
  * @date 2024-01-20
  * 

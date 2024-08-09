@@ -1,6 +1,13 @@
-
-
-// Barometer.cpp
+/**
+ * @file Barometer390.cpp
+ * @author David Saldana
+ * @brief Implementation of Barometer390.h
+ * @version 0.1
+ * @date 2024-07-14
+ * 
+ * @copyright Copyright (c) 2024
+ * 
+ */
 #include "Barometer390.h"
 
 Barometer::Barometer() {
@@ -109,6 +116,7 @@ float* Barometer::readValues(int& count) {
     return values;
 }
 
+// TODO: Allow for parameters to be used to change barometer
 void Barometer::getPreferences(){
     return;
 }

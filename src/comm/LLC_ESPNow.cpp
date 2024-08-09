@@ -1,13 +1,22 @@
-
-
+/**
+ * @file LLC_ESPNow.cpp
+ * @author David Saldana
+ * @brief Implementation of LLC_ESPNow.h
+ * @version 0.1
+ * @date 2024-01-01
+ * 
+ * @copyright Copyright (c) 2024
+ * 
+ */
 #include "LLC_ESPNow.h"
 
 volatile bool new_data_received = false;
 volatile uint8_t new_data[MAX_DATA_SIZE];
 volatile int new_data_len;
-volatile bool verbose = false;  //FIXME: this should be a parameter
+volatile bool verbose = true;  //FIXME: this should be a parameter
 volatile unsigned long esp_time_now;
 ParamManager manager;
+int delayMS = 1000;
 
 void OnDataRecv(const uint8_t *mac_addr, const uint8_t *data, int data_len){
 

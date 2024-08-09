@@ -1,7 +1,7 @@
 /**
  * @file RobotFactory.cpp
  * @author David Saldana
- * @brief 
+ * @brief Factory that creates the specified type of robot.
  * @version 0.1
  * @date 2024-01-20
  * 
