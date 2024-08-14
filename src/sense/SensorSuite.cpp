@@ -1,3 +1,13 @@
+/**
+ * @file SensorSuite.cpp
+ * @author David Saldana
+ * @brief Implementation of SensorSuite.h
+ * @version 0.1
+ * @date 2024-01-01
+ * 
+ * @copyright Copyright (c) 2024
+ * 
+ */
 #include "SensorSuite.h"
 
 // SensorSuite::SensorSuite() {}
@@ -7,9 +17,6 @@
 // }
 
 void SensorSuite::startup() {
-    // bnoSensor = new BNO85();
-    // barometer = new Barometer();
-    // batterySensor = new WeightedBatterySensor();
     SensorSuite::getPreferences();
     bnoSensor.startup();
     barometer.startup();
@@ -28,7 +35,7 @@ bool SensorSuite::update() {
     if (barometer.update()) {
         float* baroValues = barometer.readValues(tempCount);
         for(int i = 1; i < tempCount-1; ++i) {
-            sensorValues[offset + i -1] = baroValues[i];
+            sensorValues[offset + i - 1] = baroValues[i];
         }
         offset += tempCount;
         updated = true;

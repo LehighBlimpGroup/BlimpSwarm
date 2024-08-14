@@ -1,7 +1,7 @@
 /**
  * @file RawBicopter.cpp
- * @author your name (you@domain.com)
- * @brief 
+ * @author Edward Jeff
+ * @brief Implementation of RawBicopter.h
  * @version 0.1
  * @date 2024-01-20
  * 
@@ -72,6 +72,17 @@ void RawBicopter::control(float sensors[MAX_SENSORS], float controls[], int size
 void RawBicopter::getPreferences() {
     Preferences preferences;
     preferences.begin("params", true); // Initializes the preferences in read-only mode   
+
+    // A-matrix adjustments for the servo
+    PDterms.servoBeta = preferences.getFloat("servoBeta", 0);
+    PDterms.servoRange = preferences.getFloat("servoRange", 180);
+    PDterms.botZlim = preferences.getFloat("botZlim", 0.001);
+    PDterms.pitchOffset = preferences.getFloat("pitchOffset", 0);
+    PDterms.pitchInvert = preferences.getFloat("pitchInvert", 1);
+    PDterms.servo_move_min = preferences.getFloat("servo_move_min", 2); // degrees
+
+    servoDiff = 2*PI - PDterms.servoRange * PI/180;// calculating the servo dead zone
+
     preferences.end();
 }
 
@@ -111,3 +122,15 @@ void RawBicopter::arm(){
     motor2->act(0);
     delay(1000);
 }
+
+// adjusts the servo deadzone to be in the correct place
+float RawBicopter::adjustAngle(float angle) {
+  while (angle <  - servoDiff / 2 - PDterms.servoBeta * PI/180.0f ) angle += 2 * PI;
+  while (angle > 2 * PI - servoDiff / 2 - PDterms.servoBeta * PI/180.0f ) angle -= 2 * PI;
+  return angle;
+}
+
+float RawBicopter::clamp(float val, float minVal, float maxVal) {
+    return std::max(minVal, std::min(maxVal, val));
+}
+

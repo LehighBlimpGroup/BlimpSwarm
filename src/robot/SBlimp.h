@@ -20,65 +20,65 @@
 #include <Preferences.h>
 
 class SBlimp : public Robot {
-    public:
-        /**
-         * @brief Construct a new SBlimp object
-         * 
-         */
-        SBlimp();
+public:
+    /**
+     * @brief Construct a new SBlimp object
+     * 
+     */
+    SBlimp();
 
-        /**
-         * @copydoc Robot::startup()
-         * 
-         */
-        void startup() override;
+    /**
+     * @copydoc Robot::startup()
+     * 
+     */
+    void startup() override;
 
-        /**
-         * @copydoc Robot::sense()
-         * 
-         * @brief SBlimp does not include any sensors
-         * 
-         */
-        int sense(float sensors[MAX_SENSORS]) override;
+    /**
+     * @copydoc Robot::sense()
+     * 
+     * @brief SBlimp does not include any sensors
+     * 
+     */
+    int sense(float sensors[MAX_SENSORS]) override;
 
-        /**
-         * @copydoc Robot::actuate()
-         * 
-         */
-        void actuate(const float actuators[], int size) override;
+    /**
+     * @copydoc Robot::actuate()
+     * 
+     */
+    void actuate(const float actuators[], int size) override;
 
-        /**
-         * @copydoc Robot::control()
-         * 
-         * @brief Directly converts array of higher-level control commands into actuation
-         * 
-         */
-        void control(float sensors[MAX_SENSORS], float controls[], int size ) override;
+    /**
+     * @copydoc Robot::control()
+     * 
+     * @brief Directly converts array of higher-level control commands into actuation
+     * 
+     */
+    void control(float sensors[MAX_SENSORS], float controls[], int size ) override;
 
-        /**
-         * @copydoc Robot::calibrate
-         * 
-         */
-        void calibrate() override;
+    /**
+     * @copydoc Robot::calibrate
+     * 
+     */
+    void calibrate() override;
 
-        /**
-         * @copydoc Robot::arm()
-         * 
-         */
-        void arm() override;
+    /**
+     * @copydoc Robot::arm()
+     * 
+     */
+    void arm() override;
 
-        /**
-         * @copydoc Robot::getPreferences()
-         * 
-         */
-        void getPreferences() override;
+    /**
+     * @copydoc Robot::getPreferences()
+     * 
+     */
+    void getPreferences() override;
 
-    private:
-        BLMotor* motor1;
-        BLMotor* motor2;
-        BLMotor* motor3;
-        BLMotor* motor4;
-        LED* led;
+private:
+    BLMotor* motor1;
+    BLMotor* motor2;
+    BLMotor* motor3;
+    BLMotor* motor4;
+    LED* led;
 };
 
 

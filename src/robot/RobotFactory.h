@@ -24,14 +24,14 @@
 
 
 class RobotFactory {
-    public:
-        /**
-         * @brief Create a Robot object of the specified type.
-         * 
-         * @param type The type of robot to be created.
-         * @return Robot* The robot object that is created and returned.
-         */
-        static Robot* createRobot(const String& type);
+public:
+    /**
+     * @brief Create a Robot object of the specified type.
+     * 
+     * @param type The type of robot to be created.
+     * @return Robot* The robot object that is created and returned.
+     */
+    static Robot* createRobot(const String& type);
 };
 
 

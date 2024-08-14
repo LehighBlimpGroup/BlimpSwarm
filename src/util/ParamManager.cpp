@@ -1,3 +1,13 @@
+/**
+ * @file ParamManager.cpp
+ * @author David Saldana
+ * @brief Implementation of ParamManager.h
+ * @version 0.1
+ * @date 2024-02-01
+ * 
+ * @copyright Copyright (c) 2024
+ * 
+ */
 #include "ParamManager.h"
 
 String ParamManager::readString(const uint8_t *data, int &index, uint8_t length) {

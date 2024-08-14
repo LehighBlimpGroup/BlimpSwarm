@@ -16,9 +16,6 @@
 #define PI 3.1416
 
 class Robot {
-    private:
-        // Pure virtual function for variable settings
-
     public:
         // Assume a fixed maximum size for the arrays
         static const int MAX_SENSORS = 21;
@@ -74,7 +71,14 @@ class Robot {
          */
         virtual void getPreferences();
 
+        /**
+         * @brief Destroy the Robot object.
+         * 
+         */
         virtual ~Robot() {}
+
+    private:
+        // Pure virtual function for variable settings
 };
 
 

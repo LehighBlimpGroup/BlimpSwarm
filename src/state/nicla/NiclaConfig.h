@@ -1,6 +1,6 @@
 /**
  * @file NiclaConfig.h
- * @author Swarms Lab
+ * @author David Saldana
  * @brief Configuration file containing functions and variables to store parameters 
  * for the Nicla Vision and State Machine
  * @version 0.1

@@ -1,3 +1,13 @@
+/**
+ * @file Barometer.cpp
+ * @author David Saldana
+ * @brief Implementation of Barometer.h
+ * @version 0.1
+ * @date 2024-07-14
+ * 
+ * @copyright Copyright (c) 2024
+ * 
+ */
 #include "Barometer.h"
 
 BarometerOld::BarometerOld(){
@@ -8,7 +18,11 @@ BarometerOld::BarometerOld(){
 void BarometerOld::init(){
     /* Initialise the sensor */
     int countTries = 0;
+
+    // Attempts to initialize I2C communication between the BMP and the main board.
     baroOn = bme.begin_I2C();
+
+    // Tries to start the connection 10 times.
     while (!baroOn) {
         delay(100);
         if (countTries > 10) {
@@ -21,6 +35,7 @@ void BarometerOld::init(){
         baroOn = bme.begin_I2C();
     }
 
+    // Sets the parameters to desired values.
     bme.setTemperatureOversampling(BMP3_OVERSAMPLING_8X);
     bme.setPressureOversampling(BMP3_OVERSAMPLING_16X);
     bme.setIIRFilterCoeff(BMP3_IIR_FILTER_COEFF_7);
@@ -55,6 +70,7 @@ void BarometerOld::init(){
     
     
 }
+
 bool BarometerOld::updateBarometer(){
     if (baroOn){
         if ((micros() - tStart) > (BMP390_SAMPLERATE_DELAY_MS * 1000)) {

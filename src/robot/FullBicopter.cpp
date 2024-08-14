@@ -69,7 +69,7 @@ void FullBicopter::control(float sensors[MAX_SENSORS], float controls[], int siz
 
 void FullBicopter::getPreferences() {
     //calls the getPreferences of the superclass object to reduce the number of getPreferences calls
-    // RawBicopter::getPreferences();
+    RawBicopter::getPreferences();
     sensorsuite.getPreferences();
     // Implementation for reading values from non-volatile storage (NVS)
     // must manually enter keys and default values for every variable.
@@ -109,16 +109,6 @@ void FullBicopter::getPreferences() {
 
     // radius of the blimp
     PDterms.lx = preferences.getFloat("lx", .15);
-
-    // A-matrix adjustments for the servo
-    PDterms.servoBeta = preferences.getFloat("servoBeta", 0);
-    PDterms.servoRange = preferences.getFloat("servoRange", 180);
-    PDterms.botZlim = preferences.getFloat("botZlim", 0.001);
-    PDterms.pitchOffset = preferences.getFloat("pitchOffset", 0);
-    PDterms.pitchInvert = preferences.getFloat("pitchInvert", 1);
-    PDterms.servo_move_min = preferences.getFloat("servo_move_min", 2); // degrees
-
-    servoDiff = 2*PI - PDterms.servoRange * PI/180;// calculating the servo dead zone
 
     preferences.end();
 }
@@ -263,15 +253,4 @@ void FullBicopter::getOutputs(float sensors[MAX_SENSORS], float controls[], floa
     // if (out[1] < 0.02f) {
     //     out[3] = 90;
     // }
-}
-
-float FullBicopter::clamp(float val, float minVal, float maxVal) {
-    return std::max(minVal, std::min(maxVal, val));
-}
-
-// adjusts the servo deadzone to be in the correct place
-float FullBicopter::adjustAngle(float angle) {
-  while (angle <  - servoDiff / 2 - PDterms.servoBeta * PI/180.0f ) angle += 2 * PI;
-  while (angle > 2 * PI - servoDiff / 2 - PDterms.servoBeta * PI/180.0f ) angle -= 2 * PI;
-  return angle;
 }

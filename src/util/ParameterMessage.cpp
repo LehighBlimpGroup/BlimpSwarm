@@ -1,3 +1,13 @@
+/**
+ * @file ParameterMessage.cpp
+ * @author David Saldana
+ * @brief Legacy file for handling the P2P communications
+ * @version 0.1
+ * @date 2024-07-15
+ * 
+ * @copyright Copyright (c) 2024
+ * 
+ */
 #include <Arduino.h>
 #include "DataTypes.h"
 

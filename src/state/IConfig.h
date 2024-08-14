@@ -14,7 +14,22 @@
 template<typename ConfigType>
 class IConfig {
     public:
+        /**
+         * @brief Destroy the IConfig object
+         * 
+         */
         virtual ~IConfig() {}
+
+        /**
+         * @brief Loads the configurations stored in the onboard memory into variables.
+         * 
+         */
         virtual void loadConfiguration() = 0;
+
+        /**
+         * @brief Gets the configuration variables.
+         * 
+         * @return const ConfigType& Returns the data type that contains the configuration values.
+         */
         virtual const ConfigType& getConfiguration() const = 0;
 };

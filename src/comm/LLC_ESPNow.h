@@ -14,7 +14,6 @@
 
 
 #include "LowLevelComm.h"
-
 #include "WiFi.h"
 #include <esp_now.h> // This is the arduino library for ESP-NOW
 #include "util/ParamManager.h"
@@ -37,48 +36,48 @@ void OnDataRecv(const uint8_t *mac_addr, const uint8_t *data, int data_len);
 void OnDataSent(const uint8_t *mac_addr, esp_now_send_status_t status);
 
 class LLC_ESPNow : public LowLevelComm {
-    public:
+public:
 
-        /**
-         * @brief Construct a new llc espnow object
-         * 
-         */
-        LLC_ESPNow();
+    /**
+     * @brief Construct a new llc espnow object
+     * 
+     */
+    LLC_ESPNow();
 
-        /**
-         * @copydoc LowLevelComm::init()
-         * 
-         */
-        void init() override;
+    /**
+     * @copydoc LowLevelComm::init()
+     * 
+     */
+    void init() override;
 
-        /**
-         * @copydoc LowLevelComm::sendData()
-         */
-        void sendData(const uint8_t mac_addr[6], const uint8_t* data, unsigned int length) override;
+    /**
+     * @copydoc LowLevelComm::sendData()
+     */
+    void sendData(const uint8_t mac_addr[6], const uint8_t* data, unsigned int length) override;
 
-        /**
-         * @copydoc LowLevelComm::receiveData()
-         */
-        void receiveData(uint8_t receivedData[MAX_DATA_SIZE], int& length) override;
+    /**
+     * @copydoc LowLevelComm::receiveData()
+     */
+    void receiveData(uint8_t receivedData[MAX_DATA_SIZE], int& length) override;
 
-        /**
-         * @copydoc LowLevelComm::newData()
-         */
-        bool newData() override;
+    /**
+     * @copydoc LowLevelComm::newData()
+     */
+    bool newData() override;
 
-        /**
-         * @copydoc LowLevelComm::addPeer()
-         */
-        void addPeer(const uint8_t *peerAddr) override;
+    /**
+     * @copydoc LowLevelComm::addPeer()
+     */
+    void addPeer(const uint8_t *peerAddr) override;
 
-        /**
-         * @copydoc LowLevelComm::removePeer()
-         */
-        void removePeer(const uint8_t *peerAddr) override;
-    private:
-        const int MAC_ADDRESS_SIZE = 6;
-        esp_now_peer_info_t peerInfo;
-        int delayMS = 1000;
+    /**
+     * @copydoc LowLevelComm::removePeer()
+     */
+    void removePeer(const uint8_t *peerAddr) override;
+
+private:
+    const int MAC_ADDRESS_SIZE = 6;
+    esp_now_peer_info_t peerInfo;
 };
 
 

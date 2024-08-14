@@ -21,40 +21,40 @@
 
 
 class CustomBicopter : public FullBicopter {
-    public:
-        /**
-         * @brief Construct a new Custom Bicopter object
-         * 
-         */
-        CustomBicopter();
+public:
+    /**
+     * @brief Construct a new Custom Bicopter object
+     * 
+     */
+    CustomBicopter();
 
-        /**
-         * @copydoc FullBicopter::control()
-         */
-        void control(float sensors[MAX_SENSORS], float controls[], int size ) override;
+    /**
+     * @copydoc FullBicopter::control()
+     */
+    void control(float sensors[MAX_SENSORS], float controls[], int size ) override;
 
-        /**
-         * @copydoc FullBicopter::getPreferences()
-         * 
-         */
-        void getPreferences() override;
-        
-    private:
-        /**
-         * @copydoc FullBicopter::addFeedback()
-         */
-        void addFeedback(float sensors[MAX_SENSORS], float controls[], float feedbackControls[]);
+    /**
+     * @copydoc FullBicopter::getPreferences()
+     * 
+     */
+    void getPreferences() override;
+    
+private:
+    /**
+     * @copydoc FullBicopter::addFeedback()
+     */
+    void addFeedback(float sensors[MAX_SENSORS], float controls[], float feedbackControls[]);
 
-        /**
-         * @copydoc FullBicopter::getOutputs()
-         */
-        void getOutputs(float sensors[MAX_SENSORS], float controls[], float outputs[]);
-        
-        typedef struct custom_s {
-            bool info;
-        } custom_t;
-        // Contains all the ground station constants
-        custom_s customItems;
+    /**
+     * @copydoc FullBicopter::getOutputs()
+     */
+    void getOutputs(float sensors[MAX_SENSORS], float controls[], float outputs[]);
+    
+    typedef struct custom_s {
+        bool info;
+    } custom_t;
+    // Contains all the ground station constants
+    custom_s customItems;
 };
 
 

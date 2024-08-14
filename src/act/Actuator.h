@@ -13,26 +13,48 @@
 #define BLIMPSWARM_ACTUATOR_H
 
 class Actuator {
-    public:
-        Actuator(int pinVal) : min(0), max(1), offset(0), pin(pinVal){
-        }
+public:
+    /**
+     * @brief Construct a new Actuator object.
+     * 
+     * @param pinVal The pin used to actuate the component.
+     */
+    Actuator(int pinVal) : min(0), max(1), offset(0), pin(pinVal){
+    }
 
-        Actuator(int minVal, int maxVal, int offsetVal, int pinVal)
-                : min(minVal), max(maxVal), offset(offsetVal), pin(pinVal){
-        }
+    /**
+     * @brief Construct a new Actuator object.
+     * 
+     * @param minVal Minimum value that can be actuated.
+     * @param maxVal Maximum value that can be actuated.
+     * @param offsetVal Offset value to adjust the range.
+     * @param pinVal The pin used to actuate the component.
+     */
+    Actuator(int minVal, int maxVal, int offsetVal, int pinVal)
+            : min(minVal), max(maxVal), offset(offsetVal), pin(pinVal){
+    }
 
-        // Setter method for offset
-        void setOffset(int newOffset) {
-            offset = newOffset;
-        }
+    /**
+     * @brief Set the offset value.
+     * 
+     * @param newOffset The new offset value to be used.
+     */
+    void setOffset(int newOffset) {
+        offset = newOffset;
+    }
 
-        virtual void act(float value) = 0;
+    /**
+     * @brief Actuates the component.
+     * 
+     * @param value The value to actuate.
+     */
+    virtual void act(float value) = 0;
 
-    protected:
-        int min;
-        int max;
-        int offset;
-        int pin;
+protected:
+    int min;
+    int max;
+    int offset;
+    int pin;
 };
 
 
