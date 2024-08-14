@@ -107,14 +107,11 @@ def main():
                         serial.send_control_params(robots[4], (4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0))
 
                     if event.key == pygame.K_SPACE:
-                        
-                        for robot_mac in robots[:-2]:
-                            serial.send_control_params(robot_mac, (3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0))
-                            time.sleep(.1)
                         for robot_mac in robots:
+                            serial.send_control_params(robot_mac, (3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0))
+                            time.sleep(.2)
                             serial.send_control_params(robot_mac, (2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0))
                             time.sleep(.1)
-
                         ready[current_robot_index] = 2
                     elif event.key == pygame.K_p:
                         
@@ -135,7 +132,6 @@ def main():
                             serial.send_control_params(robot_mac, (3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0))
                             time.sleep(.1)
                     elif event.key == pygame.K_u:
-                        
                         for robot_mac in robots[:-2]:
                             serial.send_control_params(robot_mac, (2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0))
                             time.sleep(.1)       
