@@ -58,9 +58,7 @@ public:
     void startup() override;
     
     // Sensor interface
-    NiclaSuite sensorsuite; 
-
-    feedback_t PDterms;
+    NiclaSuite sensorsuite;
 
     // List of the variables that need persistant storage
     float z_integral = 0;

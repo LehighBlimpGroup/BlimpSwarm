@@ -91,8 +91,9 @@ public:
      */
     float clamp(float val, float minVal, float maxVal);
 
-private:
     feedback_t PDterms;
+
+private:
     float servoDiff = 0;
     BLMotor* motor1;
     BLMotor* motor2;

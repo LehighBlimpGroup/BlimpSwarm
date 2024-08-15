@@ -73,7 +73,7 @@ void LevyWalk::behavior(float sensors[], float controls[], float outControls[]) 
                 hist->z_estimator = terms.goal_height + random(-15000, 15000) / 10000.0f;
                 
             } else { // ball mode
-                hist->z_estimator = constrain(sensors[1] + random(-3000, 4001) / 10000.0, 1, terms.goal_height-1);
+                hist->z_estimator = constrain(sensors[1] + random(-12000, 15000) / 10000.0, 1, terms.goal_height-1);
                 if (hist->z_estimator >= terms.goal_height-1.5){
                     hist->z_estimator = 1;
                 }

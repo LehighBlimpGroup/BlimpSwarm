@@ -114,8 +114,10 @@ def main():
                             time.sleep(.1)
                         ready[current_robot_index] = 2
                     elif event.key == pygame.K_p:
-                        
+                        count = 0
                         for robot_mac in robots:
+                            ready[count] = 0
+                            count += 1
                             serial.send_control_params(robot_mac, (0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0))
                             time.sleep(.1)
                         ready[current_robot_index] = 0
@@ -127,9 +129,11 @@ def main():
                             time.sleep(.1)
                             
                     elif event.key == pygame.K_i:
-                        
+                        count = 0
                         for robot_mac in robots:
-                            serial.send_control_params(robot_mac, (3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0))
+                            ready[count] = 3
+                            count+=1
+                            serial.send_control_params(robot_mac, (3, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0))
                             time.sleep(.1)
                     elif event.key == pygame.K_u:
                         for robot_mac in robots[:-2]:
@@ -156,6 +160,10 @@ def main():
                                     height, tz = (sensors[0], sensors[1])
                                 
                                 print(f"Switched to robot {ROBOT_MAC}")
+                        else:
+                            serial.send_control_params(ROBOT_MAC, (5, fx_ave, height, 0, tz, 0, 0, 0, 0, 0, 0, 0, 0))
+                            current_robot_index = index
+                            ROBOT_MAC = "00:00:00:00:00:00"
             axis, buttons = joystick.getJoystickInputs()
 
             sensors = serial.getSensorData()
