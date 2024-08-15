@@ -3,112 +3,107 @@ from joystick.JoystickManager import JoystickManager
 import time
 
 
-# 1. 34:85:18:AC:C2:6C
-# 2. 34:85:18:91:38:60
-# 3. .
-# 4. 34:85:18:91:49:C0
-# 5. 34:85:18:91:B7:4C
-# 6. 34:85:18:91:CF:40
-# 7. 34:85:18:91:CE:FC
-# 8. .
-# 9. 34:85:18:AB:EF:E8
-# 10. 34:85:18:8D:A0:D4
+# 1:  34:85:18:8f:36:b0
+# 2:  34:85:18:91:24:f0
+# 3:  dc:54:75:d7:b3:e8
+# 4:  30:30:f9:34:66:fc
+# 5:  34:85:18:ac:c2:6c
+# 6:  34:85:18:91:ce:fc
+# 7:  34:85:18:91:cf:40
+# 8:  48:27:e2:e6:e0:1c
+# 9:  dc:da:0c:57:ae:2c
+# 10: 34:85:18:8d:a0:d4
+# 11: 34:85:18:8d:86:70
+# 12: 34:85:18:ab:ef:e8
+
+def send_preferences(serial, robot_mac, preferences):
+    for pref in preferences:
+        serial.send_preference(robot_mac, pref["data_type"], pref["key"], pref["value"])
 
 
-ROBOT_MAC = "DC:DA:0C:57:AE:2C"
-SERIAL_PORT = "COM16"
-PRINT_JOYSTICK = True
+ROBOT_MAC = "34:85:18:AC:C2:6C"
+SERIAL_PORT = "COM15"
+PRINT_JOYSTICK = False
 
 if __name__ == "__main__":
     # Communication
     serial = SerialController(SERIAL_PORT, timeout=.5)  # 5-second timeout
+    # Common preferences that apply to all robots if any
+    common_preferences = [
+        {"data_type": DataType_Boolean, "key": "zEn", "value": True},
+        {"data_type": DataType_Boolean, "key": "rollEn", "value": False},
+        {"data_type": DataType_Boolean, "key": "rotateEn", "value": False},
+        {"data_type": DataType_Boolean, "key": "pitchEn", "value": False},
+        {"data_type": DataType_Boolean, "key": "yawEn", "value": True},
+
+        {"data_type": DataType_Float, "key": "kpyaw", "value": 2},
+        {"data_type": DataType_Float, "key": "kppyaw", "value": 0.03},
+        {"data_type": DataType_Float, "key": "kdyaw", "value": 0.035},
+        {"data_type": DataType_Float, "key": "kddyaw", "value": 0.03},
+        {"data_type": DataType_Float, "key": "kiyaw", "value": 0},
+        {"data_type": DataType_Float, "key": "kiyawrate", "value": 0},
+
+        {"data_type": DataType_Float, "key": "yawrate_gamma", "value": 0.5},
+        {"data_type": DataType_Float, "key": "rollrate_gamma", "value": 0.85},
+        {"data_type": DataType_Float, "key": "pitchrate_gamma", "value": 0.7},
+
+        {"data_type": DataType_Float, "key": "kpz", "value": 0.7},
+        {"data_type": DataType_Float, "key": "kdz", "value": 1.2},
+        {"data_type": DataType_Float, "key": "kiz", "value": 0},
+
+        {"data_type": DataType_Float, "key": "kproll", "value": 0},
+        {"data_type": DataType_Float, "key": "kdroll", "value": 0},
+        {"data_type": DataType_Float, "key": "kppitch", "value": 0},
+        {"data_type": DataType_Float, "key": "kdpitch", "value": -0.3},
+
+        {"data_type": DataType_Float, "key": "z_int_low", "value": 0},
+        {"data_type": DataType_Float, "key": "z_int_high", "value": 0.15},
+        {"data_type": DataType_Float, "key": "yawRateIntRange", "value": 0},
+        {"data_type": DataType_Float, "key": "lx", "value": 0.15},
+        {"data_type": DataType_Float, "key": "servoRange", "value": 180},
+        {"data_type": DataType_Float, "key": "servoBeta", "value": -90},
+        {"data_type": DataType_Float, "key": "servo_move_min", "value": 0},
+        {"data_type": DataType_Float, "key": "botZlim", "value": -1},
+        {"data_type": DataType_Float, "key": "pitchOffset", "value": 0},
+        {"data_type": DataType_Float, "key": "pitchInvert", "value": -1},
+
+        {"data_type": DataType_Int, "key": "state_flag", "value": 0x40},
+        {"data_type": DataType_Int, "key": "num_captures", "value": 2},
+        {"data_type": DataType_Int, "key": "time_in_ball", "value": 500},
+        {"data_type": DataType_Float, "key": "goal_height", "value": 8},
+
+        {"data_type": DataType_Float, "key": "y_thresh", "value": 0.57},
+        {"data_type": DataType_Float, "key": "y_strength", "value": 3.5},
+        {"data_type": DataType_Float, "key": "x_strength", "value": 2},
+        {"data_type": DataType_Float, "key": "fx_togoal", "value": 0.3},
+        {"data_type": DataType_Float, "key": "fx_charge", "value": 0.5},
+        {"data_type": DataType_Float, "key": "fx_levy", "value": 0.5},
+        {"data_type": DataType_Int, "key": "n_max_x", "value": 240},
+        {"data_type": DataType_Int, "key": "n_max_y", "value": 160},
+        {"data_type": DataType_Float, "key": "h_ratio", "value": 0.8},
+        {"data_type": DataType_Float, "key": "range_for_forward", "value": 0.12},
+
+        {"data_type": DataType_Float, "key": "by_thresh", "value": 0.15},
+        {"data_type": DataType_Float, "key": "by_strength", "value": 1.5},
+        {"data_type": DataType_Float, "key": "bx_strength", "value": 1.1},
+        {"data_type": DataType_Float, "key": "bfx_togoal", "value": 0.15},  # 0.11
+        {"data_type": DataType_Float, "key": "bfx_charge", "value": 0.8},  # 0.4
+        {"data_type": DataType_Float, "key": "bfx_levy", "value": .3},  # 0.3
+        {"data_type": DataType_Int, "key": "bn_max_x", "value": 240},
+        {"data_type": DataType_Int, "key": "bn_max_y", "value": 160},
+        {"data_type": DataType_Float, "key": "bh_ratio", "value": 0.46},
+        {"data_type": DataType_Float, "key": "brange_for_forward", "value": 0.15}
+    ]
+
+    # Sending common preferences to robot
     serial.manage_peer("A", ROBOT_MAC)
     serial.manage_peer("G", ROBOT_MAC)
-    time.sleep(.05)
-    serial.send_preference(ROBOT_MAC, DataType_Boolean, "zEn", True)
-    serial.send_preference(ROBOT_MAC, DataType_Boolean, "rollEn", False)
-    serial.send_preference(ROBOT_MAC, DataType_Boolean, "rotateEn", False)
-    serial.send_preference(ROBOT_MAC, DataType_Boolean, "pitchEn", False)
-    serial.send_preference(ROBOT_MAC, DataType_Boolean, "yawEn", True)
-    serial.send_preference(ROBOT_MAC, DataType_Boolean, "calibrate", False)
-
-    # // PID terms
-    serial.send_preference(ROBOT_MAC, DataType_Float, "kpyaw", 2)  # 2
-    serial.send_preference(ROBOT_MAC, DataType_Float, "kppyaw", 0.05)  # .1
-    serial.send_preference(ROBOT_MAC, DataType_Float, "kdyaw", .05)  # .1
-    serial.send_preference(ROBOT_MAC, DataType_Float, "kddyaw", 0.05)  # .1
-    serial.send_preference(ROBOT_MAC, DataType_Float, "kiyaw", 0)
-    serial.send_preference(ROBOT_MAC, DataType_Float, "kiyawrate", 0)
-
-    serial.send_preference(ROBOT_MAC, DataType_Float, "yawrate_gamma", 0.5)
-    serial.send_preference(ROBOT_MAC, DataType_Float, "rollrate_gamma", 0.85)
-    serial.send_preference(ROBOT_MAC, DataType_Float, "pitchrate_gamma", 0.7)
-
-    serial.send_preference(ROBOT_MAC, DataType_Float, "kpz", 0.3)
-    serial.send_preference(ROBOT_MAC, DataType_Float, "kdz", 0.8)
-    serial.send_preference(ROBOT_MAC, DataType_Float, "kiz", 0.1)
-
-    serial.send_preference(ROBOT_MAC, DataType_Float, "kproll", 0)
-    serial.send_preference(ROBOT_MAC, DataType_Float, "kdroll", 0.2)
-    serial.send_preference(ROBOT_MAC, DataType_Float, "kppitch", 0)
-    serial.send_preference(ROBOT_MAC, DataType_Float, "kdpitch", .4)
-
-    # // Range terms for the integrals
-    serial.send_preference(ROBOT_MAC, DataType_Float, "z_int_low", 0.0)
-    serial.send_preference(ROBOT_MAC, DataType_Float, "z_int_high", 0.15)
-    serial.send_preference(ROBOT_MAC, DataType_Float, "yawRateIntRange", 0.1)
-
-    # // radius of the blimp
-    serial.send_preference(ROBOT_MAC, DataType_Float, "lx", 0.15)
-
-    serial.send_preference(ROBOT_MAC, DataType_Float, "servoRange", 260)  # degrees
-    serial.send_preference(ROBOT_MAC, DataType_Float, "servoBeta", 90)  # degrees
-    serial.send_preference(ROBOT_MAC, DataType_Float, "servo_move_min", 0)  # degrees
-
-    serial.send_preference(ROBOT_MAC, DataType_Float, "botZlim", -1)
-    serial.send_preference(ROBOT_MAC, DataType_Float, "pitchOffset", 0)  # degrees
-    serial.send_preference(ROBOT_MAC, DataType_Float, "pitchInvert", -1)  # degrees
-
-    # nicla parameters
-    serial.send_preference(ROBOT_MAC, DataType_Int, "state_flag", 0x80)
-    serial.send_preference(ROBOT_MAC, DataType_Int, "num_captures", 4)  # number of ball captures before going to goal
-    serial.send_preference(ROBOT_MAC, DataType_Int, "time_in_ball", 30)  # in seconds
-    serial.send_preference(ROBOT_MAC, DataType_Float, "goal_height", 5)  # in meters
-
-    # goals
-    serial.send_preference(ROBOT_MAC, DataType_Float, "y_thresh", 0.55)
-    serial.send_preference(ROBOT_MAC, DataType_Float, "y_strength", 3)
-    serial.send_preference(ROBOT_MAC, DataType_Float, "x_strength", 1)
-
-    serial.send_preference(ROBOT_MAC, DataType_Float, "fx_togoal", 0.2)
-    serial.send_preference(ROBOT_MAC, DataType_Float, "fx_charge", 0.35)
-    serial.send_preference(ROBOT_MAC, DataType_Float, "fx_levy", 0.2)
-
-    serial.send_preference(ROBOT_MAC, DataType_Int, "n_max_x", 240)
-    serial.send_preference(ROBOT_MAC, DataType_Int, "n_max_y", 160)
-    serial.send_preference(ROBOT_MAC, DataType_Float, "h_ratio", 0.8)
-    serial.send_preference(ROBOT_MAC, DataType_Float, "range_for_forward", 0.16)
-
-    # balloons
-    serial.send_preference(ROBOT_MAC, DataType_Float, "by_thresh", 0.42)
-    serial.send_preference(ROBOT_MAC, DataType_Float, "by_strength", 5)
-    serial.send_preference(ROBOT_MAC, DataType_Float, "bx_strength", 2)
-
-    serial.send_preference(ROBOT_MAC, DataType_Float, "bfx_togoal", .15)
-    serial.send_preference(ROBOT_MAC, DataType_Float, "bfx_charge", 0.05)
-    serial.send_preference(ROBOT_MAC, DataType_Float, "bfx_levy", 0.1)
-
-    serial.send_preference(ROBOT_MAC, DataType_Int, "bn_max_x", 240)
-    serial.send_preference(ROBOT_MAC, DataType_Int, "bn_max_y", 160)
-    serial.send_preference(ROBOT_MAC, DataType_Float, "bh_ratio", 0.8)
-
-    serial.send_preference(ROBOT_MAC, DataType_Float, "brange_for_forward", 0.16)
-
-    serial.send_control_params(ROBOT_MAC, (0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0))
+    # Send common preferences
+    send_preferences(serial, ROBOT_MAC, common_preferences)
     time.sleep(.2)
 
     # Joystick
-    joystick = JoystickManager()
+    joystick = JoystickManager(1)
 
     sensors = serial.getSensorData()
     height = 0
