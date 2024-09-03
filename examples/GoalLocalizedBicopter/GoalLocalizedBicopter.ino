@@ -42,12 +42,16 @@ float senses[myRobot->MAX_SENSORS];
 // bool verbose = false;
 const float scale = .0001;
 float Q_val = 500 * scale;
-float R_val = 100000 * scale;
+float R_val = 1000000 * scale;
 float P_val = 2000 * scale;
 float Pv_val = 200 * scale;
 const float width = 30.0 * scale;
 const float height = 12.5 * scale;
 State state;
+float x_vel = 0;
+float y_vel = 0;
+float vel_gamma = .9;
+
 float kal_x = 0;
 float kal_y = 0; 
 float kal_eig0 = 10; 
@@ -216,11 +220,11 @@ int kalFlag = -1;
 void kalmanUpdate() {
   float dt = (micros() - startTime)/1000000.0;
   startTime = micros();
-  state.angle = senses[5] * 3.14159f / 180.0f; //yaw
+  state.angle = senses[5] *180.0f/ 3.14159f; //yaw
   state.distance_to_wall = 0;
   state.wall_id = 0;
   state.test = 0;
-  if (kalFlag == senses[niclaOffset] && senses[niclaOffset] < 257) {
+  if (kalFlag != senses[niclaOffset] && senses[niclaOffset] < 257) {
     state.test = 1;
   }
   kalFlag = senses[niclaOffset];
@@ -234,16 +238,20 @@ void kalmanUpdate() {
   
   // Update angles_to_shapes
   for (int i = 0; i < 2; i++) {
-      state.angles_to_shapes[i] = (senses[niclaOffset + i*3 + 1]-120)/120.0f * 45;
+      state.angles_to_shapes[i] = (senses[niclaOffset + i*3 + 1]-120)/120.0f * 30;
       if (senses[niclaOffset + i*3 + 1] != 0 && senses[niclaOffset + i*3 + 2] != 0){
         state.shapes_in_range_count += 1;
       }
   }
 
   BLA::Matrix<2, 1> u;
+  float forward_accel = cmd.params[1]; // fx value
+  float angle = senses[5];
   u.Fill(0);
-  u(0, 0) = 0 * scale / dt;
-  u(1, 0) = 0 * scale / dt;
+  x_vel = x_vel * vel_gamma - forward_accel * sin(angle) * (1-vel_gamma);
+  y_vel = y_vel * vel_gamma - forward_accel * cos(angle) * (1-vel_gamma);
+  u(0, 0) =  x_vel * scale;
+  u(1, 0) = y_vel * scale;
   kalman_handler->update(state, u, dt);
 
 

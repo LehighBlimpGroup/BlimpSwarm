@@ -59,8 +59,8 @@ def main():
             # Control inputs to the robot
             height += -axis[0] * dt if abs(axis[0]) >= 0.15 else 0
             height = max(min(height, 15), -3)
-            tz += -axis[4] * 1.2 * dt if abs(axis[4]) >= 0.15 else 0
-            fx = (-axis[2] + axis[5]) * 0.2
+            tz += -axis[4] * .8 * dt if abs(axis[4]) >= 0.15 else 0
+            fx = (-axis[2] + axis[5]) * -0.4
             fx_ave = fx_ave * 0.8 + fx * 0.2
 
             # Retrieve sensor data
@@ -82,7 +82,7 @@ def main():
                     ell = (ell_major , ell_minor , ell_angle)
                     simulator.robot_x = kalman_x* scale
                     simulator.robot_y = kalman_y * scale
-                    simulator.robot_angle = robot_yaw
+                    simulator.robot_angle = robot_yaw + 90
             simulator.simulate(x=x * scale, ell=ell)
 
             # Update GUI and send control parameters
