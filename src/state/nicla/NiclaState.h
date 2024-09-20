@@ -1,119 +1,88 @@
+/**
+ * @file NiclaState.h
+ * @author Swarms Lab
+ * @brief Class that contains the 'structure' of the nicla state, any function that needs to be called by any state, 
+ * as well as organizing the state parameters and history values from the NiclaConfig.h file.
+ * @version 0.1
+ * @date 2024-01-01
+ * 
+ * @copyright Copyright (c) 2024
+ * 
+ */
+
+#ifndef NICLA_STATE
+#define NICLA_STATE
 
 #include "state/RobotStateMachine.h"
 #include "state/nicla/NiclaConfig.h"
 
 
-// the basic fundamental class of Nicla State
+// Offset to find the flags sent from the Nicla Vision
+#define NICLA_OFFSET 11
+#define BALLOON_MODE 0x40
+#define GOAL_MODE 0x80
+#define DETECTED 0b11
+
 class NiclaState : public RobotState {
-protected:
+    public:
+        /**
+         * @brief Construct a new Nicla State object. Also gathers the config file data.
+         * 
+         */
+        NiclaState();
 
-    hist_t* hist;
-    nicla_t terms; 
-    
+        /**
+         * @brief Function to update state based on sensors and controls.
+         * 
+         * @param sensors Values received from the sensors attacted to the robot
+         * @param controls Control commands from the ground station
+         * @param outControls Result of conversion from control commands to proper behavior of state
+         * @return RobotState* Returns a RobotState representing the state of the robot
+         */
+        RobotState* update(float sensors[], float controls[], float outControls[]);
 
-    int detected(float sensors[]) ;
-    bool closeToGoal(float sensors[]) ;
-    
-    virtual RobotState* statetransitions(float sensors[], float controls[]) = 0;
-    virtual void behavior(float sensors[], float controls[], float outControls[]) = 0;
-public:
-    NiclaState();
+    protected:
+        // Variable that keeps track of prior sensor values
+        hist_t* hist;
+        // Additional parameter values to be stored in non-volatile part of ESP32 memory
+        // Unlike other parameter values, these values change based on the state of the robot
+        nicla_t terms; 
 
-    // function to update state based on sensors and controls
-    RobotState* update(float sensors[], float controls[], float outControls[]) ;
+        /**
+         * @brief Function that checks a flag indicating whether the Nicla has detected a desired object.
+         * Detects the positive and negative edges of a new image.
+         * 
+         * @param sensors Values representing the flags from the sensors and Nicla Vision
+         * @return int Integer representing whether an object was detected
+         */
+        int detected(float sensors[]);
+
+        /**
+         * @brief Detects whether a robot is a certain distance to a target.
+         * 
+         * @param sensors Values representing the flags from the sensors and Nicla Vision
+         * @return true Robot is past the threshold
+         * @return false Robot is not past the threshold
+         */
+        bool closeToGoal(float sensors[]);
+        
+        /**
+         * @brief Function that evaluates and determines the state that the robot should be in.
+         * 
+         * @param sensors Values representing the flags from the sensors and Nicla Vision
+         * @param controls Control commands from the ground station
+         * @return RobotState* Returns a RobotState representing the state of the robot
+         */
+        virtual RobotState* statetransitions(float sensors[], float controls[]) = 0;
+
+        /**
+         * @brief Function that represents how a robot should behave in it's current state.
+         * 
+         * @param sensors Values representing the flags from the sensors and Nicla Vision
+         * @param controls Control commands from the ground station
+         * @param outControls Result of conversion from control commands to proper behavior of state
+         */
+        virtual void behavior(float sensors[], float controls[], float outControls[]) = 0;
 };
 
-
-// activates a random walk algorith which excels in uncertain environments
-class LevyWalk : public NiclaState {
-protected:
-    unsigned long SpiralTimer = 0;
-    unsigned long levyDuration = 0;
-    float levyYaw = 0;
-    float yawCurr = 0;
-    unsigned long levyTimer = 0;
-    float yawProgress; // Variable to track the progressive change in yaw
-
-    unsigned long spinTimer; // Timer for spinning
-    unsigned long spinDuration = 20000; // Duration for a full 360 spin in milliseconds
-    bool isSpinning = true; // Flag to indicate spinning state
-
-    unsigned angleChangeCount;
-    int currentDirection;
-    float angleProgress, yawRate = 0.;
-
-
-    
-    float currentYaw = 0;  // Current yaw in action
-    
-    RobotState* statetransitions(float sensors[], float controls[]) ;
-
-    // levy walk is a random levy walk algorithm which is good for 'hunting' in a random environment
-    void behavior(float sensors[], float controls[], float outControls[]) ;
-
-
-public:
-    LevyWalk();
-};
-
-// activates a spiral algorithm which systematically searches
-class Spiral : public NiclaState {
-protected:
-    unsigned long spiralDuration = 0;
-    float SpiralYaw = 0;
-    unsigned long SpiralTimer = 0;
-    
-    RobotState* statetransitions(float sensors[], float controls[]) ;
-
-    // levy walk is a random levy walk algorithm which is good for 'hunting' in a random environment
-    void behavior(float sensors[], float controls[], float outControls[]) ;
-
-
-public:
-    Spiral();
-};
-
-
-// actively moves towards a detected goal
-class MoveToGoal : public NiclaState {
-protected:
-    bool start = true;
-    RobotState* statetransitions(float sensors[], float controls[]) ;
-
-    // moves towards the observed goal in the environment
-    void behavior(float sensors[], float controls[], float outControls[]) ;
-
-
-public:
-    MoveToGoal();
-};
-
-
-// Uses manual commands from ground station
-class ManualState : public NiclaState {
-protected:
-    
-    RobotState* statetransitions(float sensors[], float controls[]) ;
-
-    // moves towards the observed goal in the environment
-    void behavior(float sensors[], float controls[], float outControls[]) ;
-
-
-public:
-    ManualState();
-};
-
-
-// passively charges towards goal location
-class ChargeGoal : public NiclaState {
-protected:
-    unsigned long charge_timer = 0;
-    RobotState* statetransitions(float sensors[], float controls[]) ;
-
-    // moves towards the observed goal in the environment
-    void behavior(float sensors[], float controls[], float outControls[]) ;
-
-
-public:
-    ChargeGoal();
-};
+#endif // NICLA_STATE

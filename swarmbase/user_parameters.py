@@ -2,12 +2,15 @@
 ## (you can get it by running your arduino and looking at the serial monitor for your flying drone) ##
 
 
-ROBOT_MAC ="34:85:18:8F:36:B0"#"DC:DA:0C:57:4B:94" # "30:30:F9:34:66:FC"
-ROBOT_MACS =["34:85:18:AC:C2:6C", "48:27:E2:E6:EC:CC"]### Insert your SERIAL PORT here ###
+
+ROBOT_MAC ="34:85:18:91:b7:4c"#"DC:DA:0C:57:4B:94" # "30:30:F9:34:66:FC" #, "34:85:18:ab:fe:68"
+ROBOT_MACS =["48:27:e2:e6:ec:cc"]### Insert your SERIAL PORT here ###
+#"34:85:18:91:b7:4c", "34:85:18:ab:fe:68", "34:85:18:91:ce:fc",
 ## may look like "COM5" in windows or "/dev/tty.usbmodem14301" in mac  #
 ## look in arduino for the port that your specific transeiver is connected to  ##
 ## Note: make sure that your serial monitor is OFF in arduino or else you will get "access is denied" error. ##
-SERIAL_PORT = "COM15"
+SERIAL_PORT = "COM17"
+
 
 PUMP_MAC = "48:27:E2:E6:E6:44"
 

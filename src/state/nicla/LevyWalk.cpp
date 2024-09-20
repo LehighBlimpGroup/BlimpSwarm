@@ -1,24 +1,32 @@
-
-
-
-#include "state/nicla/NiclaState.h"
+/**
+ * @file LevyWalk.cpp
+ * @author Edward Jeff
+ * @brief Implementation of LevyWalk.h
+ * @version 0.1
+ * @date 2024-01-01
+ * 
+ * @copyright Copyright (c) 2024
+ * 
+ */
+#include "state/nicla/LevyWalk.h"
+#include "state/nicla/ManualState.h"
+#include "state/nicla/MoveToGoal.h"
 
 RobotState* LevyWalk::statetransitions(float sensors[], float controls[]) {
     if (controls[0] < 2){
+        // If the ground station requests the robot to transition to manual
         hist->z_estimator = sensors[1];
         RobotState* manualState = new ManualState();
         return manualState;
-    }
-    else if (terms.state != hist->nicla_desired) {
-        
+    } else if (terms.state != hist->nicla_desired) {
+        // If the current state is different than the desired state
         RobotState* levyWalk = new LevyWalk();
         return levyWalk;
-    }
-    else if (detected(sensors)) {        
+    } else if (detected(sensors)) {  
+        // If the target is detected
         float _yaw = sensors[5];
-        
-        int nicla_flag = (int)sensors[11 + 0];
-        float tracking_x = (float)sensors[11 + 1];
+        int nicla_flag = (int)sensors[NICLA_OFFSET + 0];
+        float tracking_x = (float)sensors[NICLA_OFFSET + 1];
         
         float x_cal = tracking_x / terms.n_max_x; // normalizes the pixles into a value between [0,1]
 
@@ -28,26 +36,17 @@ RobotState* LevyWalk::statetransitions(float sensors[], float controls[]) {
         RobotState* moveToGoal = new MoveToGoal();
         return moveToGoal;
     } else if (millis() - hist->start_ball_time > terms.time_in_ball * 1000) {
+        // If the robot has been in LevyWalk state for more than the designated time
         hist->num_captures = 0;
         hist->nicla_desired = 1;
         hist->start_ball_time = millis();
         return this;
-    }
-    else {
+    } else {
         return this; //pointer to itself
     }
 }
 
-// levy walk is a random levy walk algorithm which is good for 'hunting' in a random environment
 void LevyWalk::behavior(float sensors[], float controls[], float outControls[]) {
-    
-    
-    
-    // const unsigned long spinDuration = 20000;  // Duration of the spin in milliseconds
-    // static unsigned long SpiralTimer = millis();
-    // static unsigned long levyTimer = millis();
-    // static bool isSpinning = true;
-
     unsigned long currentTime = millis();
 
     // Spiral state
@@ -74,9 +73,10 @@ void LevyWalk::behavior(float sensors[], float controls[], float outControls[]) 
                 hist->z_estimator = terms.goal_height + random(-15000, 15000) / 10000.0f;
                 
             } else { // ball mode
-                hist->z_estimator = constrain(sensors[1] + random(-3000, 4001) / 10000.0, 1, terms.goal_height-1);
-                if (hist->z_estimator >= terms.goal_height-1.5){
-                    hist->z_estimator = 1;
+                float d = random(-12000, 15000) / 10000.0;
+                hist->z_estimator = constrain(sensors[1] + d, 1, terms.goal_height-1);
+                if (sensors[1] >= terms.goal_height-1.5 || sensors[1] <= 1){
+                    hist->z_estimator = (terms.goal_height-1)/2;
                 }
             }
         }

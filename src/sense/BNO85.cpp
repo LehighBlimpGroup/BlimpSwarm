@@ -1,3 +1,13 @@
+/**
+ * @file BNO85.cpp
+ * @author David Saldana
+ * @brief Implementation of BNO85.h
+ * @version 0.1
+ * @date 2024-07-15
+ * 
+ * @copyright Copyright (c) 2024
+ * 
+ */
 #include "BNO85.h"
 
 BNO85::BNO85() {

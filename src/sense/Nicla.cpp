@@ -1,6 +1,13 @@
-//
-// Created by eddie on 3/12/24.
-//
+/**
+ * @file Nicla.cpp
+ * @author Edward Jeff
+ * @brief Implementation of Nicla.h
+ * @version 0.1
+ * @date 2024-03-12
+ * 
+ * @copyright Copyright (c) 2024
+ * 
+ */
 
 #include "Nicla.h"
 
@@ -17,8 +24,6 @@ void Nicla::startup() {
     MySerial0.begin(115200, SERIAL_8N1, -1, -1);
     IBus.begin(MySerial0, IBUSBM_NOTIMER);
     IBus.loop();
-    // mode = 0x80; //balloon detection
-    //mode = 0x81; //goal detection
     MySerial0.write(mode); 
     sendTime = micros();
 }
@@ -34,15 +39,8 @@ void Nicla::startup(uint8_t setMode) {
 }
 
 //data = [flag, x_roi, y_roi, w_roi, h_roi, x_value, y_value, w_value, h_value, dis]
-bool Nicla::update() {
-    
+bool Nicla::update() { 
     IBus.loop();
-    // check to see if the data is new
-    // if (value[5] == (float)IBus.readChannel(5) && value[6] == (float)IBus.readChannel(6)) {
-    //     return false;
-    // } else if (IBus.readChannel(0) == 3) { // check to see if the nicla registers a detection
-    //     return false;
-    // }
 
     for (int i = 0; i < 10; i++){
         value[i] = (float)IBus.readChannel(i);
@@ -52,11 +50,6 @@ bool Nicla::update() {
 
 //data = [flag, x_roi, y_roi, w_roi, h_roi, x_value, y_value, w_value, h_value, dis]
 bool Nicla::update(uint8_t setMode) {
-    // if (setMode != mode) {
-    //     mode = setMode;
-    //     MySerial0.write(mode); 
-    //     sendTime = micros();
-    // }
     MySerial0.write(setMode); 
 
     return Nicla::update();
@@ -71,5 +64,4 @@ float* Nicla::readValues(int& count) {
 
 void Nicla::getPreferences(){
     return;
-
 }

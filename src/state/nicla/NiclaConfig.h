@@ -1,45 +1,64 @@
+/**
+ * @file NiclaConfig.h
+ * @author David Saldana
+ * @brief Configuration file containing functions and variables to store parameters 
+ * for the Nicla Vision and State Machine
+ * @version 0.1
+ * @date 2024-01-01
+ * 
+ * @copyright Copyright (c) 2024
+ * 
+ */
 #pragma once
 
-#include "state/IConfig.h"
 #include <Preferences.h>
+#include "state/IConfig.h"
+#include "util/DataTypes.h"
 
-// nicla_t definition
-typedef struct {
-    bool state;
-    int n_max_x, n_max_y;
-    float fx_togoal, fx_charge, fx_levy;
-    float h_ratio, y_thresh, y_strength, x_strength;
-    float range_for_forward;
-    int num_captures, time_in_ball, goal_height;
-} nicla_t;
-
-typedef struct {
-    float last_detection_w = 0;
-    float last_detection_h = 0;
-    float last_tracking_x = 0;
-    float last_tracking_y = 0;
-    float des_yaw = 0;
-    float robot_to_goal = 0;
-    float z_estimator = 0;
-    float forward_force = 0;
-    int nicla_flag = 0x40;
-    bool nicla_desired = 1;
-    int num_captures = 0;
-    float goal_direction = -5;
-    unsigned long start_ball_time; 
-} hist_t;
 
 class NiclaConfig : public IConfig<nicla_t> {
-    private:
-        NiclaConfig();
-        static NiclaConfig* instance;
-        nicla_t configData;
-        nicla_t configDatab;
-        hist_t historyData;
-
     public:
+        /**
+         * @brief Loads the Nicla parameters saved onto the ESP32 into local variables
+         * 
+         */
         void loadConfiguration() override;
+
+        /**
+         * @brief Selects the specific parameters based on the current state of the robot
+         * 
+         * @return const nicla_t& Returns the specific parameters based on state
+         */
         const nicla_t& getConfiguration() const override;
+
+        /**
+         * @brief Gets the values that were previously stored
+         * 
+         * @return hist_t* Returns a pointer to the struct containing the prior values
+         */
         hist_t* getDynamicHistory();
+
+        /**
+         * @brief Creates and instance of the NiclaConfig type if it doesn't exist already
+         * 
+         * @return NiclaConfig* Returns a pointer to a new NiclaConfig struct
+         */
         static NiclaConfig* getInstance();
+    private:
+        /**
+         * @brief Construct a new Nicla Config object
+         * 
+         */
+        NiclaConfig();
+
+        static NiclaConfig* instance;
+
+        // Config data for goal mode
+        nicla_t configData;
+
+        // Config data for ball mode
+        nicla_t configDatab;
+
+        // Data type to store variables from the previous iteration
+        hist_t historyData;
 };

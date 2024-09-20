@@ -6,7 +6,7 @@
 
 #include "BlimpSwarm.h"
 #include "robot/RobotFactory.h"
-#include "state/nicla/NiclaState.h"
+#include "state/nicla/ManualState.h"
 #include "comm/BaseCommunicator.h"
 #include "comm/LLC_ESPNow.h"
 #include "util/Print.h"
@@ -62,7 +62,7 @@ void setup() {
     myRobot->startup();
 
     nicla = &(myRobot->sensorsuite);
-    stateMachine = new RobotStateMachine(new LevyWalk());
+    stateMachine = new RobotStateMachine(new ManualState());
     
     paramUpdate();
     hist->nicla_flag = 0x80;
@@ -95,14 +95,14 @@ void loop() {
     Serial.println("Sending Feedback.");
     bool sent = baseComm->sendMeasurements(&rcv);
     cmd.params[0] = 1; // temp assign manual control with these new params for retaining stillness
-    cmd.params[2] += senses[1]; // set height to height
-    cmd.params[4] += senses[5]; // set yaw to yaw
+    cmd.params[2] = senses[1]; // set height to height
+    cmd.params[4] = senses[5]; // set yaw to yaw
   } else if(cmd.params[0] == 5 && cmd.params[6] == 0) {
     rcv.flag = 0;
     Serial.println("Stopping Feedback");
     cmd.params[0] = 1; // temp assign manual control with these new params for retaining stillness
-    cmd.params[2] += senses[1]; // set height to height
-    cmd.params[4] += senses[5]; // set yaw to yaw
+    cmd.params[2] = senses[1]; // set height to height
+    cmd.params[4] = senses[5]; // set yaw to yaw
   } else if (cmd.params[6] == 1){
     rcv.flag = 1;
     rcv.values[0] = senses[1];  //height

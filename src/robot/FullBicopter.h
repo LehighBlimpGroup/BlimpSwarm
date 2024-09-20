@@ -1,6 +1,13 @@
-//
-// Created by edward on 3/1/24.
-//
+/**
+ * @file FullBicopter.h
+ * @author Edward Jeff
+ * @brief Robot class that includes all aspect of robot including motors, servos, IMU, and Nicla Vision
+ * @version 0.1
+ * @date 2024-03-01
+ * 
+ * @copyright Copyright (c) 2024
+ * 
+ */
 
 #ifndef BLIMPSWARM_FULLBICOPTER_H
 #define BLIMPSWARM_FULLBICOPTER_H
@@ -16,46 +23,69 @@
 
 class FullBicopter : public RawBicopter {
 public:
+    /**
+     * @brief Construct a new Full Bicopter object.
+     * Initializes the actuator, sensors, and the Nicla Vision.
+     * 
+     */
     FullBicopter();
-    int sense(float sensors[MAX_SENSORS]) override;
-    bool control(float sensors[MAX_SENSORS], float controls[], int size ) override;
-    void getPreferences() override;
-    void startup() override;
 
-    typedef struct feedback_s {
-        bool zEn, yawEn, rollEn, pitchEn, rotateEn;
-        float kpyaw, kppyaw, kdyaw, kddyaw, kiyaw, kiyawrate, yawRateIntRange;
-        float kpz, kdz, kiz, z_int_low, z_int_high;
-        float kproll, kdroll, kppitch, kdpitch;
-        float servoBeta, servoRange, servo_move_min, botZlim, pitchOffset, pitchInvert;
-        float lx;
-    } feedback_t;
+    /**
+     * @copydoc RawBicopter::sense()
+     * 
+     * @brief Reads all the values from the sensors on the main board. Includes the BNO and BMP.
+     */
+    int sense(float sensors[MAX_SENSORS]) override;
+
+    /**
+     * @copydoc RawBicopter::control()
+     * 
+     * @brief Takes the raw commands, adds feedback to those commands,
+     * and then calculates the values to actuate.
+     */
+    void control(float sensors[MAX_SENSORS], float controls[], int size) override;
+
+    /**
+     * @copydoc RawBicopter::getPreferences()
+     * 
+     */
+    void getPreferences() override;
+
+    /**
+     * @copydoc RawBicopter::startup()
+     * 
+     */
+    void startup() override;
     
     // Sensor interface
-    NiclaSuite sensorsuite; 
-
-    feedback_t PDterms;
+    NiclaSuite sensorsuite;
 
     // List of the variables that need persistant storage
     float z_integral = 0;
     float yaw_integral = 0;
     float yawrate_integral = 0;
-    float servoDiff = 0;//2*PI - PDterms.servoRange * PI/180;
     float servo_old1 = 0;
     float servo_old2 = 0;
     
 
 private:
-
+    /**
+     * @brief Applies controllers based on the values retrieved from the sensors.
+     * 
+     * @param sensors Float array of values received from sensors
+     * @param controls Float array of values received from controller input
+     * @param feedbackControls The resulting control array after input is added
+     */
     void addFeedback(float sensors[MAX_SENSORS], float controls[], float feedbackControls[]);
+
+    /**
+     * @brief Controls the outputs after feedback to send them to the actuators
+     * 
+     * @param sensors Float array of values received from sensors
+     * @param controls Float array of values received from controller input
+     * @param outputs The resulting control array after controlled
+     */
     void getOutputs(float sensors[MAX_SENSORS], float controls[], float outputs[]);
-
-    float clamp(float val, float minVal, float maxVal);
-    float adjustAngle(float angle);
-
-    // Contains all the ground station constants
-
-    
 };
 
 

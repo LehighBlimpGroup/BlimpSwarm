@@ -5,7 +5,9 @@ from joystick.JoystickManager import JoystickManager
 import time
 
 ROBOT_MAC = "48:27:E2:E6:E0:1C"
+
 SERIAL_PORT = "COM18"
+
 PRINT_JOYSTICK = True
 
 if __name__ == "__main__":
@@ -34,10 +36,11 @@ if __name__ == "__main__":
             
 
             #### CONTROL INPUTS to the robot here #########
-            m1 = axis[2]  # Motor 1: a value between 0-1
-            m2 = axis[5]  # Motor 2: a value between 0-1
+            k = -0.6
+            m1 = max(-1, min(axis[2], k))  # Motor 1: a value between 0-1
+            m2 = max(-1, min(axis[5], k))  # Motor 2: a value between 0-1
             s1 = axis[3]  # Servo 1: a value between 0-180
-            s2 = axis[0]  # Servo 2: a value between 0-180
+            s2 = -1*axis[0]  # Servo 2: a value between 0-180
             ready = 1
             
             # Send through serial port

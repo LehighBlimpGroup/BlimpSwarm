@@ -1,6 +1,13 @@
-//
-// Created by dav on 1/20/24.
-//
+/**
+ * @file SBlimp.cpp
+ * @author David Saldana
+ * @brief Impementation of SBlimp.h
+ * @version 0.1
+ * @date 2024-01-20
+ * 
+ * @copyright Copyright (c) 2024
+ * 
+ */
 
 
 #include "SBlimp.h"
@@ -19,12 +26,12 @@ SBlimp::SBlimp(){
 
 void SBlimp::startup() {
 
-    motor1 = new BLMotor(0, 1, 0, THRUST1, 50);
-    motor2 = new BLMotor(0, 1, 0, THRUST2, 50);
-    motor3 = new BLMotor(0, 1, 0, SERVO1, 55);
-    motor4 = new BLMotor(0, 1, 0, SERVO2, 58);
+    motor1 = new BLMotor(1100, 2000, 0, THRUST1, 50);
+    motor2 = new BLMotor(1100, 2000, 0, THRUST2, 50);
+    motor3 = new BLMotor(1100, 2000, 0, SERVO1, 55);
+    motor4 = new BLMotor(1100, 2000, 0, SERVO2, 58);
     // On board LED light
-    led = new LED(0, 1, 0, LED_BUILTIN);
+    led = new LED(LED_BUILTIN);
 
 
     ESP32PWM::allocateTimer(0);
@@ -42,10 +49,7 @@ void SBlimp::startup() {
     }
     else {
         // Arm brushless motors
-        motor1->arm();
-        motor2->arm();
-        motor3->arm();
-        motor4->arm();
+        arm();
     }
     preferences.end(); //true means read-only
 }
@@ -56,19 +60,17 @@ int SBlimp::sense(float sensors[MAX_SENSORS]) {
     return 0; // Placeholder return value
 }
 
-bool SBlimp::actuate(const float actuators[], int size) {
+void SBlimp::actuate(const float actuators[], int size) {
     motor1->act(actuators[0]);
     motor2->act(actuators[1]);
     motor3->act(actuators[2]);
     motor4->act(actuators[3]);
     led->act(actuators[4]);
-
-    return true;
 }
 
 
-bool SBlimp::control(float sensors[MAX_SENSORS], float controls[], int size) {
-    return SBlimp::actuate(controls, size);
+void SBlimp::control(float sensors[MAX_SENSORS], float controls[], int size) {
+    SBlimp::actuate(controls, size);
 }
 
 void SBlimp::getPreferences() {
@@ -85,9 +87,6 @@ void SBlimp::getPreferences() {
 }
 
 void SBlimp::calibrate(){
-//    motor1->calibrate();
-//    motor2->calibrate();
-
 
     delay(1000);
     Serial.println("Calibrating ESCs....");
@@ -108,17 +107,29 @@ void SBlimp::calibrate(){
     delay(1000);
     Serial.println("Calibration completed");
 }
-//void RawBicopter::testActuators(float actuationCmd[4]) {
-//    int servo_delta = 1;
-//    int motor_delta = 10;
-//
-//    if (actuationCmd[0] < 180) {
-//        actuationCmd[0] += servo_delta;
-//    } else if (actuationCmd[1] < 180) {
-//        actuationCmd[1] += servo_delta;
-//    } else if (actuationCmd[2] < 2000) {
-//        actuationCmd[2] += motor_delta;
-//    } else if (actuationCmd[3] < 2000) {
-//        actuationCmd[3] += motor_delta;
-//
-//}
+
+void SBlimp::arm(){
+    // ESC arming sequence for BLHeli S
+    motor1->act(0);
+    motor2->act(0);
+    motor3->act(0);
+    motor4->act(0);
+    delay(10);
+
+    // Sweep up
+    for (int i = 1050; i < 1500; i++)
+    {
+        motor1->act((i-1000)/1000);
+        motor2->act((i-1000)/1000);
+        motor3->act((i-1000)/1000);
+        motor4->act((i-1000)/1000);
+        delay(6);
+    }
+
+    // Back to minimum value
+    motor1->act(0);
+    motor2->act(0);
+    motor3->act(0);
+    motor4->act(0);
+    delay(1000);
+}

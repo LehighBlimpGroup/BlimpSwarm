@@ -12,12 +12,14 @@ DataType_Boolean = 0x04
 
 class SerialController:
     def __init__(self, port, baudrate=115200, timeout=2):
-        self.serial = serial.Serial(port, baudrate, timeout=timeout)
-
-        self.serial.reset_input_buffer()
-        self.values = None
-        
-        
+        try:
+            self.serial = serial.Serial(port, baudrate, timeout=timeout)
+            self.serial.reset_input_buffer()
+            self.values = None
+        except serial.serialutil.SerialException as se:
+            self.serial = None
+            self.values = None
+            print(se)
         
     def manage_peer(self, operation, mac_address=None):
         time.sleep(.02)
@@ -73,15 +75,11 @@ class SerialController:
         print("Sending Preference: ", key, ":", value, ", len:", codecs.encode(buffer, 'hex').decode())
 
     def getSensorData(self):
-        
-        
         self.serial.reset_input_buffer()
         self.serial.write(b'I')
         incoming = self.serial.readline()#.decode().strip()
         if (len(incoming) >= 24):
             self.values = struct.unpack('<6f', incoming[0:24])
-            
-        
         return self.values
 
     def wait_for_acknowledgement(self):

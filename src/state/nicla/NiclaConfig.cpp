@@ -1,15 +1,21 @@
-
+/**
+ * @file NiclaConfig.cpp
+ * @author David Saldana
+ * @brief Implementation of NiclaConfig.h
+ * @version 0.1
+ * @date 2024-01-01
+ * 
+ * @copyright Copyright (c) 2024
+ * 
+ */
 #include "state/nicla/NiclaConfig.h"
 
-// Initialize the static instance pointer of NiclaConfig to nullptr
 NiclaConfig* NiclaConfig::instance = nullptr;
 
-// Private constructor definition
 NiclaConfig::NiclaConfig() {
     loadConfiguration();
 }
 
-// Implementation of loadConfiguration
 void NiclaConfig::loadConfiguration() {
     Preferences preferences;
     preferences.begin("params", true);
@@ -58,7 +64,6 @@ void NiclaConfig::loadConfiguration() {
     preferences.end();
 }
 
-// Implementation of getConfiguration
 const nicla_t& NiclaConfig::getConfiguration() const {
     if (historyData.nicla_desired == 1) {
         Serial.println("loaded GOAL config");
@@ -71,12 +76,10 @@ const nicla_t& NiclaConfig::getConfiguration() const {
     }
 }
 
-// Provide access to DynamicConfig
 hist_t* NiclaConfig::getDynamicHistory() {
     return &historyData;
 }
 
-// Implementation of getInstance
 NiclaConfig* NiclaConfig::getInstance() {
     if (instance == nullptr) {
         instance = new NiclaConfig();

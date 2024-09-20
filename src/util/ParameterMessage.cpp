@@ -1,12 +1,20 @@
+/**
+ * @file ParameterMessage.cpp
+ * @author David Saldana
+ * @brief Legacy file for handling the P2P communications
+ * @version 0.1
+ * @date 2024-07-15
+ * 
+ * @copyright Copyright (c) 2024
+ * 
+ */
 #include <Arduino.h>
+#include "DataTypes.h"
 
 #define MAX_MESSAGE_SIZE 64 // Adjust based on your expected maximum message size
 
 // Datatype identifiers
 #define MessageType_Parameter 0x00
-#define DataType_Int 0x01
-#define DataType_Float 0x02
-#define DataType_String 0x03
 
 // Utility function to add data to the buffer
 int addToBuffer(uint8_t* buffer, int offset, const uint8_t* data, int data_len) {

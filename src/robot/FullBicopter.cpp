@@ -1,6 +1,13 @@
-//
-// Created by edward on 3/1/24.
-//
+/**
+ * @file FullBicopter.cpp
+ * @author Edward Jeff
+ * @brief Implementation of FullBicopter.h
+ * @version 0.1
+ * @date 2024-03-01
+ * 
+ * @copyright Copyright (c) 2024
+ * 
+ */
 
 
 #include "FullBicopter.h"
@@ -11,8 +18,8 @@ FullBicopter::FullBicopter(){
 }
 
 void FullBicopter::startup() {
-    RawBicopter::startup();
-    sensorsuite.startup();
+    RawBicopter::startup(); // Initializes the servos and motors
+    sensorsuite.startup(); // Initializes the Nicla and the other sensors
     float senses[MAX_SENSORS];
     FullBicopter::sense(senses);
 }
@@ -26,18 +33,15 @@ int FullBicopter::sense(float sensors[MAX_SENSORS]) {
     float* sensorsValues = sensorsuite.readValues(numSenses);
     for (int i = 0; i < numSenses; i++) {
         sensors[i] = sensorsValues[i];
-        // Serial.print(sensors[i]);
-        // Serial.print(",");
     }
-    // Serial.println();
-    // Implementation for sensing - fill the sensors array
-    // Return the number of sensors used
-    return numSenses; // Placeholder return value
+    return numSenses; 
 }
 
 // Controls [Ready, Fx, height/Fz, Tz, Tx]
-bool FullBicopter::control(float sensors[MAX_SENSORS], float controls[], int size) {
+void FullBicopter::control(float sensors[MAX_SENSORS], float controls[], int size) {
     float outputs[5];
+
+    // When control[0] == 0, the robot stops its motors and sets servos to facing vertically upward
     if (controls[0] == 0 ) {
         outputs[0] = 0;
         outputs[1] = 0;
@@ -60,17 +64,7 @@ bool FullBicopter::control(float sensors[MAX_SENSORS], float controls[], int siz
     
     outputs[4] = 1;
     FullBicopter::getOutputs(sensors, feedbackControls,  outputs);
-    // Serial.print(outputs[0]);
-    // Serial.print(",");
-    // Serial.print(outputs[1]);
-    // Serial.print(",");
-    // Serial.print(outputs[2]);
-    // Serial.print(",");
-    // Serial.print(outputs[3]);
-    // Serial.print(",");
-    // Serial.println(outputs[4]);
-    // delay(100);
-    return FullBicopter::actuate(outputs, size);
+    RawBicopter::actuate(outputs, size);
 }
 
 void FullBicopter::getPreferences() {
@@ -116,25 +110,12 @@ void FullBicopter::getPreferences() {
     // radius of the blimp
     PDterms.lx = preferences.getFloat("lx", .15);
 
-    // A-matrix adjustments for the servo
-    PDterms.servoBeta = preferences.getFloat("servoBeta", 0);
-    PDterms.servoRange = preferences.getFloat("servoRange", 180);
-    PDterms.botZlim = preferences.getFloat("botZlim", 0.001);
-    PDterms.pitchOffset = preferences.getFloat("pitchOffset", 0);
-    PDterms.pitchInvert = preferences.getFloat("pitchInvert", 1);
-    PDterms.servo_move_min = preferences.getFloat("servo_move_min", 2); // degrees
-
-    servoDiff = 2*PI - PDterms.servoRange * PI/180;// calculating the servo dead zone
-
     preferences.end();
 }
 
-
-
-//adds sensor feedback into the control values
 void FullBicopter::addFeedback(float sensors[MAX_SENSORS], float controls[], float feedbackControls[]) {
     
-    float fx = controls[1]; // Fx
+    float fx = -controls[1]; // Fx
     float fz = controls[2]; // Fz/height
     float tx = controls[3]; // tx
     float tz = controls[4]; // tz
@@ -212,7 +193,6 @@ void FullBicopter::addFeedback(float sensors[MAX_SENSORS], float controls[], flo
     
 }
 
-
 void FullBicopter::getOutputs(float sensors[MAX_SENSORS], float controls[], float out[]) {
     // Assuming PDterms, kf1, kf2, servo1offset, servo2offset, and feedbackPD.pitch are defined elsewhere
 
@@ -273,15 +253,4 @@ void FullBicopter::getOutputs(float sensors[MAX_SENSORS], float controls[], floa
     // if (out[1] < 0.02f) {
     //     out[3] = 90;
     // }
-}
-
-float FullBicopter::clamp(float val, float minVal, float maxVal) {
-    return std::max(minVal, std::min(maxVal, val));
-}
-
-// adjusts the servo deadzone to be in the correct place
-float FullBicopter::adjustAngle(float angle) {
-  while (angle <  - servoDiff / 2 - PDterms.servoBeta * PI/180.0f ) angle += 2 * PI;
-  while (angle > 2 * PI - servoDiff / 2 - PDterms.servoBeta * PI/180.0f ) angle -= 2 * PI;
-  return angle;
 }

@@ -1,20 +1,28 @@
-
-
-
-#include "state/nicla/NiclaState.h"
+/**
+ * @file Spiral.cpp
+ * @author Swarms Lab
+ * @brief Implementation of Spiral.h
+ * @version 0.1
+ * @date 2024-01-01
+ * 
+ * @copyright Copyright (c) 2024
+ * 
+ */
+#include "state/nicla/Spiral.h"
+#include "state/nicla/ManualState.h"
+#include "state/nicla/MoveToGoal.h"
 
 RobotState* Spiral::statetransitions(float sensors[], float controls[]) {
     if (controls[0] < 2){
+        // If the ground station requests the robot to transition to manual
         hist->z_estimator = sensors[1];
         RobotState* manualState = new ManualState();
         return manualState;
-    }
-    else if (detected(sensors)) {
+    } else if (detected(sensors)) {
         float _yaw = sensors[5];  
         float _height = sensors[1];  
-        int niclaOffset = 11;
-        float tracking_x = (float)sensors[niclaOffset + 1];
-        float detection_y = (float)sensors[niclaOffset + 6];
+        float tracking_x = (float)sensors[NICLA_OFFSET + 1];
+        float detection_y = (float)sensors[NICLA_OFFSET + 6];
         float x_cal = tracking_x / terms.n_max_x;
         hist->des_yaw = ((x_cal - 0.5)) * terms.x_strength;
         hist->robot_to_goal = _yaw + hist->des_yaw;
@@ -25,13 +33,11 @@ RobotState* Spiral::statetransitions(float sensors[], float controls[]) {
         }
         RobotState* moveToGoal = new MoveToGoal();
         return moveToGoal;
-    }
-    else {
+    } else {
         return this; //pointer to itself
     }
 }
 
-// levy walk is a random levy walk algorithm which is good for 'hunting' in a random environment
 void Spiral::behavior(float sensors[], float controls[], float outControls[]) {
     // Serial.println("Walking!");
     int dt = SpiralTimer - millis();

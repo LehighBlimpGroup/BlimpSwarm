@@ -1,55 +1,66 @@
-
+/**
+ * @file NiclaState.cpp
+ * @author Swarms Lab
+ * @brief Implementation of NiclaState.h
+ * @version 0.1
+ * @date 2024-01-01
+ * 
+ * @copyright Copyright (c) 2024
+ * 
+ */
 
 #include "state/nicla/NiclaState.h"
 
+NiclaState::NiclaState() {
+    // Use NiclaConfig to access the previous history data stored
+    hist = NiclaConfig::getInstance()->getDynamicHistory();
 
-/*
-This file contains the 'structure' of the nicla state; anyt funciton that needs to be called by any state, 
-as well as organizing the state parameters and history values from the NiclaConfig.h file.
-*/
+    // Gets the parameters stored in non-volatile storage of the ESP32
+    const nicla_t& config = NiclaConfig::getInstance()->getConfiguration();
 
+    // Copy the config data
+    terms = config;
+    
+}
 
-// function which detects the positive and negative edges of a new image
+RobotState* NiclaState::update(float sensors[], float controls[], float outControls[]) {
+    // Implement the expected behavior of the current state
+    behavior(sensors, controls, outControls);
+
+    // Determine whether a state transition is necessary and return the new state if needed
+    RobotState* ptr = statetransitions(sensors, controls);
+
+    // Store the current Nicla flags for future use in dynamic history
+    hist->last_tracking_x = (float)sensors[NICLA_OFFSET + 1];
+    hist->last_tracking_y =(float)sensors[NICLA_OFFSET + 2];
+    hist->last_detection_w = (float)sensors[NICLA_OFFSET + 7];
+    hist->last_detection_h = (float)sensors[NICLA_OFFSET + 8];
+    hist->nicla_flag = (int)sensors[NICLA_OFFSET + 0];
+
+    return ptr;
+}
+
 int NiclaState::detected(float sensors[]) {
-    int niclaOffset = 11;
     int detected = 0;
-    int nicla_flag = (int)sensors[niclaOffset + 0];
-    float tracking_x = (float)sensors[niclaOffset + 1];
-    float tracking_y =(float)sensors[niclaOffset + 2];
-    float detection_w = (float)sensors[niclaOffset + 7];
-    float detection_h = (float)sensors[niclaOffset + 8];
+    int nicla_flag = (int)sensors[NICLA_OFFSET + 0];
 
-    if (!(nicla_flag & 0b11) && (hist->nicla_flag & 0b11)){
+    if (!(nicla_flag & DETECTED) && (hist->nicla_flag & DETECTED)) {
         // old flag indicated a detection while the new flag says no detection
         // that is a negative edge
         detected = -1;
-    } else if (hist->nicla_flag & 0x40) {
-        // balloon mode
-        if (nicla_flag & 0b11 != hist->nicla_flag & 0b11) {
+    } else {
+        if (nicla_flag & DETECTED != hist->nicla_flag & DETECTED) {
             // the last two MSBs of the flag toggles between 0b01 and 0b10 for new detections,
             // and it toggles to 0b00 for new no-detection
             detected = 1;
         }
-    } else if (hist->nicla_flag & 0x80) {
-        // goal mode
-        if (nicla_flag & 0b11 != hist->nicla_flag & 0b11) {
-            // the last two MSBs of the flag toggles between 0b01 and 0b10 for new detections,
-            // and it toggles to 0b00 for new no-detection
-            detected = 1;
-        }
-        // if (hist->last_tracking_x != tracking_x || hist->last_tracking_y != tracking_y || hist->last_detection_w != detection_w || hist->last_detection_h != detection_h) {
-        //     detected = 1;
-        // }
     }
     return detected;
 }
 
-// function which determines if the robot is close to a target
 bool NiclaState::closeToGoal(float sensors[]) {
-    int niclaOffset = 11;
-
-    float detection_w = (float)sensors[niclaOffset + 7];
-    float detection_h = (float)sensors[niclaOffset + 8];
+    float detection_w = (float)sensors[NICLA_OFFSET + 7];
+    float detection_h = (float)sensors[NICLA_OFFSET + 8];
 
     float sideLength = max(detection_h, detection_w);
     bool too_close = true;
@@ -58,29 +69,6 @@ bool NiclaState::closeToGoal(float sensors[]) {
         too_close = false;
     }
     return too_close;
-}
-
-// gathers the config file data
-NiclaState::NiclaState() {
-    // Use NiclaConfig to access configuration data
-    hist = NiclaConfig::getInstance()->getDynamicHistory();
-    const nicla_t& config = NiclaConfig::getInstance()->getConfiguration();
-    terms = config; // Copy configuration data
-    
-}
-
-// function to update state based on sensors and controls which is called by the state machine
-RobotState* NiclaState::update(float sensors[], float controls[], float outControls[]) {
-    int niclaOffset = 11;
-    behavior(sensors, controls, outControls);
-    RobotState* ptr = statetransitions(sensors, controls);
-    hist->last_tracking_x = (float)sensors[niclaOffset + 1];
-    hist->last_tracking_y =(float)sensors[niclaOffset + 2];
-    hist->last_detection_w = (float)sensors[niclaOffset + 7];
-    hist->last_detection_h = (float)sensors[niclaOffset + 8];
-    hist->nicla_flag = (int)sensors[niclaOffset + 0];
-
-    return ptr;
 }
     
 

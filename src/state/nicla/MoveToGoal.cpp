@@ -1,78 +1,78 @@
-
-
-#include "state/nicla/NiclaState.h"
+/**
+ * @file MoveToGoal.cpp
+ * @author Swarms Lab
+ * @brief Implementation of MoveToGoal.h
+ * @version 0.1
+ * @date 2024-01-01
+ * 
+ * @copyright Copyright (c) 2024
+ * 
+ */
+#include "state/nicla/MoveToGoal.h"
+#include "state/nicla/ManualState.h"
+#include "state/nicla/ChargeGoal.h"
+#include "state/nicla/LevyWalk.h"
 
     
 RobotState* MoveToGoal::statetransitions(float sensors[], float controls[]) {
-    int niclaOffset = 11;
-    int nicla_flag = (int)sensors[niclaOffset + 0];
+    int nicla_flag = (int)sensors[NICLA_OFFSET + 0];
     if (controls[0] < 2){
+        // If the ground station requests the robot to transition to manual
         hist->z_estimator = sensors[1];
         RobotState* manualState = new ManualState();
         return manualState;
-    }
-    else if (terms.state != hist->nicla_desired) { // reload terms for important movements
-        
+    } else if (terms.state != hist->nicla_desired) { 
+        // reload terms for important movements
         RobotState* moveToGoal = new MoveToGoal();
         return moveToGoal;
-    }
-    else if (hist->nicla_flag & 0x80) {
+    } else if (hist->nicla_flag & GOAL_MODE) {
         if (start == true){
             return this;
-        }
-        else if (!(nicla_flag & 0b11)) { // no detection registered by nicla in flag
+        } else if (!(nicla_flag & DETECTED)) {
+            // no detection registered by nicla in flag
             RobotState* levyWalk = new LevyWalk();
             return levyWalk;
-        }
-        else if (closeToGoal(sensors) ) {
+        } else if (closeToGoal(sensors) ) {
             RobotState* chargeGoal = new ChargeGoal();
             return chargeGoal;
-        }
-        else {
+        } else {
             return this; //pointer to itself
         }
-    } else if (hist->nicla_flag & 0x40) {
+    } else if (hist->nicla_flag & BALLOON_MODE) {
         // state transition for balloon detection
-        if (!(nicla_flag & 0b11)) { // no detection registered by nicla in flag
+        if (!(nicla_flag & DETECTED)) { // no detection registered by nicla in flag
             RobotState* levyWalk = new LevyWalk();
             return levyWalk;
-        }
-        else if (closeToGoal(sensors) && abs(hist->last_tracking_x/terms.n_max_x - 0.5) < terms.range_for_forward*0.6) {
+        } else if (closeToGoal(sensors) && abs(hist->last_tracking_x/terms.n_max_x - 0.5) < terms.range_for_forward*0.6) {
             RobotState* chargeGoal = new ChargeGoal();
             return chargeGoal;
-        }
-        else {
+        } else {
             return this; //pointer to itself
         }
     } else {
         start = true;
-        // no detection at all
-        // RobotState* levyWalk = new LevyWalk();
-        // return levyWalk;
         return this;
     }
 }
 
-// levy walk is a random levy walk algorithm which is good for 'hunting' in a random environment
 void MoveToGoal::behavior(float sensors[], float controls[], float outControls[]) {
-    int niclaOffset = 11;
     int edge = detected(sensors);
     if (start){
-        
         float _yaw = sensors[5];
         
         hist->robot_to_goal = _yaw;
         hist->forward_force = 0;
     }
+
     if (edge == 1) {
         start = false;
         // if a new detection is fed in
         float _yaw = sensors[5];
         float _height = sensors[1];
-        int nicla_flag = (int)sensors[niclaOffset + 0];
-        float tracking_x = (float)sensors[niclaOffset + 5];
-        float tracking_y = (float)sensors[niclaOffset + 2];
-        float detection_y = (float)sensors[niclaOffset + 6];
+        int nicla_flag = (int)sensors[NICLA_OFFSET + 0];
+        float tracking_x = (float)sensors[NICLA_OFFSET + 5];
+        float tracking_y = (float)sensors[NICLA_OFFSET + 2];
+        float detection_y = (float)sensors[NICLA_OFFSET + 6];
         float x_cal = tracking_x / terms.n_max_x; // normalizes the pixles into a value between [0,1]
 
         hist->des_yaw = ((x_cal - 0.5)) * terms.x_strength;
@@ -82,10 +82,10 @@ void MoveToGoal::behavior(float sensors[], float controls[], float outControls[]
             // z_offset += 20*((y_cal - 0.5))* subdt / sideLength;//(.75 - max(detection_h, detection_w)/max_y);
             hist->z_estimator =  ( _height + terms.y_strength * (y_cal - terms.y_thresh)) ; // integral must be on
             hist->forward_force = terms.fx_togoal;
-        } else if (nicla_flag & 0x40) {
-            // balloon case
-            hist->forward_force = 0.0;
-        }
+        } //else if (nicla_flag & BALLOON_MODE) {
+        //     // balloon case
+        //     hist->forward_force = 0.0;
+        // }
     }
     outControls[0] = controls[0]; //ready
     outControls[1] = hist->forward_force; //fx

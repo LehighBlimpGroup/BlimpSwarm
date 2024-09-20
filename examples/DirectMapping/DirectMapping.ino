@@ -1,23 +1,18 @@
 /**
- * BICOPTER with altitude control
- * This code runs a bicopter with altitude control using the feedback from a barometer.
- * For this example, your robot needs a barometer sensor.
+ * Bicopter control using direct mapping.
+ * Left-Joystick => left servo
+ * Left Trigger => left motor
+ * Right-Joystick => Right servo
+ * Right Trigger => Right motor
  */
 
 #include "BlimpSwarm.h"
-// #include "robot/RobotFactory.h"
 #include "robot/RawBicopter.h"
 #include "comm/BaseCommunicator.h"
 #include "comm/LLC_ESPNow.h"
 #include "util/Print.h"
-#include "sense/Barometer.h"
 #include <Arduino.h>
 #include <ESP32Servo.h>
-
-
-// MAC of the base station
-uint8_t base_mac[6] = {0xC0, 0x49, 0xEF, 0xE3, 0x34, 0x78};  // fixme load this from memory
-
 
 BarometerOld baro;
 
@@ -50,12 +45,12 @@ void setup() {
     // init robot with new parameters
     myRobot = RobotFactory::createRobot("RawBicopter");
 
+    // update parameters
     paramUpdate();
 }
 
 
 void loop() {
-
     if (baseComm->isNewMsgCmd()){
       // New command received
       cmd = baseComm->receiveMsgCmd();
@@ -80,10 +75,12 @@ void loop() {
     float m2 = 0;  
     float s1 = 0;
     float s2 = 0;
-    m1 = cmd.params[0]*0.5 + 0.5;
-    m2 = cmd.params[1]*0.5 + 0.5;
-    s1 = cmd.params[2]*90 + 90;
-    s2 = cmd.params[2]*90 + 90;
+    if(cmd.params[4] == 1) {
+      m1 = cmd.params[0]*0.5 + 0.5;
+      m2 = cmd.params[1]*0.5 + 0.5;
+      s1 = cmd.params[2]*90 + 90;
+      s2 = cmd.params[3]*90 + 90;
+    }
     
     /**
      * End of controller
