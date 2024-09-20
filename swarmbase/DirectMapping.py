@@ -5,7 +5,9 @@ from joystick.JoystickManager import JoystickManager
 import time
 
 ROBOT_MAC = "48:27:E2:E6:E0:1C"
-SERIAL_PORT = "COM9"
+
+SERIAL_PORT = "COM18"
+
 PRINT_JOYSTICK = True
 
 if __name__ == "__main__":
@@ -19,7 +21,7 @@ if __name__ == "__main__":
     time.sleep(.2)
 
     # Joystick
-    joystick = JoystickManager()
+    joystick = JoystickManager(1)
 
 
     try:

@@ -2,6 +2,7 @@
 ## (you can get it by running your arduino and looking at the serial monitor for your flying drone) ##
 
 
+
 ROBOT_MAC ="34:85:18:91:b7:4c"#"DC:DA:0C:57:4B:94" # "30:30:F9:34:66:FC" #, "34:85:18:ab:fe:68"
 ROBOT_MACS =["48:27:e2:e6:ec:cc"]### Insert your SERIAL PORT here ###
 #"34:85:18:91:b7:4c", "34:85:18:ab:fe:68", "34:85:18:91:ce:fc",
@@ -9,6 +10,7 @@ ROBOT_MACS =["48:27:e2:e6:ec:cc"]### Insert your SERIAL PORT here ###
 ## look in arduino for the port that your specific transeiver is connected to  ##
 ## Note: make sure that your serial monitor is OFF in arduino or else you will get "access is denied" error. ##
 SERIAL_PORT = "COM17"
+
 
 PUMP_MAC = "48:27:E2:E6:E6:44"
 
