@@ -18,7 +18,8 @@ volatile unsigned long esp_time_now;
 ParamManager manager;
 int delayMS = 1000;
 
-void OnDataRecv(const uint8_t *mac_addr, const uint8_t *data, int data_len){
+void OnDataRecv(const esp_now_recv_info *recv_info, const uint8_t *data, int data_len) {
+    const uint8_t *mac_addr = recv_info->src_addr; // Extract MAC address from recv_info
 
     char macStr[18];
     if (verbose) {
@@ -39,7 +40,7 @@ void OnDataRecv(const uint8_t *mac_addr, const uint8_t *data, int data_len){
 
     new_data_len = data_len;
     if (data[0] == 0x68){
-        // Receive and parse the information into it's appropriate parameter
+        // Receive and parse the information into its appropriate parameter
         Serial.print("Rcv: ");
         Serial.print(data_len);
         Serial.print(",");
