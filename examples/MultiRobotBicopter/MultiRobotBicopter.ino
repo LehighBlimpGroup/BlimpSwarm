@@ -1,3 +1,5 @@
+#include <dummy.h>
+
 /**
  * BICOPTER with altitude control
  * This code runs a bicopter with altitude control using the feedback from a barometer.

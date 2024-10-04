@@ -34,7 +34,7 @@ const int MAC_LENGTH = 6;
 uint8_t slaveAddresses[MAX_RECEIVERS][MAC_LENGTH] = {};
 
 // Function declarations
-void onDataReceive(const uint8_t *mac, const uint8_t *incomingData, int len);
+void onDataReceive(const esp_now_recv_info *info, const uint8_t *incomingData, int data_len);
 void onDataSend(const uint8_t *mac, esp_now_send_status_t status);
 void addPeer(const uint8_t *peerAddr);
 void removePeer(const uint8_t *peerAddr);
@@ -154,18 +154,21 @@ void onDataSend(const uint8_t *mac, esp_now_send_status_t status) {
   // Serial.write(ackMessage);
 }
 
-void onDataReceive(const uint8_t *mac, const uint8_t *incomingData, int data_len) {
-  
-  if (data_len == sizeof(ReceivedData)) {
-    memcpy(&latestReceivedData, incomingData, data_len);
-    
-    if (latestReceivedData.flag >= 0 && latestReceivedData.flag < MAX_FLAGS) {
-        for (int i = 0; i < 6; i++) {
-            storedData[latestReceivedData.flag][i] = latestReceivedData.values[i];
+void onDataReceive(const esp_now_recv_info *info, const uint8_t *incomingData, int data_len)
+{
+    const uint8_t* mac = info->src_addr;  // You can now access the MAC address using info->src_addr
+
+    if (data_len == sizeof(ReceivedData)) {
+        memcpy(&latestReceivedData, incomingData, data_len);
+
+        if (latestReceivedData.flag >= 0 && latestReceivedData.flag < MAX_FLAGS) {
+            for (int i = 0; i < 6; i++) {
+                storedData[latestReceivedData.flag][i] = latestReceivedData.values[i];
+            }
+            flagReceived[latestReceivedData.flag] = true;  // Mark this flag as received
+        } else {
+            // Serial.println("Error: Invalid flag received.");
         }
-        flagReceived[latestReceivedData.flag] = true;  // Mark this flag as received
-    } else {
-        //Serial.println("Error: Invalid flag received.");
     }
-  }
 }
+

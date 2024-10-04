@@ -15,7 +15,8 @@
 
 #include "SensorInterface.h"
 #include <cstddef>
-#include <IBusBM.h>
+// #include <IBusBM.h>
+#include "comm/IBusBM.h"
 #include <Arduino.h>
 
 #define BALL_DET 0x80
