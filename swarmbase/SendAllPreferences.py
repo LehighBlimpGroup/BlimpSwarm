@@ -17,7 +17,7 @@ if __name__ == "__main__":
     robots = [
         {"mac": "34:85:18:ab:fe:68", "preferences": [
             {"data_type": DataType_Float, "key": "servoRange", "value": 260},
-            {"data_type": DataType_Float, "key": "servoBeta", "value": 0},
+            {"data_type": DataType_Float, "key": "servoBeta", "value": 90},
         ]},
         {"mac": "48:27:e2:e6:ec:cc", "preferences": [
             {"data_type": DataType_Float, "key": "servoRange", "value": 260},
@@ -38,9 +38,9 @@ if __name__ == "__main__":
     {"data_type": DataType_Boolean, "key": "yawEn", "value": True},
 
     {"data_type": DataType_Float, "key": "kpyaw", "value": 2},
-    {"data_type": DataType_Float, "key": "kppyaw", "value": 0.03},
+    {"data_type": DataType_Float, "key": "kppyaw", "value": 0.001},
     {"data_type": DataType_Float, "key": "kdyaw", "value": 0.035},
-    {"data_type": DataType_Float, "key": "kddyaw", "value": 0.03},
+    {"data_type": DataType_Float, "key": "kddyaw", "value": 0.00},
     {"data_type": DataType_Float, "key": "kiyaw", "value": 0},
     {"data_type": DataType_Float, "key": "kiyawrate", "value": 0},
 
@@ -61,8 +61,8 @@ if __name__ == "__main__":
     {"data_type": DataType_Float, "key": "z_int_high", "value": 0.15},
     {"data_type": DataType_Float, "key": "yawRateIntRange", "value": 0},
     {"data_type": DataType_Float, "key": "lx", "value": 0.15},
-    {"data_type": DataType_Float, "key": "servoRange", "value": 180},
-    {"data_type": DataType_Float, "key": "servoBeta", "value": -90},
+    {"data_type": DataType_Float, "key": "servoRange", "value": 260},
+    {"data_type": DataType_Float, "key": "servoBeta", "value": 0},
     {"data_type": DataType_Float, "key": "servo_move_min", "value": 0},
     {"data_type": DataType_Float, "key": "botZlim", "value": -1},
     {"data_type": DataType_Float, "key": "pitchOffset", "value": 0},

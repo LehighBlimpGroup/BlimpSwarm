@@ -6,6 +6,7 @@
 
 #include "BlimpSwarm.h"
 #include "robot/RobotFactory.h"
+#include "state/nicla/ManualState.h"
 #include "comm/BaseCommunicator.h"
 #include "comm/LLC_ESPNow.h"
 #include "util/Print.h"
@@ -15,14 +16,22 @@
 
 
 // Robot
-Robot* myRobot = nullptr;
+Differential* myRobot = nullptr;
+
+// Sensor
+NiclaSuite* nicla = nullptr;
+
+// Behavior
+RobotStateMachine* stateMachine = nullptr;
+nicla_t terms; 
+hist_t* hist;
 
 // Communication
 BaseCommunicator* baseComm = nullptr;
 
 // Control input from base station
+ControlInput behave;
 ControlInput cmd;
-ControlInput outputs;
 ReceivedData rcv; 
 
 // Data storage for the sensors 
@@ -30,22 +39,14 @@ float senses[myRobot->MAX_SENSORS];
 
 bool updateParams = true;
 const int TIME_STEP_MICRO = 4000;
-float groundAltitude = 0;
+
+int niclaOffset = 11;
 int dt = 1000;
 unsigned long clockTime;
 unsigned long printTime;
+unsigned long nicla_change_time;
 
-
-typedef struct feedback_s {
-    bool zEn, yawEn;
-    float kpyaw, kdyaw, kiyaw;
-    float kpz, kdz, kiz, z_int_low, z_int_high;
-} feedback_t;
-
-feedback_t PDterms;
-
-// List of the variables that need persistent storage
-float z_integral = 0;
+// int nicla_flag = 0;
 
 void setup() {
     Serial.begin(115200);
@@ -57,12 +58,21 @@ void setup() {
     baseComm->setMainBaseStation();
 
     // init robot with new parameters
-    myRobot = RobotFactory::createRobot("CustomBicopter");
+    myRobot = new Differential();//RobotFactory::createRobot("FullBicopter");
+    myRobot->startup();
+
+    nicla = &(myRobot->sensorsuite);
+    stateMachine = new RobotStateMachine(new ManualState());
+    
     paramUpdate();
+    hist->nicla_flag = 0x80;
+
+    nicla->changeNiclaMode(0x80);
 
     // updates the ground altitude for the ground feedback
+    // TODO: make some way to access the actual ground height from robot
     int numSenses = myRobot->sense(senses);
-    groundAltitude = senses[1];//height
+    
 }
 
 
@@ -74,114 +84,60 @@ void loop() {
   int numSenses = myRobot->sense(senses);
   
   // send values to ground station
-  rcv.flag = 1;
-  rcv.values[0] = senses[1] - groundAltitude;  //height
-  rcv.values[1] = senses[5];  //yaw
-  rcv.values[2] = senses[10];  //battery
-  rcv.values[3] = senses[0];  //temperature
-  bool sent = baseComm->sendMeasurements(&rcv);
+  if (cmd.params[0] == 5 && cmd.params[6] == 1) { 
+    rcv.flag = 1;
+    rcv.values[0] = senses[1];  //height
+    rcv.values[1] = senses[5];  //yaw
+    rcv.values[2] = senses[niclaOffset + 5];  //x
+    rcv.values[3] = senses[niclaOffset + 6];  //y
+    rcv.values[4] = senses[niclaOffset + 7];  //w
+    rcv.values[5] = senses[10];  //battery
+    Serial.println("Sending Feedback.");
+    bool sent = baseComm->sendMeasurements(&rcv);
+    cmd.params[0] = 1; // temp assign manual control with these new params for retaining stillness
+    cmd.params[2] = senses[1]; // set height to height
+    cmd.params[4] = senses[5]; // set yaw to yaw
+  } else if(cmd.params[0] == 5 && cmd.params[6] == 0) {
+    rcv.flag = 0;
+    Serial.println("Stopping Feedback");
+    cmd.params[0] = 1; // temp assign manual control with these new params for retaining stillness
+    cmd.params[2] = senses[1]; // set height to height
+    cmd.params[4] = senses[5]; // set yaw to yaw
+  } else if (cmd.params[6] == 1){
+    rcv.flag = 1;
+    rcv.values[0] = senses[1];  //height
+    rcv.values[1] = senses[5];  //yaw
+    rcv.values[2] = senses[niclaOffset + 5];  //x
+    rcv.values[3] = senses[niclaOffset + 6];  //y
+    rcv.values[4] = senses[niclaOffset + 7];  //w
+    rcv.values[5] = senses[10];  //battery
+    bool sent = baseComm->sendMeasurements(&rcv);
 
+  }
   // print sensor values every second
   // senses => [temperature, altitude, veloctity in altitude, roll, pitch, yaw, rollrate, pitchrate, yawrate, null, battery]
-  if (micros() - printTime > 500000){
-    for (int i = 0; i < numSenses-11; i++){
+  if (micros() - printTime > 515106){
+      Serial.print(dt/1000.0f);
+      Serial.print(",");
+    for (int i = 0; i < numSenses-1; i++){
       Serial.print(senses[i]);
       Serial.print(",");
     }
-    Serial.println(senses[numSenses-11]);
+    Serial.println(senses[numSenses-1]);
     printTime = micros();
   }
 
-  float* controls = cmd.params;
-  // When control[0] == 0, the robot stops its motors and sets servos to 90 degrees
-  if (controls[0] == 0) {
-    float outputs[5];
-    outputs[0] = 0;
-    outputs[1] = 0;
-    outputs[2] = 90; // change if you are not using upwards facing motor/servos
-    outputs[3] = 90; // change if you are not using upwards facing motor/servos
-    outputs[4] = controls[5]; //LED controller
-    
-    myRobot->actuate(outputs, 5);
-    fixClockRate();
-    return;
-    
-  }
 
-  // you can freely change how these values work from the ground station- dont feel required to use this version
-  float fx = controls[1]; // Fx (foward backwards)
-  float fz = controls[2]; // Fz ()
-  float tx = controls[3]; // tx
-  float tz = controls[4]; // tz
-  float LED = controls[5]; // increase number of parameters as needed if you want more controls from ground station
+  // adjusts the state based on several factors
+  niclaStateChange((int)(cmd.params[0]), (int)(cmd.params[7]));
 
-  float temperature = senses[0];
-  float altitude = senses[1];
-  float altitudeVelocity = senses[2];
-  float pitch = senses[3];
-  float roll = senses[4];
-  float yaw = senses[5];
-  float pitchrate = senses[6];
-  float rollrate = senses[7];
-  float yawrate = senses[8];
-  float battery = senses[10];
+  // Create Behavior based on sensory input to put into behave
+  stateMachine->update(senses, cmd.params, behave.params);
 
-
-  // Z feedback
-  // This is the solution that I use for the height feedback, you still need to convert this value into motor/servo values
-  // This is an absolute height controller, which is in meters; for example if your controls
-  if (PDterms.zEn) {
-    // Integral in Z
-    z_integral += (fz - altitude) * ((float)dt)/1000000.0f * PDterms.kiz;
-    z_integral = constrain(z_integral, PDterms.z_int_low, PDterms.z_int_high);
-    // PID in z: the output is the force to maintain the altitude
-    //fz = (fz - altitude) * PDterms.kpz - altitudeVelocity * PDterms.kdz + z_integral; 
-  }
-
-  // Put your controller code here which converts ground station controls and sensor feedback into motor/servo values
-  // feel free to use the PDterms set from the ground station which are picked up in the paramUpdate function for easy tuning
-  float m1 = fz + tz;  // motor 1
-  float m2 = fz - tz; // fx;  // motor 2
-  float t1 = 90; //-fx * 90 + 0;  // servo 1
-  float t2 = 90; //fx * 90 + 180;  // servo 2
-
-  float beta = std::atan2(fz, fx);
-  float l = 5; 
-  //t1 = degrees(beta);
-  //t2 = 180-t1;
-  //m1 = fz / sin(beta) + tz / (l*cos(beta));
-  //m2 = fz / sin(beta) - tz / (l*cos(beta));
-
-  m1=0.2;
-  m2=0.2;
-  t1 =tz * 90 + 90;  // servo 1
-  t2 =tz * 90 + 90;  // servo 2
-
-  // PD yaw
-  float pdyaw = PDterms.kpyaw * (0-yaw) + PDterms.kdyaw * (0 - yawrate) ;
-
-  Serial.println(m1);
-  //m1 = -pdyaw + PDterms.kiyaw;
-  //m2 = pdyaw + PDterms.kiyaw;
-  
-  //t1 -= 20 * pdyaw;
-  //t2 -= 20 * pdyaw;
-  //m1 = PDterms.kiyaw;
-  //m2 = PDterms.kiyaw;
-
-  
-
-  /******** INSERT YOUR CODE HERE: Use the variable yaw and yawrate for yaw control ******************/
-
-
-  outputs.params[0] = m1;
-  outputs.params[1] = m2;
-  outputs.params[2] = t1;
-  outputs.params[3] = t2;
   // Send command to the actuators
-  myRobot->actuate(outputs.params, 5);
+  myRobot->control(senses, behave.params, 5);
 
-  // makes the clock rate of the loop consistent.
+  // makes the clock rate of the loop consistant. 
   fixClockRate();
 }
 
@@ -202,31 +158,79 @@ void recieveCommands(){
 }
 
 void paramUpdate(){
-    Preferences preferences; //initialize the preferences 
-    preferences.begin("params", true); //true means read-only
-
-    PDterms.zEn = preferences.getBool("zEn", false);
-    PDterms.zEn = preferences.getBool("yawEn", false);
-    PDterms.kpz = preferences.getFloat("kpz", 0.5);
-    PDterms.kdz = preferences.getFloat("kdz", 0.5);
-    PDterms.kiz = preferences.getFloat("kiz", 0);
-    PDterms.z_int_low = preferences.getFloat("z_int_low", 0);
-    PDterms.z_int_high = preferences.getFloat("z_int_high", 0.2);
-    PDterms.kpyaw = preferences.getFloat("kpyaw", 0.1);
-    PDterms.kdyaw = preferences.getFloat("kdyaw", 0.1);// same thing as if I said kpyawrate
-    PDterms.kiyaw = preferences.getFloat("kiyaw", 0);
-
-    preferences.end();
 
     myRobot->getPreferences();
     baseComm->setMainBaseStation();
+    NiclaConfig::getInstance()->loadConfiguration();
+    
+    hist = NiclaConfig::getInstance()->getDynamicHistory();
+    const nicla_t& config = NiclaConfig::getInstance()->getConfiguration();
+    terms = config; // Copy configuration data
+    
+}
+
+void niclaStateChange(int cmdFlag, int target_color) {
+
+  int nicla_flag = senses[niclaOffset + 0];
+  if (micros() - nicla_change_time > 50000) { // positive edge to avoid spamming
+    nicla_change_time = micros();
+    int hist_flag = hist->nicla_flag;
+    if (cmdFlag == 2) { // normal state machine mode
+      if (hist->nicla_desired == 1) {
+        if (nicla_flag & 0x40) {
+          if (target_color == 1) {
+            Serial.println("go to goal");
+            nicla->changeNiclaMode(0x81);
+
+          } else {
+            Serial.println("go to goal");
+            nicla->changeNiclaMode(0x80);
+          }
+          hist->z_estimator = terms.goal_height;
+        }
+      } 
+      else if (hist->nicla_desired == 0) {
+        if (nicla_flag & 0x80) {
+          Serial.println("go to ball");
+          nicla->changeNiclaMode(0x40);
+          hist->start_ball_time= millis();
+        }
+      }
+    } 
+    else if (cmdFlag == 3) { //balloon only mode (enforce 0x40)
+      hist->nicla_desired = 0;
+      hist->start_ball_time= millis();
+      hist->num_captures = 0;
+      if (nicla_flag & 0x80) {
+        Serial.println("go to ball");
+        nicla->changeNiclaMode(0x40);
+      }
+    } 
+    else if (cmdFlag == 4) { //goal only mode (enforce 0x80)
+      if (hist_flag != 4) {
+        hist->goal_direction = senses[5];
+      }
+      hist->nicla_desired = 1;
+      if (nicla_flag & 0x40) {
+        if (target_color == 1){
+          Serial.println("go to goal");
+          nicla->changeNiclaMode(0x81);
+
+        } else {
+          Serial.println("go to goal");
+          nicla->changeNiclaMode(0x80);
+        }
+      }
+    }
+  }
+  
 }
 
 void fixClockRate() {
 
-  dt = (int) (micros()-clockTime);
+  dt = (int)(micros()-clockTime);
   while (TIME_STEP_MICRO - dt > 0){
-    dt = (int) (micros()-clockTime);
+    dt = (int)(micros()-clockTime);
   }
   clockTime = micros();
 }

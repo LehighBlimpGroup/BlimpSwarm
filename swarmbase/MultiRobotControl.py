@@ -206,8 +206,8 @@ def main():
                 # Control inputs to the robot
                 height = -axis[0] * .5 * dt if abs(axis[0]) >= 0.15 else 0
                 tz = -axis[4] * .5 * dt if abs(axis[4]) >= 0.15 else 0
-            fx = (-axis[2] + axis[5]) * 0.65
-            fx_ave = fx_ave * 0.67 + fx * 0.33
+            fx_ave = (-axis[2] + axis[5]) * 0.65
+            # fx_ave = fx_ave * 0.67 + fx * 0.33
 
             # send control parameters
             serial.send_control_params(ROBOT_MAC, (ready[current_robot_index], fx_ave, height, 0, tz, -buttons[2], 1, 0, 0, 0, 0, 0, 0))

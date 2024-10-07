@@ -21,6 +21,7 @@
 #include "FullBicopter.h"
 #include "CustomBicopter.h"
 #include "SBlimp.h"
+#include "Differential.h"
 
 
 class RobotFactory {
