@@ -227,7 +227,7 @@ void Differential::getOutputs(float sensors[MAX_SENSORS], float controls[], floa
             f1 = 0.5 * (term1 + term2);
             f2 = 0.5 * (-term1 + term2);
         } else {
-            theta = atan2(fz, 0.0001);
+            theta = atan2(fz, abs(tauz / -.1));
             float term1 = tauz / (2*l);
             float term2 = sqrt(F_mag);
             f1 = 0.5 * (term1 + term2);
