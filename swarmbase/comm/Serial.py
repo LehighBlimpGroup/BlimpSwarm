@@ -123,16 +123,16 @@ class SerialController:
 
 # Example usage
 if __name__ == "__main__":
-    port = 'COM8'  # Adjust as necessary for your setup
+    port = 'COM5'  # Adjust as necessary for your setup
     controller = SerialController(port, timeout=.1)  # 5-second timeout
 
     try:
         # Example: Add a peer
         controller.manage_peer('A', "48:27:E2:E6:E1:00")
-        controller.manage_peer('A', 'FF:FF:FF:FF:FF:FF')
+        controller.manage_peer('A', 'dc:54:75:d8:40:74')
         
         # Example: Send control parameters
-        mac_address = 'FF:FF:FF:FF:FF:FF'  # Example target peer MAC address
+        mac_address = 'dc:54:75:d8:40:74'  # Example target peer MAC address
         params = (1.0, 0.5, -1.2, 2.5, 0.0, 1.1, -0.9, 2.2, 3.3, 4.4, 5.5, -2.2, 0.1)
         controller.send_control_params(mac_address, params)
 
