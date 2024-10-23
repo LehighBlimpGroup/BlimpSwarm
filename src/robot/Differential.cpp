@@ -113,6 +113,8 @@ void Differential::getPreferences() {
     preferences.end();
 }
 
+
+
 void Differential::addFeedback(float sensors[MAX_SENSORS], float controls[], float feedbackControls[]) {
     
     float fx = controls[1]; // Fx
@@ -138,32 +140,40 @@ void Differential::addFeedback(float sensors[MAX_SENSORS], float controls[], flo
     //      what this basically means is that the D term for the absolute yaw is replaced with the yawrate PI
     //          the D term in yaw is equivalent to the P term in yawrate
     if (PDterms.yawEn) {
-        // Serial.print("yaw feedback: ");
-        // initial absolute error for the yaw
+        float kpyaw_max_increase = 0.5f;  // Maximum increase in kpyaw
+        float kiyaw_max_increase = 0.1f;  // Maximum increase in kiyaw
+        // Calculate dynamic scaling based on fx
+        float scaling_factor = 1.0f - clamp(fabs(fx), 0.0f, 1.0f);  // When fx approaches 0, scaling_factor approaches 1
+
+        // Adjust P-term dynamically
+        float dynamic_kpyaw = PDterms.kpyaw + scaling_factor * kpyaw_max_increase;
+
+        // Adjust I-term dynamically
+        float dynamic_kiyaw = PDterms.kiyaw + scaling_factor * kiyaw_max_increase;
+
+        // Absolute yaw error
         float e_yaw = controls[4] - sensors[5]; // Tz - Yaw
-        e_yaw = atan2(sin(e_yaw), cos(e_yaw));
+        e_yaw = atan2(sin(e_yaw), cos(e_yaw));  // Normalize yaw error
         e_yaw = clamp(e_yaw, -PI/5, PI/5);
 
-        // integral term for the absolute yaw
-        yaw_integral += e_yaw * ((float)dt)/1000000.0f * PDterms.kiyaw;
+        // Integral term for absolute yaw using dynamically adjusted I term
+        yaw_integral += e_yaw * ((float)dt) / 1000000.0f * dynamic_kiyaw;
         yaw_integral = clamp(yaw_integral, -PI/4, PI/4);
-        
-        // finding desired yaw rate from the absolute yaw feedback
-        float yaw_desired_rate = (e_yaw  + yaw_integral);
 
-        // getting the error in the yawrate
-        float e_yawrate = yaw_desired_rate * PDterms.kpyaw - sensors[8]; // YawRate
+        // Find desired yaw rate from absolute yaw feedback
+        float yaw_desired_rate = (e_yaw + yaw_integral);
 
-        // integral term for the yawrate
-        yawrate_integral += e_yawrate * ((float)dt)/1000000.0f * PDterms.kiyawrate;
-        yawrate_integral = clamp(yawrate_integral, - PDterms.yawRateIntRange, PDterms.yawRateIntRange);
+        // Yaw rate error
+        float e_yawrate = yaw_desired_rate * dynamic_kpyaw - sensors[8];  // YawRate feedback
 
-        // final result of the cascading PID controller in yaw
-        tz = yaw_desired_rate * PDterms.kppyaw  + e_yawrate*PDterms.kdyaw - sensors[8] * PDterms.kddyaw  + yawrate_integral;
-        
-        // Serial.println(tz);
+        // Integral term for yawrate
+        yawrate_integral += e_yawrate * ((float)dt) / 1000000.0f * PDterms.kiyawrate;
+        yawrate_integral = clamp(yawrate_integral, -PDterms.yawRateIntRange, PDterms.yawRateIntRange);
+
+        // Final result of the cascading PID controller with dynamic P and I terms
+        tz = yaw_desired_rate * PDterms.kppyaw + e_yawrate * PDterms.kdyaw - sensors[8] * PDterms.kddyaw + yawrate_integral;
     }
-
+    
     // Pitch feedback
     if (PDterms.pitchEn) { 
         // Serial.println("roll feedback");
@@ -195,10 +205,12 @@ void Differential::addFeedback(float sensors[MAX_SENSORS], float controls[], flo
 
 void Differential::getOutputs(float sensors[MAX_SENSORS], float controls[], float out[]) {
     // Assuming PDterms, kf1, kf2, servo1offset, servo2offset, and feedbackPD.pitch are defined elsewhere
+    float theta_ema = 0.0f; // Exponential moving average of theta
+    float alpha = 0.5f; // Smaller values will smooth more, larger values will be more responsive
 
     float l = PDterms.lx;
 
-    float fx = clamp(controls[0], -1, 1);
+    float fx = clamp(controls[0], -0.6, 0.6);
     float fz = controls[1];
     // if (fx > abs(fz)){
     fz = clamp(fz, PDterms.botZlim, 1);
@@ -207,19 +219,36 @@ void Differential::getOutputs(float sensors[MAX_SENSORS], float controls[], floa
     // }
     float tauz = clamp(controls[3], -.1, .1);
 
-    // Inverse A-Matrix calculations
-    // float term1 = l * l * fx * fx + l * l * fz * fz + taux * taux + tauz * tauz;
-    // float term2 = 2 * fz * l * taux - 2 * fx * l * tauz;
-    // float term3 = sqrt(term1 + term2);
-    // float term4 = sqrt(term1 - term2);
-    // float f1 = term3 / (2 * l);
-    // float f2 = term4 / (2 * l);
-    // float t1 = atan2((fz * l - taux) / term3, (fx * l + tauz) / term3);
-    // float t2 = atan2((fz * l - taux) / term3, (fx * l + tauz) / term3);
+    //differential control part 
     float F_mag = sq(fx) + sq(fz);
     float theta = atan2(fz, fx);
     float f1 = 0;
     float f2 = 0;
+
+     if (fx == 0) {
+        static float previous_theta = theta;
+        static float last_theta_time = millis();  // Time when the last valid theta change occurred
+
+        // Threshold and duration for large rapid theta changes
+        float theta_threshold = PI / 4;  // 45 degrees threshold
+        float theta_change_duration = 1000;  // 1 second
+
+        // If the change in theta is too large and happens in a short time, ignore it
+        if (fabs(theta - previous_theta) > theta_threshold) {
+            if (millis() - last_theta_time < theta_change_duration) {
+                // Ignore the large, rapid change
+                theta = previous_theta;
+            } else {
+                // Accept the change after the duration
+                last_theta_time = millis();
+            }
+        }
+
+        // Store previous theta for the next iteration
+        previous_theta = theta;
+    }
+
+
     if(F_mag != 0) {
         if(fx != 0) {
             float term1 = tauz / (l * cos(theta));
@@ -234,12 +263,14 @@ void Differential::getOutputs(float sensors[MAX_SENSORS], float controls[], floa
             f2 = 0.5 * (-term1 + term2);
         }
     }
-    
+
     // Adds the pitch to the servo to accomodate for swinging behavior
     if (PDterms.pitchEn) {
         theta += sensors[3] * PDterms.pitchInvert + PDterms.pitchOffset/180 * PI; // Pitch
     }
-
+    // Smoothing theta using exponential rolling average
+    theta_ema = alpha * theta + (1 - alpha) * theta_ema;
+    theta = theta_ema;  // Use smoothed theta for the rest of the calculations
     // Checking for full rotations and adjusting t1 and t2
     theta = adjustAngle(theta);
 
