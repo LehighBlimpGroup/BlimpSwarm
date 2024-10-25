@@ -74,8 +74,8 @@ void RawBicopter::getPreferences() {
     preferences.begin("params", true); // Initializes the preferences in read-only mode   
 
     // A-matrix adjustments for the servo
-    PDterms.servoBeta = preferences.getFloat("servoBeta", 0);
-    PDterms.servoRange = preferences.getFloat("servoRange", 180);
+    PDterms.servoBeta = preferences.getFloat("servoBeta", 90);
+    PDterms.servoRange = preferences.getFloat("servoRange", 260);
     PDterms.botZlim = preferences.getFloat("botZlim", 0.001);
     PDterms.pitchOffset = preferences.getFloat("pitchOffset", 0);
     PDterms.pitchInvert = preferences.getFloat("pitchInvert", 1);

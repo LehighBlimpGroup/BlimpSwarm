@@ -15,7 +15,7 @@ if __name__ == "__main__":
 
     # List of robots and their preferences "34:85:18:8D:A0:D4", "34:85:18:AB:FE:68", "34:85:18:91:24:F0"
     robots = [
-        {"mac": "34:85:18:ab:fe:68", "preferences": [
+        {"mac": "48:27:e2:e6:df:a0", "preferences": [
             {"data_type": DataType_Float, "key": "servoRange", "value": 260},
             {"data_type": DataType_Float, "key": "servoBeta", "value": 90},
         ]},
@@ -71,7 +71,7 @@ if __name__ == "__main__":
     {"data_type": DataType_Int, "key": "state_flag", "value": 0x40},
     {"data_type": DataType_Int, "key": "num_captures", "value": 2},
     {"data_type": DataType_Int, "key": "time_in_ball", "value": 500},
-    {"data_type": DataType_Float, "key": "goal_height", "value": 8},
+    {"data_type": DataType_Float, "key": "goal_height", "value": 7},
 
     {"data_type": DataType_Float, "key": "y_thresh", "value": 0.57},
     {"data_type": DataType_Float, "key": "y_strength", "value": 3.5},
