@@ -143,7 +143,7 @@ void Differential::addFeedback(float sensors[MAX_SENSORS], float controls[], flo
     //          the D term in yaw is equivalent to the P term in yawrate
     if (PDterms.yawEn)
     {
-        float kpyaw_max_increase = 0.06f; // Maximum increase in kpyaw
+        float kpyaw_max_increase = 0.05f; // Maximum increase in kpyaw
         float kdyaw_max_increase = 0.06f; // Maximum increase in kdyaw (D-term adjustment)
 
         // Calculate dynamic scaling based on fx
@@ -211,7 +211,7 @@ void Differential::getOutputs(float sensors[MAX_SENSORS], float controls[], floa
 {
     // Assuming PDterms, kf1, kf2, servo1offset, servo2offset, and feedbackPD.pitch are defined elsewhere
     float theta_ema = 0.0f; // Exponential moving average of theta
-    float alpha = 0.9f;     // Smaller values will smooth more, larger values will be more responsive
+    float alpha = 0.95f;     // Smaller values will smooth more, larger values will be more responsive
 
     float l = PDterms.lx;
 
@@ -260,12 +260,13 @@ void Differential::getOutputs(float sensors[MAX_SENSORS], float controls[], floa
 
     if (F_mag != 0)
     {
-        if (fx != 0)
+        if (fabs(fx) >= 0.1)
         {
-            float term1 = tauz / (l * cos(theta));
-            float term2 = sqrt(F_mag);
-            f1 = 0.5 * (term1 + term2);
-            f2 = 0.5 * (-term1 + term2);
+
+        float term1 = tauz / (l * cos(theta));
+        float term2 = sqrt(F_mag);
+        f1 = 0.5 * (term1 + term2);
+        f2 = 0.5 * (-term1 + term2);
         }
         else
         {
