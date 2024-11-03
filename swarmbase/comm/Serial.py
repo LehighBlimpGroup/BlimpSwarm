@@ -16,10 +16,11 @@ class SerialController:
             self.serial = serial.Serial(port, baudrate, timeout=timeout)
             self.serial.reset_input_buffer()
             self.values = None
-        except serial.serialutil.SerialException as se:
+        except serial.SerialException as se:
             self.serial = None
             self.values = None
-            print(se)
+            print("Serial port error:", str(se).split(":")[0])
+            exit(1)
         
     def manage_peer(self, operation, mac_address=None):
         time.sleep(.02)
@@ -80,6 +81,8 @@ class SerialController:
         incoming = self.serial.readline()#.decode().strip()
         if (len(incoming) >= 24):
             self.values = struct.unpack('<6f', incoming[0:24])
+        else:
+            return None
         return self.values
 
     def wait_for_acknowledgement(self):

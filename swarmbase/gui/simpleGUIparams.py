@@ -53,7 +53,7 @@ BR = (BS[0] - 2 * BOF[0]) / MAXB  # Width of battery indicator
 
 # Distance parameters
 DP = [0.2 * GS[0], 0.8 * GS[1]]  # Position (left bottom corner) of distance indicator
-DS = [0.5 * GS[0], 0.15 * GS[1]]  # Size of distance indicator
+DS = [0.4 * GS[0], 0.15 * GS[1]]  # Size of distance indicator
 MAXD = 500  # Maximum distance
 DOF = [0.05 * DS[0], 0.1 * DS[1]]  # Offset of battery indicator (horizontal, vertical)
 DR = (DS[0] - 2 * DOF[0]) / MAXD  # Width of battery indicator
@@ -71,15 +71,15 @@ VH = 0.1  # Adjust as per your layout needs
 V = {
     "D1": ["Yaw ", -180, 180, 0, 1],
     "D2": ["Height ", 0, 15, 0, 0.1],
-    "P1": ["N/A ", -10, 10, 0, 1],
-    "P2": ["N/A ", -10, 10, 0, 1],
-    "P3": ["N/A ", -10, 10, 0, 1],
-    "P4": ["N/A ", -10, 10, 0, 1],
-    "P5": ["N/A ", -10, 10, 0, 1],
+    # "P1": ["N/A ", -10, 10, 0, 1],
+    # "P2": ["N/A ", -10, 10, 0, 1],
+    # "P3": ["N/A ", -10, 10, 0, 1],
+    # "P4": ["N/A ", -10, 10, 0, 1],
+    # "P5": ["N/A ", -10, 10, 0, 1],
 }
 # Update the Y-coordinate for each slider dynamically
 for i, key in enumerate(V.keys()):
-    V[key].append([0.69, VH + i * VA, 0.25, 0.06])
+    V[key].append([0.69, VH + i * VA, 0.2, 0.06])
 
 # Button parameters
 UCV = 3  # Number of custom buttons

@@ -4,12 +4,13 @@
 
 
 ROBOT_MAC ="34:85:18:91:b7:4c"#"DC:DA:0C:57:4B:94" # "30:30:F9:34:66:FC" #, "34:85:18:ab:fe:68"
-ROBOT_MACS =["48:27:e2:e6:ec:cc"]### Insert your SERIAL PORT here ###
+robot_macs = ["48:27:E2:E6:DF:A0", "DC:DA:0C:57:4B:94", "34:85:18:ac:0e:30"]### Insert your SERIAL PORT here ###
+ROBOT_MACS = [str.lower(robot) for robot in robot_macs]
 #"34:85:18:91:b7:4c", "34:85:18:ab:fe:68", "34:85:18:91:ce:fc",
 ## may look like "COM5" in windows or "/dev/tty.usbmodem14301" in mac  #
 ## look in arduino for the port that your specific transeiver is connected to  ##
 ## Note: make sure that your serial monitor is OFF in arduino or else you will get "access is denied" error. ##
-SERIAL_PORT = "COM17"
+SERIAL_PORT = "COM16"
 
 
 PUMP_MAC = "48:27:E2:E6:E6:44"
