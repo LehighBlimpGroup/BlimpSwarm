@@ -1,6 +1,6 @@
 import pygame
 from comm.Serial import SerialController
-from joystick.JoystickManager import JoystickManager
+from input.JoystickManager import JoystickManager
 from gui.simpleGUI import SimpleGUI
 from gui.niclaGUI import NiclaBox
 import time
