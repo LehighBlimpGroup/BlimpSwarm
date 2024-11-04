@@ -1,7 +1,7 @@
 
 from comm.Serial import SerialController, DataType_Int, DataType_Float
 # Make sure to import KeyboardManager from its location in your project
-from joystick.KeyboardManager import KeyboardManager
+from input.KeyboardManager import KeyboardManager
 from gui.simpleGUI import SimpleGUI
 from user_parameters import ROBOT_MAC, SERIAL_PORT, PRINT_JOYSTICK
 import time

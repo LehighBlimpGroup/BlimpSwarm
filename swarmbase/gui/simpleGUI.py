@@ -9,14 +9,13 @@ Description  : The GUI for bicopter control V3
 
 import matplotlib.pyplot as plt
 from gui.simpleGUIutils import *
-import time
 
 
 
 class SimpleGUI:
-    def __init__(self):
+    def __init__(self, camera="nicla"):
         # Plotting initialization
-        plt.ion()
+        plt.ioff()
         self.fig, self.ax = plt.subplots(figsize=GS)
         self.ax.set_facecolor(C["k"])  # Set background color
         self.fig.patch.set_facecolor(C["k"])  # Set background color
@@ -26,16 +25,20 @@ class SimpleGUI:
         self.ax.set_xticks([])  # Remove x ticks
         self.ax.set_yticks([])  # Remove y ticks
         self.ax.axis("off")  # Remove axis
+        for key in plt.rcParams.keys():
+            if key.startswith("keymap."):
+                plt.rcParams[key] = []
 
+        init_nicla(self, camera)
         init_yaw(self)
         init_height(self)
         init_variables(self)
         init_battery(self)
         init_distance(self)
         init_connection_status(self)
-        init_buttons(self)
 
-    def update(self, cur_yaw: float = 0, des_yaw: float = 0, cur_height: float = 0, des_height: float = 0, battery: float = 0, distance: float = 0, connection_status: bool = False):
+    def update(self, x: float = 0, y: float = 0, width: float = 0, height: float = 0, cur_yaw: float = 0, des_yaw: float = 0, cur_height: float = 0, des_height: float = 0, battery: float = 0, distance: float = 0, connection_status: bool = False):
+        update_nicla(self, x, y, width, height)
         update_yaw(self, cur_yaw, des_yaw)
         update_height(self, cur_height, des_height)
         update_battery(self, battery)
@@ -46,11 +49,30 @@ class SimpleGUI:
 
 
 if __name__ == "__main__":
-    mygui = SimpleGUI()
+    mygui = SimpleGUI("openmv")
     import math
-
+    # Change width and height in a loop to see updates
+    width, height = 100, 60
+    increasing = True        
     for i in range(101):
+        # Animate the rectangle's size
+        if increasing:
+            width += 1
+            height += 1
+            if width > 140:
+                increasing = False
+        else:
+            width -= 1
+            height -= 1
+            if width < 80:
+                increasing = True
+        
+        # Update the rectangle with new dimensions
         mygui.update(
+            x = 200,
+            y= 130,
+            width = width,
+            height = height,
             cur_yaw=math.pi * i / 100,
             des_yaw=- math.pi * i / 100,
             cur_height=15 * i / 100,

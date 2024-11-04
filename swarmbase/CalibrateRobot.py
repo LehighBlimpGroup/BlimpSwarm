@@ -12,9 +12,7 @@ and you will probobly not need to run this program again.
 
 
 
-from comm.Serial import SerialController, DataType_Int, DataType_Float, DataType_Boolean
-from joystick.JoystickManager import JoystickManager
-import time
+from comm.Serial import SerialController, DataType_Boolean
 from user_parameters import ROBOT_MACS, SERIAL_PORT
 
 
