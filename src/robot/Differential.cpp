@@ -176,7 +176,6 @@ void Differential::addFeedback(float sensors[MAX_SENSORS], float controls[], flo
              + yawrate_integral;
     }
 
-
     // Pitch feedback
     if (PDterms.pitchEn)
     {
@@ -211,14 +210,14 @@ void Differential::getOutputs(float sensors[MAX_SENSORS], float controls[], floa
 {
     // Assuming PDterms, kf1, kf2, servo1offset, servo2offset, and feedbackPD.pitch are defined elsewhere
     float theta_ema = 0.0f; // Exponential moving average of theta
-    float alpha = 0.95f;     // Smaller values will smooth more, larger values will be more responsive
+    float alpha = 0.95f;    // Smaller values will smooth more, larger values will be more responsive
 
     float l = PDterms.lx;
 
     float fx = clamp(controls[0], -0.6, 0.6);
     float fz = controls[1];
     // if (fx > abs(fz)){
-     fz = clamp(fz, -1, 1);
+    fz = clamp(fz, -1, 1);
     // } else {
     //     fz = clamp(fz, 0.001, 2);
     // }
@@ -230,52 +229,62 @@ void Differential::getOutputs(float sensors[MAX_SENSORS], float controls[], floa
     float f1 = 0;
     float f2 = 0;
 
-   if (fx == 0 && fz ==0)
-   {
-       static float previous_theta = theta;
-       static float last_theta_time = millis(); // Time when the last valid theta change occurred
+    // // Variables for handling large, rapid changes in theta
+    // static float previous_theta = theta;
+    // static float last_theta_time = millis(); // Time when the last valid theta change occurred
 
-       // Threshold and duration for large rapid theta changes
-       float theta_threshold = PI / 4;     // 45 degrees threshold
-       float theta_change_duration = 1000; // 1 second
+    // // Threshold and duration for large rapid theta changes
+    // float theta_threshold = PI / 8;     // 45 degrees threshold
+    // float theta_change_duration = 500; // 1 second
 
-       // If the change in theta is too large and happens in a short time, ignore it
-       if (fabs(theta - previous_theta) > theta_threshold)
-       {
-           if (millis() - last_theta_time < theta_change_duration)
-           {
-               // Ignore the large, rapid change
-               theta = previous_theta;
-           }
-           else
-           {
-               // Accept the change after the duration
-               last_theta_time = millis();
-           }
-       }
+    // // If the change in theta is too large and happens in a short time, ignore it
+    // if (fabs(theta - previous_theta) > theta_threshold)
+    // {
+    //     if (millis() - last_theta_time < theta_change_duration)
+    //     {
+    //         // Ignore the large, rapid change
+    //         theta = previous_theta;
+    //     }
+    //     else
+    //     {
+    //         // Accept the change after the duration
+    //         last_theta_time = millis();
+    //     }
+    // }
 
-       // Store previous theta for the next iteration
-       previous_theta = theta;
-   }
+    // // Store previous theta for the next iteration
+    // previous_theta = theta;
 
     if (F_mag != 0)
     {
-        if (fabs(fx) >= 0.1)
+
+        if (fabs(fx) == 0.0)
+        {
+            fx = 10 * fabs(tauz);
+            theta = atan2(fz, fabs(tauz * 10));
+        }
+
+        if (fabs(tauz / fx) > 0.1)
         {
 
+            float scaled_tauz = tauz * fabs(fx);
+            tauz = scaled_tauz;
+        }
+
+        // else
         float term1 = tauz / (l * cos(theta));
         float term2 = sqrt(F_mag);
         f1 = 0.5 * (term1 + term2);
         f2 = 0.5 * (-term1 + term2);
-        }
-        else
-        {
-            theta = atan2(fz, abs(tauz / -.1));
-            float term1 = tauz / (2 * l);
-            float term2 = sqrt(F_mag);
-            f1 = 0.5 * (term1 + term2);
-            f2 = 0.5 * (-term1 + term2);
-        }
+        // }
+        // else
+        // {
+        // theta = atan2(fz, fabs(tauz / -.1));
+        // float term1 = tauz / (2 * l);
+        // float term2 = sqrt(F_mag);
+        // f1 = 0.5 * (term1 + term2);
+        // f2 = 0.5 * (-term1 + term2);
+        // }
     }
 
     // Adds the pitch to the servo to accomodate for swinging behavior
@@ -288,15 +297,15 @@ void Differential::getOutputs(float sensors[MAX_SENSORS], float controls[], floa
     theta_ema = alpha * theta + (1 - alpha) * theta_ema;
     theta = theta_ema; // Use smoothed theta for the rest of the calculations
     // Checking for full rotations and adjusting t1 and t2
-    theta = adjustAngle(theta);
+    // theta = adjustAngle(theta);
 
     // Converting values to a more stable form
     // float servoBottom = 90.0f - PDterms.servoRange/2.0f; // bottom limit of servo in degrees
     // float servoTop = 90.0f + PDterms.servoRange/2.0f; // top limit of servo in degrees
     out[2] = 180.0f - clamp((theta) * 180.0f / PI + PDterms.servoBeta, 0.0f, PDterms.servoRange) * 180.0f / PDterms.servoRange;
     out[3] = 180.0f - clamp((theta) * 180.0f / PI + PDterms.servoBeta, 0.0f, PDterms.servoRange) * 180.0f / PDterms.servoRange;
-    out[0] = clamp(f1, 0.025, 1);  // Cap f1 at a minimum of 0.025
-    out[1] = clamp(f2, 0.025, 1);  // Cap f2 at a minimum of 0.025
+    out[0] = clamp(f1, 0.025, 0.8); // Cap f1 at a minimum of 0.025
+    out[1] = clamp(f2, 0.025, 0.8); // Cap f2 at a minimum of 0.025
 
     if (abs(out[2] - servo_old1) < PDterms.servo_move_min)
     {

@@ -23,9 +23,9 @@ if __name__ == "__main__":
             {"data_type": DataType_Float, "key": "servoRange", "value": 260},
             {"data_type": DataType_Float, "key": "servoBeta", "value": 0},
         ]},
-        {"mac": "34:85:18:91:bc:94", "preferences": [
-            {"data_type": DataType_Float, "key": "servoRange", "value": 260},
-            {"data_type": DataType_Float, "key": "servoBeta", "value": 0},
+        {"mac": "DC:DA:0C:57:4B:94", "preferences": [
+            {"data_type": DataType_Float, "key": "servoRange", "value": 360},
+            {"data_type": DataType_Float, "key": "servoBeta", "value": 180},
         ]}
     ]
 
@@ -62,7 +62,7 @@ if __name__ == "__main__":
     {"data_type": DataType_Float, "key": "yawRateIntRange", "value": 0},
     {"data_type": DataType_Float, "key": "lx", "value": 0.15},
     {"data_type": DataType_Float, "key": "servoRange", "value": 180},
-    {"data_type": DataType_Float, "key": "servoBeta", "value": 90},
+    {"data_type": DataType_Float, "key": "servoBeta", "value": 0},
     {"data_type": DataType_Float, "key": "servo_move_min", "value": 0},
     {"data_type": DataType_Float, "key": "botZlim", "value": -1},
     {"data_type": DataType_Float, "key": "pitchOffset", "value": 0},
