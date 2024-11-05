@@ -28,7 +28,6 @@ ReceivedData rcv;
 // Data storage for the sensors 
 float senses[myRobot->MAX_SENSORS];
 
-bool updateParams = true;
 const int TIME_STEP_MICRO = 4000;
 float groundAltitude = 0;
 int dt = 1000;
@@ -164,11 +163,8 @@ void recieveCommands(){
   if (baseComm->isNewMsgCmd()){
     // New command received
     cmd = baseComm->receiveMsgCmd();
-    if (int(cmd.params[11]) == 1 && updateParams){
+    if (int(cmd.params[11]) == 1){
       paramUpdate();
-      updateParams = false;
-    } else {
-      updateParams = true;
     }
     // Print command
     Serial.print("Cmd arrived: ");
