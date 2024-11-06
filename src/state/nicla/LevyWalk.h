@@ -24,6 +24,7 @@ class LevyWalk : public NiclaState {
         float yawCurr = 0;
         unsigned long levyTimer = 0;
         float yawProgress; // Variable to track the progressive change in yaw
+        bool actionUnderway = false;
 
         unsigned long spinTimer; // Timer for spinning
         unsigned long spinDuration = 20000; // Duration for a full 360 spin in milliseconds
@@ -49,4 +50,9 @@ class LevyWalk : public NiclaState {
          * Efficient in uncertain environments where variability is high.
          */
         void behavior(float sensors[], float controls[], float outControls[]);
+
+    private:
+        bool wallDetected = false;
+        float turnStartYaw = 0;
+        float forward_force = 0;
 };

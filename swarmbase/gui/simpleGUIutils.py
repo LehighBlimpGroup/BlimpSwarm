@@ -12,9 +12,80 @@ import matplotlib.patches as patches
 import matplotlib.pyplot as plt
 from gui.simpleGUIparams import *
 import numpy as np
-import math
 
+def init_nicla(self, board="nicla") -> None:
+    if board == "nicla":
+        self.NB = [240, 160]
+    elif board == "openmv":
+        self.NB = [320, 240]
 
+    self.NBYR = self.NB[1] / self.NB[0]
+    self.NBS = [0.4 * GS[0], max(0, min(0.4 * GS[0], self.NBYR * 0.4 * GS[0]))]
+    self.NBP = [0.6 * GS[0], (0.5 - (self.NBS[1]/(2*GS[1]))) * GS[1]]
+
+    self.nicla_max_x = self.NB[0]
+    self.nicla_max_y = self.NB[1]
+    self.nicla_x = self.NBP[0]
+    self.nicla_y = self.NBP[1]
+    self.nicla_width = self.NBS[0]
+    self.nicla_height = self.NBS[1]
+    self.nicla_color = C["p"]
+    
+    # Create the rectangle
+    self.nicla_window = patches.Rectangle(
+        (self.NBP[0], self.NBP[1]),  # Bottom-left corner
+        self.NBS[0],
+        self.NBS[1],
+        linewidth=1,
+        edgecolor='white',
+        facecolor='none'  # Transparent filling
+    )
+    
+    # Add the outer rectangle to the plot
+    self.ax.add_patch(self.nicla_window)
+    
+    # Define the inner rectangle properties
+    self.inner_rect = patches.Rectangle(
+        (0, 0),  # Bottom-left corner of the inner rectangle
+        0,  # Initial width
+        0,  # Initial height
+        edgecolor='none',
+        facecolor=self.nicla_color  # Red filling
+    )
+    # Add the inner rectangle to the plot
+    self.ax.add_patch(self.inner_rect)
+
+    # # Set plot limits
+    # self.ax.set_xlim(0, 6)
+    # self.ax.set_ylim(0, 4)
+    # self.ax.set_aspect('equal')
+    # self.rect = patches.Rectangle((0 * GS[0], 0 * GS[1]),
+    #                                 self.width, self.height,
+    #                                 linewidth=1, edgecolor="black", facecolor=self.color)
+    # self.ax.add_patch(self.rect)
+
+def update_nicla(self, x=None, y=None, width=None, height=None):
+    """Update the rectangle's position and size."""
+    # Update the rectangle's position and size if new values are provided
+    if x is None:
+        return
+    
+    self.nicla_x = self.NBP[0] + ((x - width / 2) / self.NB[0]) * self.NBS[0]
+    self.nicla_y = self.NBP[1] + ((y - height / 2) / self.NB[1]) * self.NBS[1]
+    self.nicla_width = (width / self.NB[0]) * self.NBS[0]
+    self.nicla_height = (height / self.NB[1]) * self.NBS[1]
+
+    # # Ensure the rectangle stays within the specified boundaries
+    self.nicla_x = max(self.NBP[0], min(self.nicla_x, self.NBP[0] + self.NBS[0]))
+    self.nicla_y = max(self.NBP[1], min(self.nicla_y, self.NBP[1] + self.NBS[1]))
+    self.nicla_width = min(self.nicla_width, self.NBP[0] + self.NBS[0] - self.nicla_x)
+    self.nicla_height = min(self.nicla_height, self.NBP[1] + self.NBS[1] - self.nicla_y)
+
+    # Update the rectangle's position and size
+    self.inner_rect.set_xy((self.nicla_x, self.nicla_y))
+    self.inner_rect.set_width(self.nicla_width)
+    self.inner_rect.set_height(self.nicla_height)
+    
 # Initialize the yaw circle
 def init_yaw(self) -> None:
     # Plot

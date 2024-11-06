@@ -1,7 +1,7 @@
 
 
 from comm.Serial import SerialController, DataType_Int, DataType_Float
-from joystick.JoystickManager import JoystickManager
+from input.JoystickManager import JoystickManager
 from gui.simpleGUI import SimpleGUI
 import time
 

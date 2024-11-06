@@ -41,7 +41,7 @@ bool SensorSuite::update() {
         updated = true;
         sensorValues[2] = sensorValues[2] * 0.9 + baroValues[3] * 0.1;
     }
-    offset = 3;
+    offset = 3; 
     // Repeat the pattern for bnoSensor and batterySensor
     if (!updated) {// prevent both baro and bno update on same tick.
         if (bnoSensor.update()) {
@@ -60,6 +60,19 @@ bool SensorSuite::update() {
             sensorValues[offset + i] = batteryValues[i];
         }
         offset += tempCount;
+        updated = true;
+    }
+    offset = 11; 
+
+    if (ultrasonicSensor.readDistance() != 0xFFFF) {  // Check for valid reading
+        sensorValues[offset] = ultrasonicSensor.readDistance();  // Store the distance value
+        offset += 1;
+        updated = true;
+    }
+    // If the ultrasonic sensor is not working, then the value is set to 999
+    else {
+        sensorValues[offset] = 999;
+        offset += 1;
         updated = true;
     }
 

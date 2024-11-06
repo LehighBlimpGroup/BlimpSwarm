@@ -1,5 +1,5 @@
 from comm.Serial import SerialController, DataType_Int, DataType_Float, DataType_Boolean
-from joystick.JoystickManager import JoystickManager
+from input.JoystickManager import JoystickManager
 import time
 
 

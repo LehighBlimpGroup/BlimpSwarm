@@ -16,6 +16,7 @@ class JoystickManager:
         else:
             print("No joystick detected!")
             self.joystick = None
+            exit(1)
     
     def updateJoy(self):
         pygame.event.pump()  # Process event queue for the joystick

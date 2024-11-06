@@ -49,7 +49,7 @@ public:
 private:
     Nicla nicla;
     SensorSuite sensorSuite;
-    float sensorValues[21]; // Adjust based on actual data size needed
+    float sensorValues[22]; // Adjust based on actual data size needed (21 + 1 for ultrasonicSensor distance)
     int valueCount; // Keep track of the total number of values stored
 };
 
