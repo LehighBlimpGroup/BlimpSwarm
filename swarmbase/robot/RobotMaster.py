@@ -32,8 +32,12 @@ class RobotMaster:
             self.serial.manage_peer("A", robot_mac)
             self.serial.manage_peer("G", robot_mac)
             time.sleep(0.05)
+    
+    def get_last_n_keys(self, num_keys=1):
+        return self.mygui.get_last_n_keys(num_keys)
 
     def updateGui(self, height=0.0, tz=0.0, printValues=False):
+        
         sensors = None
         if self.current_robot_index != -1:
             sensors = self.serial.getSensorData()

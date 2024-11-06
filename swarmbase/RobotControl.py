@@ -46,8 +46,6 @@ def stopCommunication(serial, robot):
 def main():
     try:
         robot_master = RobotMaster(0.3)
-        keyboard = KeyLogger(1)
-        keyboard.start_logging()
         joystick = JoystickManager()
         robot_master.setup(ROBOT_MACS, "openmv")
 
@@ -60,7 +58,7 @@ def main():
 
         while True:
             time.sleep(0.2)
-            keys = keyboard.get_last_n_keys(1)
+            keys =  robot_master.get_last_n_keys(1)
             axis, buttons = joystick.getJoystickInputs()
             robot_master.processManual(axis, buttons, print=True)
 
@@ -98,7 +96,6 @@ def main():
         print(e)
         return
     finally:
-        keyboard.stop_logging()
         robot_master.runFunction('s')
     
 

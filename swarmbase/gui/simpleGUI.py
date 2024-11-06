@@ -9,13 +9,19 @@ Description  : The GUI for bicopter control V3
 
 import matplotlib.pyplot as plt
 from gui.simpleGUIutils import *
+from collections import deque
 
 
 
 class SimpleGUI:
-    def __init__(self, camera="nicla"):
+    def on_key_press(self, event):
+        if event.key == 'ctrl+c':
+            exit(1)
+        self.keystrokes.append(event.key)
+
+    def __init__(self, camera="nicla", n=2):
         # Plotting initialization
-        plt.ioff()
+        plt.ion()
         self.fig, self.ax = plt.subplots(figsize=GS)
         self.ax.set_facecolor(C["k"])  # Set background color
         self.fig.patch.set_facecolor(C["k"])  # Set background color
@@ -25,9 +31,13 @@ class SimpleGUI:
         self.ax.set_xticks([])  # Remove x ticks
         self.ax.set_yticks([])  # Remove y ticks
         self.ax.axis("off")  # Remove axis
+        self.keystrokes = deque(maxlen=n)
         for key in plt.rcParams.keys():
             if key.startswith("keymap."):
                 plt.rcParams[key] = []
+
+        # plt.rcParams['keymap.quit'] = ['ctrl+c']  # Keep Ctrl+C to quit        
+        self.fig.canvas.mpl_connect('key_press_event', self.on_key_press)
 
         init_nicla(self, camera)
         init_yaw(self)
@@ -47,6 +57,11 @@ class SimpleGUI:
         plt.draw()
         plt.pause(0.001)
 
+    def get_last_n_keys(self, num_keys=1):
+        """Get and pop the last `num_keys` keystrokes."""
+        num_keys = min(num_keys, len(self.keystrokes))  # Limit to available keys
+        last_keys = [self.keystrokes.popleft() for _ in range(num_keys)]
+        return last_keys
 
 if __name__ == "__main__":
     mygui = SimpleGUI("openmv")
