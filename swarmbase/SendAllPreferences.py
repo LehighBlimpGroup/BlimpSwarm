@@ -104,7 +104,7 @@ if __name__ == "__main__":
     {"data_type": DataType_Float, "key": "x_strength", "value": 2},
     {"data_type": DataType_Float, "key": "fx_togoal", "value": 0.3},
     {"data_type": DataType_Float, "key": "fx_charge", "value": 0.5},
-    {"data_type": DataType_Float, "key": "fx_levy", "value": 0.5},
+    {"data_type": DataType_Float, "key": "fx_levy", "value": 0.25},
     {"data_type": DataType_Int, "key": "n_max_x", "value": 240},
     {"data_type": DataType_Int, "key": "n_max_y", "value": 160},
     {"data_type": DataType_Float, "key": "h_ratio", "value": 0.8},
@@ -114,6 +114,11 @@ if __name__ == "__main__":
     {"data_type": DataType_Float, "key": "by_strength", "value": 1.5},
     {"data_type": DataType_Float, "key": "bx_strength", "value": 1.1},
     {"data_type": DataType_Float, "key": "bfx_togoal", "value": 0.15}, #0.11
+    {"data_type": DataType_Float, "key": "bfx_charge", "value": 0.8}, #0.4
+    {"data_type": DataType_Float, "key": "bfx_levy", "value": 0}, #0.3
+    {"data_type": DataType_Int, "key": "bn_max_x", "value": 240},
+    {"data_type": DataType_Int, "key": "bn_max_y", "value": 160},
+    {"data_type": DataType_Float, "key": "bh_ratio", "value": 0.46},
     {"data_type": DataType_Float, "key": "bfx_charge", "value": 0.3}, #0.4
     {"data_type": DataType_Float, "key": "bfx_levy", "value": .3}, #0.3
     {"data_type": DataType_Int, "key": "bn_max_x", "value": 320},
