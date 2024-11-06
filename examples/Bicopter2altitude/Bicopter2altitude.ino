@@ -37,7 +37,6 @@ float kpz = 0;
 float kdz = 0;
 
 Preferences preferences; //initialize the preferences 
-bool updateParams = true;
 
 void setup() {
     Serial.begin(115200);
@@ -66,11 +65,8 @@ void loop() {
     if (baseComm->isNewMsgCmd()){
       // New command received
       cmd = baseComm->receiveMsgCmd();
-      if (int(cmd.params[11]) == 1 && updateParams){
+      if (int(cmd.params[11]) == 1){
         paramUpdate();
-        updateParams = false;
-      } else {
-        updateParams = true;
       }
       // Print command
       Serial.print("Cmd arrived: ");
