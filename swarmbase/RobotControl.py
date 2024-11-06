@@ -43,11 +43,11 @@ def sendPreferences(serial, robot):
 
     for pref in Preferences.PREFERENCES["FF:FF:FF:FF:FF:FF"]:
         serial.send_preference(robot, pref["data_type"], pref["key"], pref["value"])
-    if robot != Preferences.PREFERENCES:
+    if robot not in Preferences.PREFERENCES:
         serial.send_control_params(robot, (0,0,0,0, 0, 0, 0, 0, 0, 0, 0, 1, 0))
         return -1
-    preferences = Preferences.PREFERENCES[robot]
-    for pref in preferences:
+    prefer = Preferences.PREFERENCES[robot]
+    for pref in prefer:
         serial.send_preference(robot, pref["data_type"], pref["key"], pref["value"])
     serial.send_control_params(robot, (0,0,0,0, 0, 0, 0, 0, 0, 0, 0, 1, 0))
     return -1

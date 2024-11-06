@@ -42,14 +42,14 @@ PREFERENCES = {
             {"data_type": DataType_Int, "key": "state_flag", "value": 0x40},
             {"data_type": DataType_Int, "key": "num_captures", "value": 2},
             {"data_type": DataType_Int, "key": "time_in_ball", "value": 500},
-            {"data_type": DataType_Float, "key": "goal_height", "value": 2},
+            {"data_type": DataType_Float, "key": "goal_height", "value": 8},
 
             {"data_type": DataType_Float, "key": "y_thresh", "value": 0.57},
             {"data_type": DataType_Float, "key": "y_strength", "value": 3.5},
             {"data_type": DataType_Float, "key": "x_strength", "value": 2},
             {"data_type": DataType_Float, "key": "fx_togoal", "value": 0.3},
             {"data_type": DataType_Float, "key": "fx_charge", "value": 0.5},
-            {"data_type": DataType_Float, "key": "fx_levy", "value": 0.5},
+            {"data_type": DataType_Float, "key": "fx_levy", "value": 0.1},
             {"data_type": DataType_Int, "key": "n_max_x", "value": 240},
             {"data_type": DataType_Int, "key": "n_max_y", "value": 160},
             {"data_type": DataType_Float, "key": "h_ratio", "value": 0.8},
@@ -60,9 +60,13 @@ PREFERENCES = {
             {"data_type": DataType_Float, "key": "bx_strength", "value": 1.1},
             {"data_type": DataType_Float, "key": "bfx_togoal", "value": 0.15}, #0.11
             {"data_type": DataType_Float, "key": "bfx_charge", "value": 0.3}, #0.4
-            {"data_type": DataType_Float, "key": "bfx_levy", "value": 0.5}, #0.3
+            {"data_type": DataType_Float, "key": "bfx_levy", "value": 0.2}, #0.3
             {"data_type": DataType_Int, "key": "bn_max_x", "value": 320},
             {"data_type": DataType_Int, "key": "bn_max_y", "value": 240},
             {"data_type": DataType_Float, "key": "bh_ratio", "value": 0.36},
             {"data_type": DataType_Float, "key": "brange_for_forward", "value": 0.15}
+    ], 
+    "48:27:e2:e6:df:a0" : [
+            {"data_type": DataType_Float, "key": "servoRange", "value": 360},
+            {"data_type": DataType_Float, "key": "servoBeta", "value": 180},
     ]}
