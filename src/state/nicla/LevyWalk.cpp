@@ -39,7 +39,7 @@ RobotState* LevyWalk::statetransitions(float sensors[], float controls[]) {
         
         RobotState* moveToGoal = new MoveToGoal();
         // return moveToGoal;
-        return this;
+        return moveToGoal;
     } else if (sensors[11] < WALL_DISTANCE_THRESH) {
         // Serial.println("Wall mode entered");
 
