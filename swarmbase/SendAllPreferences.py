@@ -88,7 +88,7 @@ if __name__ == "__main__":
     {"data_type": DataType_Float, "key": "yawRateIntRange", "value": 0},
     {"data_type": DataType_Float, "key": "lx", "value": 0.15},
     {"data_type": DataType_Float, "key": "servoRange", "value": 180},
-    {"data_type": DataType_Float, "key": "servoBeta", "value": 90},
+    {"data_type": DataType_Float, "key": "servoBeta", "value": 0},
     {"data_type": DataType_Float, "key": "servo_move_min", "value": 0},
     {"data_type": DataType_Float, "key": "botZlim", "value": -1},
     {"data_type": DataType_Float, "key": "pitchOffset", "value": 0},
