@@ -66,7 +66,7 @@ class RobotMaster:
                     sensors = [0] * self.numSensors
                 currRobot = self.robots[self.current_robot_index]
                 currState = self.ready[self.current_robot_index]
-                self.serial.send_control_params(currRobot, (5, 0, sensors[0], 0, sensors[1], 0, 0, 0, 0, 0, 0, 0, 0))
+                self.serial.send_control_params(currRobot, (0, 0, sensors[0], 0, sensors[1], 0, 0, 0, 0, 0, 0, 0, 0))
                 self.serial.send_control_params(currRobot, (currState, 0, sensors[0], 0, sensors[1], 0, 0, 0, 0, 0, 0, 0, 0))
                 self.current_robot_index = index-1
                 if self.current_robot_index != -1:
@@ -123,7 +123,7 @@ class RobotMaster:
         currState = self.ready[self.current_robot_index]
         self.updateGui(self.height, self.tz, print)
 
-        self.serial.send_control_params(currRobot, (currState, fx_ave, self.height, 0, self.tz, -buttons[2], 1, 0, 0, 0, 0, 0, 0))
+        self.serial.send_control_params(currRobot, (currState, fx_ave, self.height, 0, self.tz, -buttons[2], 0, 0, 0, 0, 0, 0, 0))
 
 
     def functionFactory(self, c, func, verbose=""):

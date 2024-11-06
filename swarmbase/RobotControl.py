@@ -2,9 +2,9 @@ from comm.Serial import DataType_Boolean
 from input.JoystickManager import JoystickManager
 from user_parameters import ROBOT_MACS
 from robot.RobotMaster import RobotMaster
-from input.KeyLogger import KeyLogger
-from Preferences import PREFERENCES
+import Preferences
 import time
+import importlib
 
 PRINT_JOYSTICK = False
 
@@ -38,9 +38,18 @@ def sendCalibrate(serial, robot):
     time.sleep(.05)
     return -1
 
-def stopCommunication(serial, robot):
-    serial.send_control_params(robot, (5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0))
-    time.sleep(.05)
+def sendPreferences(serial, robot):
+    importlib.reload(Preferences)
+
+    for pref in Preferences.PREFERENCES["FF:FF:FF:FF:FF:FF"]:
+        serial.send_preference(robot, pref["data_type"], pref["key"], pref["value"])
+    if robot != Preferences.PREFERENCES:
+        serial.send_control_params(robot, (0,0,0,0, 0, 0, 0, 0, 0, 0, 0, 1, 0))
+        return -1
+    preferences = Preferences.PREFERENCES[robot]
+    for pref in preferences:
+        serial.send_preference(robot, pref["data_type"], pref["key"], pref["value"])
+    serial.send_control_params(robot, (0,0,0,0, 0, 0, 0, 0, 0, 0, 0, 1, 0))
     return -1
 
 def main():
@@ -53,7 +62,7 @@ def main():
         robot_master.functionFactory('g', startOne, "Start")
         robot_master.functionFactory('a', startAutonomous, "Auto")
         robot_master.functionFactory('c', sendCalibrate, "Calibrate")
-        robot_master.functionFactory('l', stopCommunication, "Stop Communication")
+        robot_master.functionFactory('p', sendPreferences, "Send Preferences")
         index = "0"
 
         while True:
