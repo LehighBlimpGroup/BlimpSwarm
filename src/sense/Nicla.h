@@ -71,7 +71,7 @@ public:
     void getPreferences();
 
 private:
-    float value[10]; // Array to store the battery voltage
+    float value[10]; // Array to store the values returned by Nicla Vision
     uint8_t mode = GOAL_DET; // Default mode the Nicla Vision will start at
     unsigned long sendTime;
 };

@@ -71,14 +71,14 @@ if __name__ == "__main__":
     {"data_type": DataType_Int, "key": "state_flag", "value": 0x40},
     {"data_type": DataType_Int, "key": "num_captures", "value": 2},
     {"data_type": DataType_Int, "key": "time_in_ball", "value": 500},
-    {"data_type": DataType_Float, "key": "goal_height", "value": 8},
+    {"data_type": DataType_Float, "key": "goal_height", "value": 4},
 
     {"data_type": DataType_Float, "key": "y_thresh", "value": 0.57},
     {"data_type": DataType_Float, "key": "y_strength", "value": 3.5},
     {"data_type": DataType_Float, "key": "x_strength", "value": 2},
     {"data_type": DataType_Float, "key": "fx_togoal", "value": 0.3},
     {"data_type": DataType_Float, "key": "fx_charge", "value": 0.5},
-    {"data_type": DataType_Float, "key": "fx_levy", "value": 0.5},
+    {"data_type": DataType_Float, "key": "fx_levy", "value": 0.25},
     {"data_type": DataType_Int, "key": "n_max_x", "value": 240},
     {"data_type": DataType_Int, "key": "n_max_y", "value": 160},
     {"data_type": DataType_Float, "key": "h_ratio", "value": 0.8},
@@ -89,7 +89,7 @@ if __name__ == "__main__":
     {"data_type": DataType_Float, "key": "bx_strength", "value": 1.1},
     {"data_type": DataType_Float, "key": "bfx_togoal", "value": 0.15}, #0.11
     {"data_type": DataType_Float, "key": "bfx_charge", "value": 0.8}, #0.4
-    {"data_type": DataType_Float, "key": "bfx_levy", "value": .3}, #0.3
+    {"data_type": DataType_Float, "key": "bfx_levy", "value": 0}, #0.3
     {"data_type": DataType_Int, "key": "bn_max_x", "value": 240},
     {"data_type": DataType_Int, "key": "bn_max_y", "value": 160},
     {"data_type": DataType_Float, "key": "bh_ratio", "value": 0.46},

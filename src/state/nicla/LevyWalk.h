@@ -54,4 +54,5 @@ class LevyWalk : public NiclaState {
     private:
         bool wallDetected = false;
         float turnStartYaw = 0;
+        float forward_force = 0;
 };

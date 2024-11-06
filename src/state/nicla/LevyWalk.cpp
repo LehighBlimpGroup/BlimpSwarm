@@ -64,11 +64,18 @@ void LevyWalk::behavior(float sensors[], float controls[], float outControls[]) 
 
     if (wallDetected) {
 
+        // Calculate the target yaw (90 degrees turn)
+        Serial.println("Wall Detected");
+        // Serial.println(sensors[11]);
+        // Serial.println(turnStartYaw,currentYaw);
+        float targetYaw = turnStartYaw + M_PI / 2.0; // Add 90 degrees (in radians)
+        // float targetYaw = turnStartYaw + random( M_PI/2.0 - WallTurnRange, M_PI/2.0);
         
-        float targetYaw = turnStartYaw + M_PI/2.0   //random( M_PI/2.0 - WallTurnRange, M_PI/2.0);
         // Normalize the target yaw to be between -π and π
         while (targetYaw > M_PI) targetYaw -= 2 * M_PI;
         while (targetYaw < -M_PI) targetYaw += 2 * M_PI;
+
+        // Current yaw
         
 
         // Calculate the difference
@@ -95,7 +102,7 @@ void LevyWalk::behavior(float sensors[], float controls[], float outControls[]) 
         
     } else {
         // Spiral state
-        // Serial.println("Normal Levywalk behavior");
+        Serial.println("Normal Levywalk behavior");
         if (isSpinning) {
             unsigned long timeElapsed = currentTime - spinTimer;
 
@@ -105,9 +112,9 @@ void LevyWalk::behavior(float sensors[], float controls[], float outControls[]) 
                 if (dt > 0) {
                     yawRate -= 0.02* (dt / 1000.0);  // Gradually increase the yaw rate
                     yawRate = constrain(yawRate, 0, .5);  // Limit yaw rate to max value
-                    angleProgress += yawRate * (dt / 1000.0);  // Update yaw based on the elapsed time in seconds
+                    currentYaw += yawRate * (dt / 1000.0);  // Update yaw based on the elapsed time in seconds
                     SpiralTimer = currentTime;  // Update the SpiralTimer to the current time
-                    currentYaw = angleProgress;  // Synchronize currentYaw with angleProgress
+                    // currentYaw = angleProgress;  // Synchronize currentYaw with angleProgress
                     // currentYaw += 0;
                 }
             } else {
@@ -116,7 +123,7 @@ void LevyWalk::behavior(float sensors[], float controls[], float outControls[]) 
                 spinTimer = currentTime;
                 spinDuration = random(5000, 20000);
                 yawRate = 0.5;
-                // currentYaw = sensors[5] + random(50, 120)/180.0f * 3.14;
+                currentYaw = sensors[5] + random(50, 120)/180.0f * 3.14;
                 currentYaw = 0;
                 if (hist->nicla_desired == 1){ // goal mode
                     hist->z_estimator = terms.goal_height + random(-15000, 15000) / 10000.0f;
