@@ -7,10 +7,6 @@ import time
 import importlib
 
 PRINT_JOYSTICK = False
-
-# Function to send preferences to a specific robot
-def send_preferences(serial, robot):
-    serial.send_preference(robot, PREFERENCES["data_type"], PREFERENCES["key"], PREFERENCES["value"])
         
 def startAutonomous(serial, robot):
     serial.send_control_params(robot, (3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0))
@@ -41,7 +37,7 @@ def sendCalibrate(serial, robot):
 def sendPreferences(serial, robot):
     importlib.reload(Preferences)
 
-    for pref in Preferences.PREFERENCES["FF:FF:FF:FF:FF:FF"]:
+    for pref in Preferences.PREFERENCES["ff:ff:ff:ff:ff:ff"]:
         serial.send_preference(robot, pref["data_type"], pref["key"], pref["value"])
     if robot not in Preferences.PREFERENCES:
         serial.send_control_params(robot, (0,0,0,0, 0, 0, 0, 0, 0, 0, 0, 1, 0))
