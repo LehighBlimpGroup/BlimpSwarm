@@ -60,10 +60,10 @@ RobotState* LevyWalk::statetransitions(float sensors[], float controls[]) {
 
 void LevyWalk::behavior(float sensors[], float controls[], float outControls[]) {
     unsigned long currentTime = millis();
-    currentYaw = sensors[5];
+    // currentYaw = sensors[5];
 
     if (wallDetected) {
-
+        currentYaw = sensors[5];
         // Calculate the target yaw (90 degrees turn)
         Serial.println("Wall Detected");
         // Serial.println(sensors[11]);
@@ -101,44 +101,30 @@ void LevyWalk::behavior(float sensors[], float controls[], float outControls[]) 
         }
         
     } else {
+        // initial forward
+        if(forwardDuration == 0) {
+            forwardDuration = random(3000, 5000);
+            currentYaw = sensors[5];
+        }
+
         // Spiral state
         Serial.println("Normal Levywalk behavior");
-        if (isSpinning) {
-            unsigned long timeElapsed = currentTime - spinTimer;
-
-            if (timeElapsed < spinDuration) {
-            // if (true) {
-                unsigned long dt = currentTime - SpiralTimer;  // Calculate the elapsed time since the last update
-                if (dt > 0) {
-                    yawRate -= 0.02* (dt / 1000.0);  // Gradually increase the yaw rate
-                    yawRate = constrain(yawRate, 0, .5);  // Limit yaw rate to max value
-                    currentYaw += yawRate * (dt / 1000.0);  // Update yaw based on the elapsed time in seconds
-                    SpiralTimer = currentTime;  // Update the SpiralTimer to the current time
-                    // currentYaw = angleProgress;  // Synchronize currentYaw with angleProgress
-                    // currentYaw += 0;
-                }
-            } else {
-                isSpinning = true;  // Stop spinning after completing the duration
-                SpiralTimer = currentTime;  // Reset SpiralTimer for the next behavior
-                spinTimer = currentTime;
-                spinDuration = random(5000, 20000);
-                yawRate = 0.5;
-                currentYaw = sensors[5] + random(50, 120)/180.0f * 3.14;
-                currentYaw = 0;
-                if (hist->nicla_desired == 1){ // goal mode
-                    hist->z_estimator = terms.goal_height + random(-15000, 15000) / 10000.0f;
-                    
-                } else { // ball mode
-                    float d = random(-12000, 15000) / 10000.0;
-                    hist->z_estimator = constrain(sensors[1] + d, 1, terms.goal_height-1);
-                    if (sensors[1] >= terms.goal_height-1.5 || sensors[1] <= 1){
-                        hist->z_estimator = (terms.goal_height-1)/2;
-                    }
+        unsigned long timeElapsed = currentTime - lastSpinTime;
+        if(timeElapsed >= forwardDuration) {
+            // isSpinning = true;  // Stop spinning after completing the duration
+            // SpiralTimer = currentTime;  // Reset SpiralTimer for the next behavior
+            lastSpinTime = currentTime;
+            forwardDuration = random(5000, 10000);
+            currentYaw = sensors[5] + random(50, 90)/180.0f * 3.14;
+            if (hist->nicla_desired == 1){ // goal mode
+                hist->z_estimator = terms.goal_height + random(-15000, 15000) / 10000.0f;
+            } else { // ball mode
+                float d = random(-5000, 5000) / 10000.0;
+                hist->z_estimator = constrain(sensors[1] + d, 1, terms.goal_height-1);
+                if (sensors[1] >= terms.goal_height-1.5 || sensors[1] <= 1){
+                    hist->z_estimator = (terms.goal_height-1)/2;
                 }
             }
-        } else {
-            isSpinning = true;  // Stop spinning after completing the duration
-            yawRate = 0.5;
         }
     }
 
@@ -161,11 +147,11 @@ LevyWalk::LevyWalk() : NiclaState() {
     currentYaw = hist->robot_to_goal;
     angleProgress = hist->robot_to_goal;
     levyTimer = millis();
-    isSpinning = true;
-    spinTimer = millis();
+    // isSpinning = true;
+    // spinTimer = millis();
 //    spinDuration = ;
     yawRate = 0.2;
-    spinDuration = 5000;
+    // spinDuration = 5000;
     angleChangeCount = 0;
     currentDirection = 1; // Initial direction for spinning
 }

@@ -42,7 +42,7 @@ preferences = {
             {"data_type": DataType_Int, "key": "state_flag", "value": 0x40},
             {"data_type": DataType_Int, "key": "num_captures", "value": 2},
             {"data_type": DataType_Int, "key": "time_in_ball", "value": 500},
-            {"data_type": DataType_Float, "key": "goal_height", "value": 2},
+            {"data_type": DataType_Float, "key": "goal_height", "value": 6},
 
             {"data_type": DataType_Float, "key": "y_thresh", "value": 0.57},
             {"data_type": DataType_Float, "key": "y_strength", "value": 3.5},
@@ -81,8 +81,11 @@ preferences = {
     "34:85:18:91:49:C0" : [
             {"data_type": DataType_Float, "key": "servoRange", "value": 260},
             {"data_type": DataType_Float, "key": "servoBeta", "value": 0},
-            {"data_type": DataType_Float, "key": "bfx_levy", "value": 0.1}, #0.3
+            {"data_type": DataType_Float, "key": "bfx_levy", "value": 0.2}, #0.3
             {"data_type": DataType_Float, "key": "fx_levy", "value": 0.1},
+            {"data_type": DataType_Float, "key": "fx_togoal", "value": 0.1},
+            {"data_type": DataType_Float, "key": "fx_charge", "value": 0.1},
+
     ]}
 
 PREFERENCES = {k.lower(): v for k, v in preferences.items()}
