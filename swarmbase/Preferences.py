@@ -79,8 +79,36 @@ preferences = {
             {"data_type": DataType_Float, "key": "fx_levy", "value": 0.1},
     ],
     "34:85:18:91:49:C0" : [
-            {"data_type": DataType_Float, "key": "servoRange", "value": 260},
-            {"data_type": DataType_Float, "key": "servoBeta", "value": 0},
+            {"data_type": DataType_Float, "key": "servoRange", "value": 360},
+            {"data_type": DataType_Float, "key": "servoBeta", "value": 180},
+            {"data_type": DataType_Float, "key": "bfx_levy", "value": 0.1}, #0.3
+            {"data_type": DataType_Float, "key": "fx_levy", "value": 0.1},
+    ],
+    "30:30:F9:34:66:FC" : [
+            {"data_type": DataType_Boolean, "key": "zEn", "value": False},
+            {"data_type": DataType_Boolean, "key": "rollEn", "value": False},
+            {"data_type": DataType_Boolean, "key": "rotateEn", "value": False},
+            {"data_type": DataType_Boolean, "key": "pitchEn", "value": False},
+            {"data_type": DataType_Boolean, "key": "yawEn", "value": False},
+            {"data_type": DataType_Float, "key": "servoRange", "value": 360},
+            {"data_type": DataType_Float, "key": "servoBeta", "value": 180},
+            {"data_type": DataType_Float, "key": "bfx_levy", "value": 0.1}, #0.3
+            {"data_type": DataType_Float, "key": "fx_levy", "value": 0.1},
+    ],
+    "DC:DA:0C:57:4B:94" : [
+            {"data_type": DataType_Boolean, "key": "zEn", "value": False},
+            {"data_type": DataType_Boolean, "key": "rollEn", "value": False},
+            {"data_type": DataType_Boolean, "key": "rotateEn", "value": False},
+            {"data_type": DataType_Boolean, "key": "pitchEn", "value": False},
+            {"data_type": DataType_Boolean, "key": "yawEn", "value": False},
+            {"data_type": DataType_Float, "key": "servoRange", "value": 360},
+            {"data_type": DataType_Float, "key": "servoBeta", "value": 180},
+            {"data_type": DataType_Float, "key": "bfx_levy", "value": 0.1}, #0.3
+            {"data_type": DataType_Float, "key": "fx_levy", "value": 0.1},
+    ],
+    "34:85:18:91:CE:FC" : [
+            {"data_type": DataType_Float, "key": "servoRange", "value": 360},
+            {"data_type": DataType_Float, "key": "servoBeta", "value": 180},
             {"data_type": DataType_Float, "key": "bfx_levy", "value": 0.1}, #0.3
             {"data_type": DataType_Float, "key": "fx_levy", "value": 0.1},
     ]}

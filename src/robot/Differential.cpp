@@ -143,8 +143,8 @@ void Differential::addFeedback(float sensors[MAX_SENSORS], float controls[], flo
     //          the D term in yaw is equivalent to the P term in yawrate
     if (PDterms.yawEn)
     {
-        float kpyaw_max_increase = 0.05f; // Maximum increase in kpyaw
-        float kdyaw_max_increase = 0.06f; // Maximum increase in kdyaw (D-term adjustment)
+        float kpyaw_max_increase = 0.04f; // Maximum increase in kpyaw
+        float kdyaw_max_increase = 0.04f; // Maximum increase in kdyaw (D-term adjustment)
 
         // Calculate dynamic scaling based on fx
         float scaling_factor = 1.0f - clamp(fabs(fx), 0.0f, 1.0f); // When fx approaches 0, scaling_factor approaches 1

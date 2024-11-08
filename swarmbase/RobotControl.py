@@ -27,6 +27,11 @@ def startOne(serial, robot):
     time.sleep(.05)
     return 2
 
+def sendConstant(serial, robot):
+    serial.send_control_params(robot, (1, .2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0))
+    time.sleep(.05)
+    return 1
+
 def sendCalibrate(serial, robot):
     serial.send_control_params(robot, (5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0))
     time.sleep(.05)
@@ -59,6 +64,7 @@ def main():
         robot_master.functionFactory('a', startAutonomous, "Auto")
         robot_master.functionFactory('c', sendCalibrate, "Calibrate")
         robot_master.functionFactory('p', sendPreferences, "Send Preferences")
+        robot_master.functionFactory('t', sendConstant, "Send Constant")
         index = "0"
 
         while True:

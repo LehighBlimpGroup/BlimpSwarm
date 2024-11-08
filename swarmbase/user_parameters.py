@@ -4,8 +4,8 @@
 
 
 
-ROBOT_MAC ="34:85:18:91:b7:4c"#"DC:DA:0C:57:4B:94" # "30:30:F9:34:66:FC" #, "34:85:18:ab:fe:68"
-robot_macs = ["34:85:18:91:49:c0", "48:27:e2:e6:df:a0", "dc:da:0c:57:4b:94"]### Insert your SERIAL PORT here ###
+ROBOT_MAC ="30:30:F9:34:66:FC"#"DC:DA:0C:57:4B:94" # "30:30:F9:34:66:FC" #, "34:85:18:ab:fe:68"
+robot_macs = ["30:30:F9:34:66:FC", "DC:DA:0C:57:4B:94","34:85:18:91:CE:FC"]### Insert your SERIAL PORT here ###
 ROBOT_MACS = [str.lower(robot) for robot in robot_macs]
 
 #"34:85:18:91:b7:4c", "34:85:18:ab:fe:68", "34:85:18:91:ce:fc",
@@ -13,9 +13,9 @@ ROBOT_MACS = [str.lower(robot) for robot in robot_macs]
 ## look in arduino for the port that your specific transeiver is connected to  ##
 ## Note: make sure that your serial monitor is OFF in arduino or else you will get "access is denied" error. ##
 
-SERIAL_PORT = "COM21"
+SERIAL_PORT = "/dev/cu.usbmodem21401"
 
-
+#D2: 30:30:F9:34:66:FC    d4:  DC:DA:0C:57:4B:94   d3: 34:85:18:91:CE:FC
 
 PUMP_MAC = "48:27:E2:E6:E6:44"
 
