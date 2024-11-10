@@ -63,7 +63,7 @@ def main():
 
         while True:
             time.sleep(0.2)
-            keys =  robot_master.get_last_n_keys(1)
+            keys = robot_master.get_last_n_keys(1)
             axis, buttons = joystick.getJoystickInputs()
             robot_master.processManual(axis, buttons, print=True)
 

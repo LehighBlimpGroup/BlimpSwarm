@@ -27,6 +27,7 @@ void NiclaConfig::loadConfiguration() {
     configData.num_captures = preferences.getInt("num_captures", 4);
     configData.time_in_ball = preferences.getInt("time_in_ball", 60);
     configData.goal_height = preferences.getFloat("goal_height", 5);
+    configData.wall_avoidance = preferences.getFloat("wall_avoidance", 1.6f);
 
     configData.y_thresh = preferences.getFloat("y_thresh", 0.65);
     configData.y_strength = preferences.getFloat("y_strength", 1);
@@ -35,6 +36,7 @@ void NiclaConfig::loadConfiguration() {
     configData.fx_togoal = preferences.getFloat("fx_togoal", -0.2f);
     configData.fx_charge = preferences.getFloat("fx_charge", -0.4f);
     configData.fx_levy = preferences.getFloat("fx_levy", -0.1f);
+    configData.levy_yaw = preferences.getFloat("levy_yaw", 0.5f);
 
     configData.n_max_x = preferences.getInt("n_max_x", 240);
     configData.n_max_y = preferences.getInt("n_max_y", 160);
@@ -46,6 +48,7 @@ void NiclaConfig::loadConfiguration() {
     configDatab.num_captures = preferences.getInt("num_captures", 4);
     configDatab.time_in_ball = preferences.getInt("time_in_ball", 60);
     configDatab.goal_height = preferences.getFloat("goal_height", 5);
+    configDatab.wall_avoidance = preferences.getFloat("wall_avoidance", 1.6f);
 
     configDatab.y_thresh = preferences.getFloat("by_thresh", 0.65);
     configDatab.y_strength = preferences.getFloat("by_strength", 1);
@@ -54,6 +57,7 @@ void NiclaConfig::loadConfiguration() {
     configDatab.fx_togoal = preferences.getFloat("bfx_togoal", -0.2f);
     configDatab.fx_charge = preferences.getFloat("bfx_charge", -0.4f);
     configDatab.fx_levy = preferences.getFloat("bfx_levy", -0.1f);
+    configDatab.levy_yaw = preferences.getFloat("blevy_yaw", 0.5f);
 
     configDatab.n_max_x = preferences.getInt("bn_max_x", 240);
     configDatab.n_max_y = preferences.getInt("bn_max_y", 160);

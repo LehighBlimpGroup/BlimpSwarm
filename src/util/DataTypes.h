@@ -114,7 +114,8 @@ typedef struct ReceivedData {
 typedef struct {
     bool state;
     int n_max_x, n_max_y;
-    float fx_togoal, fx_charge, fx_levy;
+    float fx_togoal, fx_charge;
+    float fx_levy, levy_yaw, wall_avoidance;
     float h_ratio, y_thresh, y_strength, x_strength;
     float range_for_forward;
     int num_captures, time_in_ball, goal_height;
