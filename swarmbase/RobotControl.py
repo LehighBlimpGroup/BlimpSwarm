@@ -5,7 +5,6 @@ from robot.RobotMaster import RobotMaster
 import Preferences
 import time
 import importlib
-
 PRINT_JOYSTICK = False
         
 def startAutonomous(serial, robot):
@@ -22,8 +21,8 @@ def stopOne(serial, robot):
     time.sleep(.05)
     return 0
 
-def startOne(serial, robot):
-    serial.send_control_params(robot, (2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0))
+def startG1(serial, robot):
+    serial.send_control_params(robot, (1, 0.1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0))
     time.sleep(.05)
     return 2
 
@@ -60,18 +59,19 @@ def main():
         robot_master.setup(ROBOT_MACS, "openmv")
 
         robot_master.functionFactory('s', stopOne, "Stop")
-        robot_master.functionFactory('g', startOne, "Start")
-        robot_master.functionFactory('a', startAutonomous, "Auto")
-        robot_master.functionFactory('c', sendCalibrate, "Calibrate")
-        robot_master.functionFactory('p', sendPreferences, "Send Preferences")
-        robot_master.functionFactory('t', sendConstant, "Send Constant")
         index = "0"
+        current_speed = 0
+        current_angle = 0
+        d_speed = 0.02
+        d_angle = 10
+        robot_master.switchRobot(3)
 
         while True:
+            print(current_speed, current_angle)
             time.sleep(0.2)
-            keys =  robot_master.get_last_n_keys(1)
+            keys = robot_master.get_last_n_keys(1)
             axis, buttons = joystick.getJoystickInputs()
-            robot_master.processManual(axis, buttons, print=True)
+            robot_master.processManual(axis, buttons, print=False)
 
             # Display joystick values if enabled
             if PRINT_JOYSTICK:
@@ -81,25 +81,50 @@ def main():
                 continue
             
             key_pressed = keys[0]
-            
-            if key_pressed == 'enter':
-                i = int(index)
-                robot_master.switchRobot(i)
-                index = "0"
-            elif len(key_pressed) == 1 and 32 <= ord(key_pressed) <= 127:
-                if '0' <= key_pressed <= '9':
-                    index += key_pressed
-                elif key_pressed == 'd':
-                    index = "0"
-                    print("Cleared index")
+
+            if len(key_pressed) == 1 and 32 <= ord(key_pressed) <= 127:
+                if key_pressed == '2':
+                    current_speed += d_speed
+                    def temp(serial, robot):
+                        serial.send_control_params(robot, (current_speed, current_speed, current_angle, current_angle, 0, 0, 0, 0, 0, 0, 0, 0, 0))
+                        time.sleep(0.05)
+                        return 1
+                    robot_master.functionFactory('g', temp, "run")
+                    robot_master.runFunction('g', 1)
+                    robot_master.runFunction('g', 2)
+                elif key_pressed == '1':
+                    current_speed -= d_speed
+                    def temp(serial, robot):
+                        serial.send_control_params(robot, (current_speed, current_speed, current_angle, current_angle, 0, 0, 0, 0, 0, 0, 0, 0, 0))
+                        time.sleep(0.05)
+                        return 1
+                    robot_master.functionFactory('g', temp, "run")
+                    robot_master.runFunction('g', 1)
+                    robot_master.runFunction('g', 2)
+                if key_pressed == 'w':
+                    current_angle += d_angle
+                    def temp(serial, robot):
+                        serial.send_control_params(robot, (current_speed, current_speed, current_angle, current_angle, 0, 0, 0, 0, 0, 0, 0, 0, 0))
+                        time.sleep(0.05)
+                        return 1
+                    robot_master.functionFactory('g', temp, "run")
+                    robot_master.runFunction('g', 1)
+                    robot_master.runFunction('g', 2)
                 elif key_pressed == 'q':
-                    break
+                    current_angle -= d_angle
+                    def temp(serial, robot):
+                        serial.send_control_params(robot, (current_speed, current_speed, current_angle, current_angle, 0, 0, 0, 0, 0, 0, 0, 0, 0))
+                        time.sleep(0.05)
+                        return 1
+                    robot_master.functionFactory('g', temp, "run")
+                    robot_master.runFunction('g', 1)
+                    robot_master.runFunction('g', 2)
                 else:
-                    i = int(index)
-                    robot_master.runFunction(key_pressed, i)
-                    index = "0"
+                    robot_master.runFunction(key_pressed, 1)
+                    robot_master.runFunction(key_pressed, 2)
             else:
                 print("Invalid button.")
+
     except KeyboardInterrupt:
         print("Stopping!")
         return
