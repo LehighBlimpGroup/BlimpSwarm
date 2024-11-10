@@ -116,6 +116,14 @@ void LevyWalk::behavior(float sensors[], float controls[], float outControls[]) 
                     hist->z_estimator = (terms.goal_height-1)/2;
                 }
             }
+        } else {
+            unsigned long dt = currentTime - SpiralTimer;  // Calculate the elapsed time since the last update
+            if (dt > 0) {
+                yawRate -= 0.02* (dt / 1000.0);  // Gradually increase the yaw rate
+                yawRate = constrain(yawRate, 0, .5);  // Limit yaw rate to max value
+                SpiralTimer = currentTime;  // Update the SpiralTimer to the current time
+                currentYaw += yawRate * (dt / 1000.0);  // Synchronize currentYaw with angleProgress
+            }
         }
     }
 
