@@ -31,7 +31,9 @@ class RobotMaster:
         for robot_mac in self.robots:
             self.serial.manage_peer("A", robot_mac)
             self.serial.manage_peer("G", robot_mac)
+            self.serial.send_control_params(robot_mac, (0,0,0,0, 0, 0, 0, 0, 0, 0, 0, 1, 0))
             time.sleep(0.05)
+        
     
     def get_last_n_keys(self, num_keys=1):
         return self.mygui.get_last_n_keys(num_keys)
@@ -129,7 +131,7 @@ class RobotMaster:
     def functionFactory(self, c, func, verbose=""):
         self.mapping[c] = (func, verbose)
 
-    def runFunction(self, c, index=-1):
+    def runFunction(self, c, index=-1, *args):
         if c not in self.mapping:
             print("Function not mapped.")
             return
@@ -141,7 +143,7 @@ class RobotMaster:
             for robot in self.robots:
                 print(verbose, ":", i, "-",  robot)
                 i += 1
-                newState = func(self.serial, robot)
+                newState = func(self.serial, robot, args)
             if newState != -1:
                 self.ready = [newState for _ in self.ready]
                 self.current_robot_index = -1
@@ -151,7 +153,7 @@ class RobotMaster:
         else:
             robot = self.robots[index]
             print(verbose, ":", index+1, "-", robot)
-            newState = func(self.serial, robot)
+            newState = func(self.serial, robot, args)
             if newState != -1:
                 self.ready[index] = newState
             else:

@@ -8,38 +8,39 @@ import importlib
 
 PRINT_JOYSTICK = False
         
-def startAutonomous(serial, robot):
+def startAutonomous(serial, robot, args):
     serial.send_control_params(robot, (3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0))
     time.sleep(.05)
     serial.send_control_params(robot, (2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0))
     time.sleep(.05)
     return 2
 
-def stopOne(serial, robot):
+def stopOne(serial, robot, args):
     serial.send_control_params(robot, (5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0))
     time.sleep(.05)
     serial.send_control_params(robot, (0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0))
     time.sleep(.05)
     return 0
 
-def startOne(serial, robot):
+def startOne(serial, robot, args):
     serial.send_control_params(robot, (2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0))
     time.sleep(.05)
     return 2
 
-def sendConstant(serial, robot):
-    serial.send_control_params(robot, (1, .2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0))
-    time.sleep(.05)
-    return 1
-
-def sendCalibrate(serial, robot):
+def sendCalibrate(serial, robot, args):
     serial.send_control_params(robot, (5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0))
     time.sleep(.05)
     serial.send_preference(robot, DataType_Boolean, "calibrate", True)
     time.sleep(.05)
     return -1
 
-def sendPreferences(serial, robot):
+def setHeight(serial, robot, args):
+    print(args[0])
+    serial.send_control_params(robot, (1, 0, args[0], 0, 0, 0, 0, 0, 0, 0, 0, 0, 0))
+    time.sleep(.05)
+    return 1
+
+def sendPreferences(serial, robot, args):
     importlib.reload(Preferences)
 
     for pref in Preferences.PREFERENCES["ff:ff:ff:ff:ff:ff"]:
@@ -64,12 +65,12 @@ def main():
         robot_master.functionFactory('a', startAutonomous, "Auto")
         robot_master.functionFactory('c', sendCalibrate, "Calibrate")
         robot_master.functionFactory('p', sendPreferences, "Send Preferences")
-        robot_master.functionFactory('t', sendConstant, "Send Constant")
+        robot_master.functionFactory('h', setHeight, "Set Height")
         index = "0"
 
         while True:
             time.sleep(0.2)
-            keys =  robot_master.get_last_n_keys(1)
+            keys = robot_master.get_last_n_keys(1)
             axis, buttons = joystick.getJoystickInputs()
             robot_master.processManual(axis, buttons, print=True)
 
@@ -96,7 +97,7 @@ def main():
                     break
                 else:
                     i = int(index)
-                    robot_master.runFunction(key_pressed, i)
+                    robot_master.runFunction(key_pressed, i, robot_master.height)
                     index = "0"
             else:
                 print("Invalid button.")

@@ -26,9 +26,9 @@ class LevyWalk : public NiclaState {
         float yawProgress; // Variable to track the progressive change in yaw
         bool actionUnderway = false;
 
-        unsigned long spinTimer; // Timer for spinning
-        unsigned long spinDuration = 20000; // Duration for a full 360 spin in milliseconds
-        bool isSpinning = true; // Flag to indicate spinning state
+        unsigned long lastSpinTime; // Timer for spinning
+        unsigned long forwardDuration = 0; // Duration for a full 360 spin in milliseconds
+        // bool isSpinning = true; // Flag to indicate spinning state
 
         unsigned angleChangeCount;
         int currentDirection;
