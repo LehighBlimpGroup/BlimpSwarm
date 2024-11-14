@@ -266,9 +266,10 @@ void Differential::getOutputs(float sensors[MAX_SENSORS], float controls[], floa
 
         if (fabs(tauz / fx) > 0.1)
         {
-
+            fx *= 2;
             float scaled_tauz = tauz * fabs(fx);
             tauz = scaled_tauz;
+            theta = atan2(fz, fx);
         }
 
         // else
@@ -304,8 +305,8 @@ void Differential::getOutputs(float sensors[MAX_SENSORS], float controls[], floa
     // float servoTop = 90.0f + PDterms.servoRange/2.0f; // top limit of servo in degrees
     out[2] = 180.0f - clamp((theta) * 180.0f / PI + PDterms.servoBeta, 0.0f, PDterms.servoRange) * 180.0f / PDterms.servoRange;
     out[3] = 180.0f - clamp((theta) * 180.0f / PI + PDterms.servoBeta, 0.0f, PDterms.servoRange) * 180.0f / PDterms.servoRange;
-    out[0] = clamp(f1, 0.025, 0.8); // Cap f1 at a minimum of 0.025
-    out[1] = clamp(f2, 0.025, 0.8); // Cap f2 at a minimum of 0.025
+    out[0] = clamp(f1, 0.025, 1); // Cap f1 at a minimum of 0.025
+    out[1] = clamp(f2, 0.025, 1); // Cap f2 at a minimum of 0.025
 
     if (abs(out[2] - servo_old1) < PDterms.servo_move_min)
     {

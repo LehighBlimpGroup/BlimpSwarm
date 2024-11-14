@@ -36,7 +36,7 @@ def sendCalibrate(serial, robot, args):
 
 def setHeight(serial, robot, args):
     print(args[0])
-    serial.send_control_params(robot, (1, 0, args[0], 0, 0, 0, 0, 0, 0, 0, 0, 0, 0))
+    serial.send_control_params(robot, (args[0], args[0], args[1], args[1], 0, 0, 0, 0, 0, 0, 0, 0, 0))
     time.sleep(.05)
     return 1
 
@@ -58,7 +58,8 @@ def main():
     try:
         robot_master = RobotMaster(0.3)
         joystick = JoystickManager()
-        robot_master.setup(ROBOT_MACS, "openmv")
+        robot_master.setup(ROBOT_MACS, "nicla")
+        followers = []
 
         robot_master.functionFactory('s', stopOne, "Stop")
         robot_master.functionFactory('g', startOne, "Start")
@@ -67,12 +68,20 @@ def main():
         robot_master.functionFactory('p', sendPreferences, "Send Preferences")
         robot_master.functionFactory('h', setHeight, "Set Height")
         index = "0"
+        power = 0
+        angle = 0
+        dt_p = 0.05
+        dt_a = 10
 
         while True:
             time.sleep(0.2)
             keys = robot_master.get_last_n_keys(1)
             axis, buttons = joystick.getJoystickInputs()
             robot_master.processManual(axis, buttons, print=True)
+
+            power = min(1, max(0, power))
+            angle = min(180, max(-180, angle))
+            
 
             # Display joystick values if enabled
             if PRINT_JOYSTICK:
@@ -95,9 +104,34 @@ def main():
                     print("Cleared index")
                 elif key_pressed == 'q':
                     break
+                elif key_pressed == '[':
+                    power -= dt_p
+                    for i in followers:
+                        robot_master.runFunction('h', i, power, angle)
+                    print(power, angle)
+                elif key_pressed == ']':
+                    power += dt_p
+                    for i in followers:
+                        robot_master.runFunction('h', i, power, angle)
+                    print(power, angle)
+                elif key_pressed == ';':
+                    angle -= dt_a
+                    for i in followers:
+                        robot_master.runFunction('h', i, power, angle)
+                    print(power, angle)
+                elif key_pressed == "'":
+                    angle += dt_a
+                    for i in followers:
+                        robot_master.runFunction('h', i, power, angle)
+                    print(power, angle)
+                elif key_pressed == 's':
+                    power = 0
+                    angle = 0
+                    i = int(index)
+                    robot_master.runFunction(key_pressed, i)
                 else:
                     i = int(index)
-                    robot_master.runFunction(key_pressed, i, robot_master.height)
+                    robot_master.runFunction(key_pressed, i)
                     index = "0"
             else:
                 print("Invalid button.")
