@@ -17,7 +17,10 @@ class ChargeGoal : public NiclaState {
          * 
          */
         ChargeGoal();
+
+        ChargeGoal(int initial_height);
     protected:
+        int initial_height = 0;
         unsigned long charge_timer = 0;
         /**
          * @copydoc NiclaState::statetransitions()

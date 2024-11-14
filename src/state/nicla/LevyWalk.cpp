@@ -13,6 +13,7 @@
 #include "state/nicla/MoveToGoal.h"
 
 LevyWalk::LevyWalk() : NiclaState() {
+    hist->start_ball_time = millis();
     SpiralTimer = millis();
     forwardDuration = 0;
     levyYaw = hist->robot_to_goal;
@@ -49,15 +50,15 @@ RobotState* LevyWalk::statetransitions(float sensors[], float controls[]) {
         
         RobotState* moveToGoal = new MoveToGoal();
         return moveToGoal;
-    } else if (sensors[11] < WALL_DISTANCE_THRESH) {
+    } else if (sensors[11] < terms.wall_thresh) {
         // Wall detected, initiate turn
         wallDetected = true;
         turnStartYaw = sensors[5]; // Store current yaw
         return this; // Stay in LevyWalk state, but with wall avoidance active
-    } else if (millis() - hist->start_ball_time > terms.time_in_ball * 1000) {
+    } else if (millis() - hist->start_ball_time > terms.time_in_mode * 1000) {
         // If the robot has been in LevyWalk state for more than the designated time
         hist->num_captures = 0;
-        hist->nicla_desired = 1;
+        hist->nicla_desired = !hist->nicla_desired;
         hist->start_ball_time = millis();
         return this;
     } else {
@@ -101,22 +102,15 @@ void LevyWalk::behavior(float sensors[], float controls[], float outControls[]) 
         // Spiral state
         Serial.println("Normal Levywalk behavior");
         unsigned long timeElapsed = currentTime - lastSpinTime;
-        if(timeElapsed >= forwardDuration) {
+        if(timeElapsed >= forwardDuration) { // random yaw and height
             SpiralTimer = currentTime;
             lastSpinTime = currentTime;
             yawRate = terms.levy_yaw;
             forwardDuration = random(5000, 10000);
             currentYaw = sensors[5] + random(0, 90)/180.0f * 3.14;
-            if (hist->nicla_desired == 1){ // goal mode
-                hist->z_estimator = terms.goal_height + random(-15000, 15000) / 10000.0f;
-            } else { // ball mode
-                float d = random(-5000, 5000) / 10000.0;
-                hist->z_estimator = constrain(sensors[1] + d, 1, terms.goal_height-1);
-                if (sensors[1] >= terms.goal_height-1.5 || sensors[1] <= 1){
-                    hist->z_estimator = (terms.goal_height-1)/2;
-                }
-            }
-        } else {
+            float random_height = random(-terms.fz_levy*10000, terms.fz_levy*10000) / 10000.0;
+            hist->z_estimator = sensors[1] + random_height;
+        } else { // spiral
             unsigned long dt = currentTime - SpiralTimer;  // Calculate the elapsed time since the last update
             if (dt > 0) {
                 yawRate -= 0.02* (dt / 1000.0);  // Gradually increase the yaw rate
@@ -124,6 +118,11 @@ void LevyWalk::behavior(float sensors[], float controls[], float outControls[]) 
                 SpiralTimer = currentTime;  // Update the SpiralTimer to the current time
                 currentYaw += yawRate * (dt / 1000.0);  // Synchronize currentYaw with angleProgress
             }
+        }
+
+        if (sensors[1] >= terms.default_height + terms.height_range ||
+            sensors[1] <= terms.default_height - terms.height_range) {
+            hist->z_estimator = terms.default_height;
         }
     }
 

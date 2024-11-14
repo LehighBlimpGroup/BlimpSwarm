@@ -25,7 +25,7 @@ RobotState* MoveToGoal::statetransitions(float sensors[], float controls[]) {
         // reload terms for important movements
         RobotState* moveToGoal = new MoveToGoal();
         return moveToGoal;
-    } else if (hist->nicla_flag & GOAL_MODE) {
+    } else if (hist->nicla_flag & GOAL_MODE) { // TODO: CLEAN UP THIS LOGIC
         if (start == true){
             return this;
         } else if (!(nicla_flag & DETECTED)) {
@@ -33,7 +33,7 @@ RobotState* MoveToGoal::statetransitions(float sensors[], float controls[]) {
             RobotState* levyWalk = new LevyWalk();
             return levyWalk;
         } else if (closeToGoal(sensors) ) {
-            RobotState* chargeGoal = new ChargeGoal();
+            RobotState* chargeGoal = new ChargeGoal(hist->z_estimator);
             return chargeGoal;
         } else {
             return this; //pointer to itself
@@ -44,7 +44,7 @@ RobotState* MoveToGoal::statetransitions(float sensors[], float controls[]) {
             RobotState* levyWalk = new LevyWalk();
             return levyWalk;
         } else if (closeToGoal(sensors) && abs(hist->last_tracking_x/terms.n_max_x - 0.5) < terms.range_for_forward*0.6) {
-            RobotState* chargeGoal = new ChargeGoal();
+            RobotState* chargeGoal = new ChargeGoal(hist->z_estimator);
             return chargeGoal;
         } else {
             return this; //pointer to itself

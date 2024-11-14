@@ -20,34 +20,26 @@ RobotState* ChargeGoal::statetransitions(float sensors[], float controls[]) {
         return manualState;
     } else {
         // In all other states
-        if (hist->nicla_flag & GOAL_MODE) {
-            if (millis() - charge_timer > 15000) {
-                hist->z_estimator = sensors[1];
-                RobotState* levyWalk = new LevyWalk();
-                return levyWalk;
-            } else {
-                return this;
+        if (millis() - charge_timer > terms.charge_time * 1000) {
+            hist->num_captures += 1;
+            if (hist->num_captures >= terms.num_charges 
+                || millis() - hist->start_ball_time > terms.time_in_mode * 1000) {
+                // If the number of charges exceeds the maximum amount or
+                // if the time in balloon mode exceeds the desired amount
+                hist->num_captures = 0;
+                hist->nicla_desired = !hist->nicla_desired;
+                hist->start_ball_time = millis();
             }
-        } else if (hist->nicla_flag & BALLOON_MODE) {
-            if (millis() - charge_timer > 2000) {
-                hist->num_captures += 1;
-                if (hist->num_captures >= terms.num_captures 
-                    || millis() - hist->start_ball_time > terms.time_in_ball * 1000) {
-                    // If the number of charges exceeds the maximum amount or
-                    // if the time in balloon mode exceeds the desired amount
-                    hist->num_captures = 0;
-                    hist->nicla_desired = 1;
-                    hist->start_ball_time = millis();
-                }
-                
-                hist->z_estimator = sensors[1];
-                RobotState* levyWalk = new LevyWalk();
-                return levyWalk;
-            } else {
-                return this;
-            }
-        } else {
+            
+            hist->z_estimator = sensors[1];
+            RobotState* levyWalk = new LevyWalk();
+            return levyWalk;
+        } else if(hist->nicla_desired == 1 && millis() - charge_timer > (terms.charge_time * 1000) * 0.8) {
+            // If the robot is in goal mode and half of the charge time has passed
+            hist->z_estimator = initial_height + 1;
             return this;
+        } else {
+            return this; // Stay in ChargeGoal state
         }
     }
 }
@@ -76,6 +68,10 @@ void ChargeGoal::behavior(float sensors[], float controls[], float outControls[]
 
 
 ChargeGoal::ChargeGoal() : NiclaState() {
+    charge_timer = millis();
+}
+
+ChargeGoal::ChargeGoal(int initial_height) : initial_height(initial_height) {
     charge_timer = millis();
 }
 

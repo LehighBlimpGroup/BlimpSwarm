@@ -114,14 +114,15 @@ typedef struct ReceivedData {
 typedef struct {
     bool state;
     int n_max_x, n_max_y;
-    float fx_togoal, fx_charge;
-    float fx_levy, levy_yaw, wall_avoidance;
+    float fx_togoal, fx_charge, range_for_forward;
+    float fx_levy, fz_levy, levy_yaw, wall_thresh;
     float h_ratio, y_thresh, y_strength, x_strength;
-    float range_for_forward;
-    int num_captures, time_in_ball, goal_height;
+    int num_charges, time_in_mode, charge_time;
+    float default_height, height_range;
 } nicla_t;
 
 // Struct that keeps track of prior values received by the Nicla Vision
+// TODO: RENAME THE VARIABLES TO WORK FOR BOTH GOAL AND BALLOON MODE
 typedef struct {
     float last_detection_w = 0;
     float last_detection_h = 0;

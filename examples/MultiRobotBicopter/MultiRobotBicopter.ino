@@ -153,67 +153,65 @@ void recieveCommands(){
   }
 }
 
-void paramUpdate(){
-
+void paramUpdate() {
     myRobot->getPreferences();
     baseComm->setMainBaseStation();
+    updateNiclaParams();
+}
+
+void updateNiclaParams() {
     NiclaConfig::getInstance()->loadConfiguration();
     
     hist = NiclaConfig::getInstance()->getDynamicHistory();
     const nicla_t& config = NiclaConfig::getInstance()->getConfiguration();
     terms = config; // Copy configuration data
-    
 }
 
 void niclaStateChange(int cmdFlag, int target_color) {
-
-  int nicla_flag = senses[niclaOffset + 0];
+  int nicla_flag = senses[niclaOffset + 0]; //flag received by nicla
   if (micros() - nicla_change_time > 50000) { // positive edge to avoid spamming
     nicla_change_time = micros();
     int hist_flag = hist->nicla_flag;
     if (cmdFlag == 2) { // normal state machine mode
-      if (hist->nicla_desired == 1) {
-        if (nicla_flag & 0x40) {
-          if (target_color == 1) {
-            Serial.println("go to goal");
-            nicla->changeNiclaMode(0x81);
-
-          } else {
-            Serial.println("go to goal");
-            nicla->changeNiclaMode(0x80);
-          }
-          hist->z_estimator = terms.goal_height;
+      if (hist->nicla_desired == 1 && nicla_flag & 0x40) { // if desire mode is goal mode and nicla in ball mode
+        Serial.println("go to goal");
+        if (target_color == 1) {
+          nicla->changeNiclaMode(0x81);
+        } else {
+          nicla->changeNiclaMode(0x80);
         }
-      } 
-      else if (hist->nicla_desired == 0) {
-        if (nicla_flag & 0x80) {
-          Serial.println("go to ball");
-          nicla->changeNiclaMode(0x40);
-          hist->start_ball_time= millis();
-        }
+        updateNiclaParams();
+        hist->z_estimator = terms.default_height;
+      } else if (hist->nicla_desired == 0 && nicla_flag & 0x80) { // if desire mode is ball mode and nicla in goal mode
+        Serial.println("go to ball");
+        nicla->changeNiclaMode(0x40); //switch nicla to ball mode
+        updateNiclaParams();
+        hist->z_estimator = terms.default_height;
       }
     } 
     else if (cmdFlag == 3) { //balloon only mode (enforce 0x40)
       hist->nicla_desired = 0;
-      hist->start_ball_time= millis();
-      hist->num_captures = 0;
       if (nicla_flag & 0x80) {
+        updateNiclaParams();
         Serial.println("go to ball");
         nicla->changeNiclaMode(0x40);
       }
+      hist->start_ball_time= millis();
+      hist->num_captures = 0;
     } 
     else if (cmdFlag == 4) { //goal only mode (enforce 0x80)
       if (hist_flag != 4) {
         hist->goal_direction = senses[5];
       }
       hist->nicla_desired = 1;
+      hist->start_ball_time= millis();
+      hist->num_captures = 0;
       if (nicla_flag & 0x40) {
+        updateNiclaParams();
+        Serial.println("go to goal");
         if (target_color == 1){
-          Serial.println("go to goal");
           nicla->changeNiclaMode(0x81);
-
         } else {
-          Serial.println("go to goal");
           nicla->changeNiclaMode(0x80);
         }
       }

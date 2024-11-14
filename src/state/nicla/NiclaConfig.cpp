@@ -24,10 +24,12 @@ void NiclaConfig::loadConfiguration() {
     historyData.nicla_flag = preferences.getInt("state_flag", 0x40);
 
     configData.state = 1;
-    configData.num_captures = preferences.getInt("num_captures", 4);
-    configData.time_in_ball = preferences.getInt("time_in_ball", 60);
-    configData.goal_height = preferences.getFloat("goal_height", 5);
-    configData.wall_avoidance = preferences.getFloat("wall_avoidance", 1.6f);
+    configData.num_charges = preferences.getInt("num_charges", 10);
+    configData.time_in_mode = preferences.getInt("time_in_mode", 600);
+    configData.charge_time = preferences.getInt("charge_time", 15);
+    configData.default_height = preferences.getFloat("default_height", 8);
+    configData.height_range = preferences.getFloat("height_range", 3);
+    configData.wall_thresh = preferences.getFloat("wall_thresh", 250);
 
     configData.y_thresh = preferences.getFloat("y_thresh", 0.65);
     configData.y_strength = preferences.getFloat("y_strength", 1);
@@ -36,6 +38,7 @@ void NiclaConfig::loadConfiguration() {
     configData.fx_togoal = preferences.getFloat("fx_togoal", -0.2f);
     configData.fx_charge = preferences.getFloat("fx_charge", -0.4f);
     configData.fx_levy = preferences.getFloat("fx_levy", -0.1f);
+    configData.fz_levy = preferences.getFloat("fz_levy", 0.1f);
     configData.levy_yaw = preferences.getFloat("levy_yaw", 0.5f);
 
     configData.n_max_x = preferences.getInt("n_max_x", 240);
@@ -45,10 +48,12 @@ void NiclaConfig::loadConfiguration() {
     configData.range_for_forward = preferences.getFloat("range_for_forward", 0.16);
 
     configDatab.state = 0;
-    configDatab.num_captures = preferences.getInt("num_captures", 4);
-    configDatab.time_in_ball = preferences.getInt("time_in_ball", 60);
-    configDatab.goal_height = preferences.getFloat("goal_height", 5);
-    configDatab.wall_avoidance = preferences.getFloat("wall_avoidance", 1.6f);
+    configDatab.num_charges = preferences.getInt("bnum_charges", 4);
+    configDatab.time_in_mode = preferences.getInt("btime_in_mode", 60);
+    configDatab.charge_time = preferences.getInt("bcharge_time", 15);
+    configDatab.default_height = preferences.getFloat("bdefault_height", 5);
+    configDatab.height_range = preferences.getFloat("bheight_range", 3);
+    configDatab.wall_thresh = preferences.getFloat("bwall_thresh", 250);
 
     configDatab.y_thresh = preferences.getFloat("by_thresh", 0.65);
     configDatab.y_strength = preferences.getFloat("by_strength", 1);
@@ -57,6 +62,7 @@ void NiclaConfig::loadConfiguration() {
     configDatab.fx_togoal = preferences.getFloat("bfx_togoal", -0.2f);
     configDatab.fx_charge = preferences.getFloat("bfx_charge", -0.4f);
     configDatab.fx_levy = preferences.getFloat("bfx_levy", -0.1f);
+    configDatab.fz_levy = preferences.getFloat("bfz_levy", 0.1f);
     configDatab.levy_yaw = preferences.getFloat("blevy_yaw", 0.5f);
 
     configDatab.n_max_x = preferences.getInt("bn_max_x", 240);

@@ -19,7 +19,6 @@
 
 // Offset to find the flags sent from the Nicla Vision
 #define NICLA_OFFSET 12 // 12 = 11 (sensorSuite) + 1 (ultrasonicSensor)
-#define WALL_DISTANCE_THRESH 250 // To be set experimentally
 #define WallTurnRange 0.523599 // 45 degrees
 #define BALLOON_MODE 0x40
 #define GOAL_MODE 0x80
