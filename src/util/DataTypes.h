@@ -136,7 +136,8 @@ typedef struct {
     bool nicla_desired = 1;
     int num_captures = 0;
     float goal_direction = -5;
-    unsigned long start_ball_time; 
+    unsigned long start_ball_time;
+    bool goForward = true;
 } hist_t;
 
 //

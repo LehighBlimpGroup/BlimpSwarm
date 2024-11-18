@@ -82,10 +82,12 @@ void MoveToGoal::behavior(float sensors[], float controls[], float outControls[]
             // z_offset += 20*((y_cal - 0.5))* subdt / sideLength;//(.75 - max(detection_h, detection_w)/max_y);
             hist->z_estimator =  ( _height + terms.y_strength * (y_cal - terms.y_thresh)) ; // integral must be on
             hist->forward_force = terms.fx_togoal;
-        } //else if (nicla_flag & BALLOON_MODE) {
-        //     // balloon case
-        //     hist->forward_force = 0.0;
-        // }
+        }
+
+        if (sensors[1] >= terms.default_height + terms.height_range ||
+            sensors[1] <= terms.default_height - terms.height_range) {
+            hist->z_estimator = terms.default_height;
+        }
     }
     outControls[0] = controls[0]; //ready
     outControls[1] = hist->forward_force; //fx

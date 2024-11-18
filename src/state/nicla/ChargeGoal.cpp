@@ -36,7 +36,7 @@ RobotState* ChargeGoal::statetransitions(float sensors[], float controls[]) {
             return levyWalk;
         } else if(hist->nicla_desired == 1 && millis() - charge_timer > (terms.charge_time * 1000) * 0.8) {
             // If the robot is in goal mode and half of the charge time has passed
-            hist->z_estimator = initial_height + 1;
+            hist->z_estimator = initial_height + 2;
             return this;
         } else {
             return this; // Stay in ChargeGoal state
@@ -46,7 +46,7 @@ RobotState* ChargeGoal::statetransitions(float sensors[], float controls[]) {
 
 void ChargeGoal::behavior(float sensors[], float controls[], float outControls[]) {
     int edge = detected(sensors);
-    if (edge == 1) {
+    if (hist->nicla_desired == 0 && edge == 1) { // Continue to track yaw during balloon mode
         // if a new detection is fed in
         float _yaw = sensors[5];
         float _height = sensors[1];

@@ -31,7 +31,6 @@ class LevyWalk : public NiclaState {
         // bool isSpinning = true; // Flag to indicate spinning state
 
         unsigned angleChangeCount;
-        int currentDirection;
         float angleProgress, yawRate = 0.;
         float currentYaw = 0;  // Current yaw in action
         

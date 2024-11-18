@@ -23,7 +23,6 @@ LevyWalk::LevyWalk() : NiclaState() {
     levyTimer = millis();
     yawRate = 0.2;
     angleChangeCount = 0;
-    currentDirection = 1; // Initial direction for spinning
 }
 
 
@@ -93,7 +92,7 @@ void LevyWalk::behavior(float sensors[], float controls[], float outControls[]) 
         unsigned long currentTime = millis();
         // initial forward
         if(forwardDuration == 0) {
-            forwardDuration = random(5000, 10000);
+            forwardDuration = 10000;
             currentYaw = sensors[5];
             yawRate = terms.levy_yaw;
             lastSpinTime = currentTime;
@@ -103,6 +102,9 @@ void LevyWalk::behavior(float sensors[], float controls[], float outControls[]) 
         // Serial.println("Normal Levywalk behavior");
         unsigned long timeElapsed = currentTime - lastSpinTime;
         if(timeElapsed >= forwardDuration) { // random yaw and height
+            if(hist->goForward) {
+                hist->goForward = false;
+            }
             SpiralTimer = currentTime;
             lastSpinTime = currentTime;
             yawRate = terms.levy_yaw;
@@ -110,7 +112,7 @@ void LevyWalk::behavior(float sensors[], float controls[], float outControls[]) 
             currentYaw = sensors[5] + random(0, 90)/180.0f * 3.14;
             float random_height = random(-terms.fz_levy*10000, terms.fz_levy*10000) / 10000.0;
             hist->z_estimator = sensors[1] + random_height;
-        } else { // spiral
+        } else if(!hist->goForward) { // spiral
             unsigned long dt = currentTime - SpiralTimer;  // Calculate the elapsed time since the last update
             if (dt > 0) {
                 yawRate -= 0.02* (dt / 1000.0);  // Gradually increase the yaw rate
