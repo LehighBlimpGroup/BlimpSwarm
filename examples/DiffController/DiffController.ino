@@ -39,7 +39,7 @@ float senses[myRobot->MAX_SENSORS];
 
 const int TIME_STEP_MICRO = 4000;
 
-int niclaOffset = 11;
+int niclaOffset = 12;
 int dt = 1000;
 unsigned long clockTime;
 unsigned long printTime;
@@ -156,12 +156,11 @@ void recieveCommands(){
 void paramUpdate() {
     myRobot->getPreferences();
     baseComm->setMainBaseStation();
+    NiclaConfig::getInstance()->loadConfiguration();
     updateNiclaParams();
 }
 
 void updateNiclaParams() {
-    NiclaConfig::getInstance()->loadConfiguration();
-    
     hist = NiclaConfig::getInstance()->getDynamicHistory();
     const nicla_t& config = NiclaConfig::getInstance()->getConfiguration();
     terms = config; // Copy configuration data
@@ -169,6 +168,7 @@ void updateNiclaParams() {
 
 void niclaStateChange(int cmdFlag, int target_color) {
   int nicla_flag = senses[niclaOffset + 0]; //flag received by nicla
+  hist = NiclaConfig::getInstance()->getDynamicHistory();
   if (micros() - nicla_change_time > 50000) { // positive edge to avoid spamming
     nicla_change_time = micros();
     int hist_flag = hist->nicla_flag;
@@ -180,19 +180,16 @@ void niclaStateChange(int cmdFlag, int target_color) {
         } else {
           nicla->changeNiclaMode(0x80);
         }
-        updateNiclaParams();
         hist->z_estimator = terms.default_height;
       } else if (hist->nicla_desired == 0 && nicla_flag & 0x80) { // if desire mode is ball mode and nicla in goal mode
         Serial.println("go to ball");
         nicla->changeNiclaMode(0x40); //switch nicla to ball mode
-        updateNiclaParams();
         hist->z_estimator = terms.default_height;
       }
     } 
     else if (cmdFlag == 3) { //balloon only mode (enforce 0x40)
       hist->nicla_desired = 0;
       if (nicla_flag & 0x80) {
-        updateNiclaParams();
         Serial.println("go to ball");
         nicla->changeNiclaMode(0x40);
       }
@@ -207,7 +204,6 @@ void niclaStateChange(int cmdFlag, int target_color) {
       hist->start_ball_time= millis();
       hist->num_captures = 0;
       if (nicla_flag & 0x40) {
-        updateNiclaParams();
         Serial.println("go to goal");
         if (target_color == 1){
           nicla->changeNiclaMode(0x81);

@@ -23,10 +23,10 @@ class RobotMaster:
 
         self.dt = dt
 
-    def setup(self, robots, camera="nicla"):
+    def setup(self, robots, camera="nicla", serial=SERIAL_PORT):
         self.robots = robots
         self.ready = [0 for _ in range(len(robots))]
-        self.serial = SerialController(SERIAL_PORT, timeout=0.5)
+        self.serial = SerialController(serial, timeout=0.5)
         self.mygui = SimpleGUI(camera)
         for robot_mac in self.robots:
             self.serial.manage_peer("A", robot_mac)
@@ -137,6 +137,9 @@ class RobotMaster:
             return
         func, verbose = self.mapping[c]
         index -= 1
+        if index >= len(self.robots):
+            print("Index out of range")
+            return
         
         if index <= -1:
             i = 1

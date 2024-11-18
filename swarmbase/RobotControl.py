@@ -10,7 +10,7 @@ PRINT_JOYSTICK = False
         
 def startAutonomous(serial, robot, args):
     serial.send_control_params(robot, (3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0))
-    time.sleep(.05)
+    time.sleep(.1)
     serial.send_control_params(robot, (2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0))
     time.sleep(.05)
     return 2
@@ -59,7 +59,7 @@ def main():
         robot_master = RobotMaster(0.3)
         joystick = JoystickManager()
         robot_master.setup(ROBOT_MACS, "nicla")
-        followers = []
+        followers = [ROBOT_MACS[len(ROBOT_MACS)-3], ROBOT_MACS[len(ROBOT_MACS)-2]]
 
         robot_master.functionFactory('s', stopOne, "Stop")
         robot_master.functionFactory('g', startOne, "Start")
@@ -71,7 +71,7 @@ def main():
         power = 0
         angle = 0
         dt_p = 0.05
-        dt_a = 10
+        dt_a = 5
 
         while True:
             time.sleep(0.2)
@@ -129,6 +129,7 @@ def main():
                     angle = 0
                     i = int(index)
                     robot_master.runFunction(key_pressed, i)
+                    index = "0"
                 else:
                     i = int(index)
                     robot_master.runFunction(key_pressed, i)

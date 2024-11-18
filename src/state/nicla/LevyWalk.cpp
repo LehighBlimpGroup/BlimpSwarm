@@ -100,7 +100,7 @@ void LevyWalk::behavior(float sensors[], float controls[], float outControls[]) 
         }
 
         // Spiral state
-        Serial.println("Normal Levywalk behavior");
+        // Serial.println("Normal Levywalk behavior");
         unsigned long timeElapsed = currentTime - lastSpinTime;
         if(timeElapsed >= forwardDuration) { // random yaw and height
             SpiralTimer = currentTime;
