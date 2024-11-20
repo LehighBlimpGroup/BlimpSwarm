@@ -27,6 +27,7 @@ void NiclaConfig::loadConfiguration() {
     configData.num_charges = preferences.getInt("num_charges", 10);
     configData.time_in_mode = preferences.getInt("time_in_mode", 600);
     configData.charge_time = preferences.getInt("charge_time", 15);
+    configData.target_color = preferences.getInt("target_color", 0x81);
     configData.default_height = preferences.getFloat("default_height", 8);
     configData.height_range = preferences.getFloat("height_range", 3);
     configData.wall_thresh = preferences.getFloat("wall_thresh", 250);
@@ -40,6 +41,7 @@ void NiclaConfig::loadConfiguration() {
     configData.fx_levy = preferences.getFloat("fx_levy", -0.1f);
     configData.fz_levy = preferences.getFloat("fz_levy", 0.1f);
     configData.levy_yaw = preferences.getFloat("levy_yaw", 0.5f);
+    configData.percent_spiral = preferences.getFloat("percent_spiral", 0.5f);
 
     configData.n_max_x = preferences.getInt("n_max_x", 240);
     configData.n_max_y = preferences.getInt("n_max_y", 160);
@@ -51,6 +53,7 @@ void NiclaConfig::loadConfiguration() {
     configDatab.num_charges = preferences.getInt("bnum_charges", 4);
     configDatab.time_in_mode = preferences.getInt("btime_in_mode", 60);
     configDatab.charge_time = preferences.getInt("bcharge_time", 15);
+    configDatab.target_color = preferences.getInt("btarget_color", 0x40);
     configDatab.default_height = preferences.getFloat("bdefault_height", 5);
     configDatab.height_range = preferences.getFloat("bheight_range", 3);
     configDatab.wall_thresh = preferences.getFloat("bwall_thresh", 250);
@@ -64,6 +67,7 @@ void NiclaConfig::loadConfiguration() {
     configDatab.fx_levy = preferences.getFloat("bfx_levy", -0.1f);
     configDatab.fz_levy = preferences.getFloat("bfz_levy", 0.1f);
     configDatab.levy_yaw = preferences.getFloat("blevy_yaw", 0.5f);
+    configDatab.percent_spiral = preferences.getFloat("bpercent_spiral", 0.5f);
 
     configDatab.n_max_x = preferences.getInt("bn_max_x", 240);
     configDatab.n_max_y = preferences.getInt("bn_max_y", 160);

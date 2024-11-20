@@ -18,20 +18,15 @@ class LevyWalk : public NiclaState {
          */
         LevyWalk();
     protected:
-        unsigned long SpiralTimer = 0;
-        unsigned long levyDuration = 0;
-        float levyYaw = 0;
+        unsigned long spiralTimer = 0;
+        unsigned long spiralDuration = 0;
         float yawCurr = 0;
-        unsigned long levyTimer = 0;
-        float yawProgress; // Variable to track the progressive change in yaw
-        bool actionUnderway = false;
+        bool levy = false;
 
-        unsigned long lastSpinTime; // Timer for spinning
-        unsigned long forwardDuration = 0; // Duration for a full 360 spin in milliseconds
-        // bool isSpinning = true; // Flag to indicate spinning state
+        unsigned long lastSpinTime = 0; // Timer for spinning
+        unsigned long exploreDuration = 0; // Duration for a full 360 spin in milliseconds
 
-        unsigned angleChangeCount;
-        float angleProgress, yawRate = 0.;
+        float angleProgress, yawRate = 0.0;
         float currentYaw = 0;  // Current yaw in action
         
         /**

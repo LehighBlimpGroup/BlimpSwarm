@@ -115,9 +115,9 @@ typedef struct {
     bool state;
     int n_max_x, n_max_y;
     float fx_togoal, fx_charge, range_for_forward;
-    float fx_levy, fz_levy, levy_yaw, wall_thresh;
+    float fx_levy, fz_levy, levy_yaw, wall_thresh, percent_spiral;
     float h_ratio, y_thresh, y_strength, x_strength;
-    int num_charges, time_in_mode, charge_time;
+    int num_charges, time_in_mode, charge_time, target_color;
     float default_height, height_range;
 } nicla_t;
 
@@ -132,10 +132,10 @@ typedef struct {
     float robot_to_goal = 0;
     float z_estimator = 0;
     float forward_force = 0;
-    int nicla_flag = 0x40;
+    int nicla_flag = 0x80;
     bool nicla_desired = 1;
     int num_captures = 0;
-    float goal_direction = -5;
+    int goal_direction = 1;
     unsigned long start_ball_time;
     bool goForward = true;
 } hist_t;
