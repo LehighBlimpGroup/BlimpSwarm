@@ -14,11 +14,12 @@
 
 LevyWalk::LevyWalk() : NiclaState() {
     spiralTimer = millis();
-    spiralDuration = 0;
 
-    lastSpinTime = 0; // Timer for spinning
-    exploreDuration = 0; // Duration for a full 360 spin in milliseconds
+    lastSpinTime = millis(); // Timer for spinning
+    exploreDuration = 10000; // Duration for a full 360 spin in milliseconds
+    spiralDuration = exploreDuration * terms.percent_spiral;
 
+    currentYaw = 0;  // Current yaw in action
     hist->start_ball_time = millis();
     currentYaw = hist->robot_to_goal;
     yawRate = terms.levy_yaw;
@@ -48,7 +49,7 @@ RobotState* LevyWalk::statetransitions(float sensors[], float controls[]) {
         
         RobotState* moveToGoal = new MoveToGoal();
         return moveToGoal;
-    } else if (sensors[11] < terms.wall_thresh) {
+    } else if (!hist->goForward && sensors[11] < terms.wall_thresh) {
         // Wall detected, initiate turn
         wallDetected = true;
         turnStartYaw = sensors[5]; // Store current yaw
@@ -60,6 +61,7 @@ RobotState* LevyWalk::statetransitions(float sensors[], float controls[]) {
         hist->start_ball_time = millis();
         return this;
     } else {
+        hist->robot_to_goal = sensors[5];
         return this; //pointer to itself
     }
 }
@@ -89,12 +91,6 @@ void LevyWalk::behavior(float sensors[], float controls[], float outControls[]) 
         
     } else {
         unsigned long currentTime = millis();
-        // initial forward
-        if(exploreDuration == 0) {
-            exploreDuration = 15000;
-            yawRate = terms.levy_yaw;
-            lastSpinTime = currentTime;
-        }
 
         // Spiral state
         // Serial.println("Normal Levywalk behavior");
@@ -103,25 +99,24 @@ void LevyWalk::behavior(float sensors[], float controls[], float outControls[]) 
             if(hist->goForward) {
                 hist->goForward = false;
             }
-            spiralTimer = currentTime;
             lastSpinTime = currentTime;
             yawRate = terms.levy_yaw;
-            exploreDuration = random(10000, 15000);
-            spiralDuration = exploreDuration * terms.percent_spiral;
+            exploreDuration = random(0, 15000);
+            spiralDuration = exploreDuration * terms.percent_spiral; // TODO: change so that the percent spiral makes a spiral duration
 
             // currentYaw = sensors[5] + random(0, 90)/180.0f * 3.14;
             float random_height = random(-terms.fz_levy*10000, terms.fz_levy*10000) / 10000.0;
             hist->z_estimator = sensors[1] + random_height;
         } else if(!hist->goForward) { // spiral
-            if(timeElapsed >= (1-spiralDuration)) {
+            if(timeElapsed >= spiralDuration) {
                 unsigned long dt = currentTime - spiralTimer;  // Calculate the elapsed time since the last update
                 if (dt > 0) {
-                    yawRate -= 0.02* (dt / 1000.0);  // Gradually increase the yaw rate
+                    yawRate -= 0.02 * (dt / 1000.0);  // Gradually increase the yaw rate
                     yawRate = constrain(yawRate, 0, .5);  // Limit yaw rate to max value
-                    spiralTimer = currentTime;  // Update the SpiralTimer to the current time
                     currentYaw += yawRate * (dt / 1000.0);  // Synchronize currentYaw with angleProgress
                 }
             }
+            spiralTimer = currentTime;
         }
 
         if (sensors[1] >= terms.default_height + terms.height_range ||
