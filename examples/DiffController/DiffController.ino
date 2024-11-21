@@ -39,7 +39,6 @@ float senses[myRobot->MAX_SENSORS];
 
 const int TIME_STEP_MICRO = 4000;
 
-int niclaOffset = 12;
 int dt = 1000;
 unsigned long clockTime;
 unsigned long printTime;
@@ -64,7 +63,7 @@ void setup() {
     stateMachine = new RobotStateMachine(new ManualState());
     
     paramUpdate();
-    hist->nicla_flag = 0x80;
+    hist->target_color = 0x80;
 
     nicla->changeNiclaMode(0x80);
 
@@ -87,9 +86,9 @@ void loop() {
     rcv.flag = 1;
     rcv.values[0] = senses[1];  //height
     rcv.values[1] = senses[5];  //yaw
-    rcv.values[2] = senses[niclaOffset + 5];  //x
-    rcv.values[3] = senses[niclaOffset + 6];  //y
-    rcv.values[4] = senses[niclaOffset + 7];  //w
+    rcv.values[2] = senses[NICLA_OFFSET + 5];  //x
+    rcv.values[3] = senses[NICLA_OFFSET + 6];  //y
+    rcv.values[4] = senses[NICLA_OFFSET + 7];  //w
     rcv.values[5] = senses[10];  //battery
     Serial.println("Sending Feedback.");
     bool sent = baseComm->sendMeasurements(&rcv);
@@ -106,9 +105,9 @@ void loop() {
     rcv.flag = 1;
     rcv.values[0] = senses[1];  //height
     rcv.values[1] = senses[5];  //yaw
-    rcv.values[2] = senses[niclaOffset + 5];  //x
-    rcv.values[3] = senses[niclaOffset + 6];  //y
-    rcv.values[4] = senses[niclaOffset + 7];  //w
+    rcv.values[2] = senses[NICLA_OFFSET + 5];  //x
+    rcv.values[3] = senses[NICLA_OFFSET + 6];  //y
+    rcv.values[4] = senses[NICLA_OFFSET + 7];  //w
     rcv.values[5] = senses[10];  //battery
     bool sent = baseComm->sendMeasurements(&rcv);
 
@@ -128,7 +127,7 @@ void loop() {
 
 
   // adjusts the state based on several factors
-  niclaStateChange((int)(cmd.params[0]), (int)(cmd.params[7]));
+  niclaStateChange((int)(cmd.params[0]));
 
   // Create Behavior based on sensory input to put into behave
   stateMachine->update(senses, cmd.params, behave.params);
@@ -166,58 +165,59 @@ void updateNiclaParams() {
     terms = config; // Copy configuration data
 }
 
-void niclaStateChange(int cmdFlag, int target_color) {
-  int nicla_flag = senses[niclaOffset + 0]; //flag received by nicla
+void niclaStateChange(int cmdFlag) {
+  int nicla_flag = senses[NICLA_OFFSET + 0]; //flag received by nicla
   hist = NiclaConfig::getInstance()->getDynamicHistory();
   if (micros() - nicla_change_time > 50000) { // positive edge to avoid spamming
     nicla_change_time = micros();
-    int hist_flag = hist->nicla_flag;
     if (cmdFlag == 2) { // normal state machine mode
-      if (hist->nicla_desired == 1 && nicla_flag & 0x40) { // if desire mode is goal mode and nicla in ball mode
-        Serial.println("go to goal");
-        if (target_color == 1) {
-          nicla->changeNiclaMode(0x81);
-        } else {
-          nicla->changeNiclaMode(0x80);
-        }
-        hist->z_estimator = terms.default_height;
-      } else if (hist->nicla_desired == 0 && nicla_flag & 0x80) { // if desire mode is ball mode and nicla in goal mode
-        Serial.println("go to ball");
-        nicla->changeNiclaMode(0x40); //switch nicla to ball mode
-        hist->z_estimator = terms.default_height;
+      if(hist->nicla_desired == 1) {
+        switchGoal(nicla_flag);
+      } else if (hist->nicla_desired == 0) { // if desire mode is ball mode and nicla in goal mode
+        switchBalloon(nicla_flag);
       }
     } 
     else if (cmdFlag == 3) { //balloon only mode (enforce 0x40)
       hist->nicla_desired = 0;
-      if (nicla_flag & 0x80) {
-        Serial.println("go to ball");
-        nicla->changeNiclaMode(0x40);
-      }
+      switchBalloon(nicla_flag);
       hist->start_ball_time= millis();
       hist->num_captures = 0;
     } 
     else if (cmdFlag == 4) { //goal only mode (enforce 0x80)
-      if (hist_flag != 4) {
-        hist->goal_direction = senses[5];
-      }
       hist->nicla_desired = 1;
+      switchGoal(nicla_flag);
       hist->start_ball_time= millis();
       hist->num_captures = 0;
-      if (nicla_flag & 0x40) {
-        Serial.println("go to goal");
-        if (target_color == 1){
-          nicla->changeNiclaMode(0x81);
-        } else {
-          nicla->changeNiclaMode(0x80);
-        }
-      }
     }
   }
-  
+}
+
+void switchBalloon(int nicla_flag) {
+  const nicla_t& config = NiclaConfig::getInstance()->getConfiguration();
+  terms = config;
+  bool switch_nicla = nicla_flag & 0x80 ||
+                      (nicla_flag & 0x40 && hist->target_color != terms.target_color);
+  if(switch_nicla) {
+    Serial.println(terms.target_color);
+    nicla->changeNiclaMode(terms.target_color);
+    hist->z_estimator = terms.default_height;
+    hist->target_color = terms.target_color;
+  }
+}
+
+void switchGoal(int nicla_flag) {
+  const nicla_t& config = NiclaConfig::getInstance()->getConfiguration();
+  terms = config;
+  bool switch_nicla = nicla_flag & 0x40 ||
+                          (nicla_flag & 0x80 && hist->target_color != terms.target_color);
+  if(switch_nicla) {
+    nicla->changeNiclaMode(terms.target_color);
+    hist->z_estimator = terms.default_height;
+    hist->target_color = terms.target_color;
+  }
 }
 
 void fixClockRate() {
-
   dt = (int)(micros()-clockTime);
   while (TIME_STEP_MICRO - dt > 0){
     dt = (int)(micros()-clockTime);

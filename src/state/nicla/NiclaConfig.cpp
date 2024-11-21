@@ -74,16 +74,14 @@ void NiclaConfig::loadConfiguration() {
     configDatab.h_ratio = preferences.getFloat("bh_ratio", 0.75f);
 
     configDatab.range_for_forward = preferences.getFloat("brange_for_forward", 0.16);
-
+    Serial.println("Loaded config");
     preferences.end();
 }
 
 const nicla_t& NiclaConfig::getConfiguration() const {
     if (historyData.nicla_desired == 1) {
-        Serial.println("loaded GOAL config");
         return configData;
     } else if (historyData.nicla_desired == 0) {
-        Serial.println("loaded BALL config");
         return configDatab;
     } else {
         return configDatab;// temp until more states
