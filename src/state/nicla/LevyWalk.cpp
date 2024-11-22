@@ -106,7 +106,7 @@ void LevyWalk::behavior(float sensors[], float controls[], float outControls[]) 
             exploreDuration = random(0, 5000);
             spiralDuration = random(15000, 20000); // TODO: change so that the percent spiral makes a spiral duration
 
-            // currentYaw = sensors[5] + random(0, 90)/180.0f * 3.14;
+            currentYaw = sensors[5] + random(30, 90)/180.0f * 3.14;
             float random_height = random(-terms.fz_levy*10000, terms.fz_levy*10000) / 10000.0;
             hist->z_estimator = sensors[1] + random_height;
         } else if(!hist->goForward) { // spiral
