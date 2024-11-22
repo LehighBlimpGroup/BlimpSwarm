@@ -17,7 +17,6 @@ LevyWalk::LevyWalk() : NiclaState() {
 
     lastSpinTime = millis(); // Timer for spinning
     exploreDuration = 10000; // Duration for a full 360 spin in milliseconds
-    spiralDuration = exploreDuration * terms.percent_spiral;
 
     currentYaw = 0;  // Current yaw in action
     hist->start_ball_time = millis();
@@ -101,20 +100,17 @@ void LevyWalk::behavior(float sensors[], float controls[], float outControls[]) 
             }
             lastSpinTime = currentTime;
             yawRate = terms.levy_yaw;
-            exploreDuration = random(0, 15000);
-            spiralDuration = exploreDuration * terms.percent_spiral; // TODO: change so that the percent spiral makes a spiral duration
+            exploreDuration = random(20000, 30000);
 
-            // currentYaw = sensors[5] + random(0, 90)/180.0f * 3.14;
+            currentYaw = sensors[5] + random(30, 90)/180.0f * 3.14;
             float random_height = random(-terms.fz_levy*10000, terms.fz_levy*10000) / 10000.0;
             hist->z_estimator = sensors[1] + random_height;
         } else if(!hist->goForward) { // spiral
-            if(timeElapsed >= spiralDuration) {
-                unsigned long dt = currentTime - spiralTimer;  // Calculate the elapsed time since the last update
-                if (dt > 0) {
-                    yawRate -= 0.02 * (dt / 1000.0);  // Gradually increase the yaw rate
-                    yawRate = constrain(yawRate, 0, .5);  // Limit yaw rate to max value
-                    currentYaw += yawRate * (dt / 1000.0);  // Synchronize currentYaw with angleProgress
-                }
+            unsigned long dt = currentTime - spiralTimer;  // Calculate the elapsed time since the last update
+            if (dt > 0) {
+                yawRate -= 0.02 * (dt / 1000.0);  // Gradually increase the yaw rate
+                yawRate = constrain(yawRate, 0, .5);  // Limit yaw rate to max value
+                currentYaw += yawRate * (dt / 1000.0);  // Synchronize currentYaw with angleProgress
             }
             spiralTimer = currentTime;
         }
