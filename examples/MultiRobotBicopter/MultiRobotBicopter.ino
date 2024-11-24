@@ -74,6 +74,11 @@ void setup() {
     // updates the ground altitude for the ground feedback
     // TODO: make some way to access the actual ground height from robot
     int numSenses = myRobot->sense(senses);
+
+    Serial.print("Size of ControlInput: ");
+    Serial.println(sizeof(ControlInput));
+    Serial.print("Size of ReceivedData: ");
+    Serial.println(sizeof(ReceivedData));
     
 }
 

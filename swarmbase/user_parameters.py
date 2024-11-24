@@ -8,7 +8,7 @@ ROBOT_MACS =["48:27:e2:e6:e0:1c"]### Insert your SERIAL PORT here ###
 ## may look like "COM5" in windows or "/dev/tty.usbmodem14301" in mac  #
 ## look in arduino for the port that your specific transeiver is connected to  ##
 ## Note: make sure that your serial monitor is OFF in arduino or else you will get "access is denied" error. ##
-SERIAL_PORT = "COM6"
+SERIAL_PORT = "COM9"
 
 PUMP_MAC = "48:27:E2:E6:E6:44"
 
