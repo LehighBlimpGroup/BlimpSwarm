@@ -61,6 +61,8 @@ class SerialController:
         buffer.append(len(key))
         buffer.extend(key.encode('utf-8'))
         
+        print("Buffer: ", buffer)
+        
         if value_type == DataType_Int:
             buffer.extend(struct.pack('<i', value))
         elif value_type == DataType_Float:

@@ -121,6 +121,14 @@ void loop() {
     bool sent = baseComm->sendMeasurements(&rcv);
 
   }
+  rcv.flag = 1;
+  rcv.values[0] = senses[1];  //height
+  rcv.values[1] = senses[5];  //yaw
+  rcv.values[2] = senses[niclaOffset + 5];  //x
+  rcv.values[3] = senses[niclaOffset + 6];  //y
+  rcv.values[4] = senses[niclaOffset + 7];  //w
+  rcv.values[5] = senses[10];  //battery
+  bool sent = baseComm->sendMeasurements(&rcv);
   // print sensor values every second
   // senses => [temperature, altitude, veloctity in altitude, roll, pitch, yaw, rollrate, pitchrate, yawrate, null, battery]
   if (micros() - printTime > 515106){
