@@ -63,11 +63,18 @@ void BNO85::startup() {
 // Here is where you define the sensor outputs you want to receive
 void BNO85::setReports() {
     Serial.println("Setting desired reports");
-    if (myIMU.enableGyroIntegratedRotationVector() == true) {
+    if (myIMU.enableGeomagneticRotationVector() == true) {
         Serial.println(F("Gryo Integrated Rotation vector enabled"));
         Serial.println(F("Output in form i, j, k, real, gyroX, gyroY, gyroZ"));
     } else {
         Serial.println("Could not enable gyro integrated rotation vector");
+    }
+
+    if (myIMU.enableGyro() == true) {
+        Serial.println(F("Gyro enabled"));
+        Serial.println(F("Output in form x, y, z, in radians per second"));
+    } else {
+        Serial.println("Could not enable gyro");
     }
     // Serial.println("  Setting desired reports");
     // if (myIMU.enableRotationVector() == true) {
@@ -133,28 +140,40 @@ bool BNO85::update() {
         bevent = true;
         startTime = micros();
 
-        // Only checking for gyro integrated rotation vector
-        if (myIMU.getSensorEventID() == SENSOR_REPORTID_GYRO_INTEGRATED_ROTATION_VECTOR) {
-            float qW = myIMU.getGyroIntegratedRVReal();
-            float qX = myIMU.getGyroIntegratedRVI();
-            float qY = myIMU.getGyroIntegratedRVJ();
-            float qZ = myIMU.getGyroIntegratedRVK();
+        // // Only checking for gyro integrated rotation vector
+        // if (myIMU.getSensorEventID() == SENSOR_REPORTID_GYRO_INTEGRATED_ROTATION_VECTOR) {
+        //     float qW = myIMU.getGyroIntegratedRVReal();
+        //     float qX = myIMU.getGyroIntegratedRVI();
+        //     float qY = myIMU.getGyroIntegratedRVJ();
+        //     float qZ = myIMU.getGyroIntegratedRVK();
 
-            // Convert quaternion to Euler angles
-            quaternionToEuler(qW, qX, qY, qZ, sensorValues[0], sensorValues[1], sensorValues[2]);
+        //     // Convert quaternion to Euler angles
+        //     quaternionToEuler(qW, qX, qY, qZ, sensorValues[0], sensorValues[1], sensorValues[2]);
 
-            // Normalize angles between -PI and PI
-            for (int i = 0; i < 3; i++) {
-                while (sensorValues[i] > M_PI) sensorValues[i] -= 2 * M_PI;
-                while (sensorValues[i] < -M_PI) sensorValues[i] += 2 * M_PI;
-            }
+        //     // Normalize angles between -PI and PI
+        //     for (int i = 0; i < 3; i++) {
+        //         while (sensorValues[i] > M_PI) sensorValues[i] -= 2 * M_PI;
+        //         while (sensorValues[i] < -M_PI) sensorValues[i] += 2 * M_PI;
+        //     }
 
-            // Get angular velocity directly from the sensor
-            sensorValues[3] = sensorValues[3] * pitchgamma + myIMU.getGyroIntegratedRVangVelX() * (1-pitchgamma);
-            sensorValues[4] = sensorValues[4] * rollgamma + myIMU.getGyroIntegratedRVangVelY() * (1-rollgamma);
-            sensorValues[5] = sensorValues[5] * yawgamma + myIMU.getGyroIntegratedRVangVelZ() * (1-yawgamma);
+        //     // Get angular velocity directly from the sensor
+        //     sensorValues[3] = sensorValues[3] * pitchgamma + myIMU.getGyroIntegratedRVangVelX() * (1-pitchgamma);
+        //     sensorValues[4] = sensorValues[4] * rollgamma + myIMU.getGyroIntegratedRVangVelY() * (1-rollgamma);
+        //     sensorValues[5] = sensorValues[5] * yawgamma + myIMU.getGyroIntegratedRVangVelZ() * (1-yawgamma);
 
-            break; // Since we are only looking for this event, break after handling
+        //     break; // Since we are only looking for this event, break after handling
+        // }
+        if (myIMU.getSensorEventID() == SENSOR_REPORTID_GEOMAGNETIC_ROTATION_VECTOR) {
+
+            sensorValues[0] = myIMU.getRoll(); // Convert roll to degrees
+            sensorValues[1] = myIMU.getPitch(); // Convert pitch to degrees
+            sensorValues[2] = myIMU.getYaw(); // Convert yaw / heading to degrees
+        }
+
+        if (myIMU.getSensorEventID() == SENSOR_REPORTID_GYROSCOPE_CALIBRATED) {
+            sensorValues[3] = sensorValues[3] * pitchgamma + myIMU.getGyroX() * (1-pitchgamma);
+            sensorValues[4] = sensorValues[4] * rollgamma + myIMU.getGyroY() * (1-rollgamma);
+            sensorValues[5] = sensorValues[5] * yawgamma + myIMU.getGyroZ() * (1-yawgamma);
         }
     }
 

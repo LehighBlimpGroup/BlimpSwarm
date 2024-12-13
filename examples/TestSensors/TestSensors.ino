@@ -1,14 +1,9 @@
-
-
 #include <Arduino.h>
 #include "BlimpSwarm.h"
 #include "sense/NiclaSuite.h"
 
-
 NiclaSuite sensors; 
-// Barometer sensors;
-// BNO85 sensors;
-// WeightedBatterySensor sensors;
+
 void setup(){
   delay(250);
   Serial.begin(115200);
@@ -19,21 +14,15 @@ void setup(){
 
 void loop(){
   sensors.update();
-  
-  
-
   int test;
   float* sensorValues = sensors.readValues(test);
-  
-  // Serial.print(-10);
-  // Serial.print(",");
-  // Serial.print(10);
-  // Serial.print(",");
-  for (int i = 0; i < test-1; i++){
+
+  for (int i = 0; i < test; i++){
     Serial.print(sensorValues[i]);
-    Serial.print(",");
+    if(i != test-1)
+      Serial.print(" : ");
   }
-  Serial.println(sensorValues[test-1]);
-  delay(10);
+  Serial.println();
+  delay(20);
 
 }
