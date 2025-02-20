@@ -10,6 +10,9 @@ title: Computer Vision
 For this tutorial, you need the _Arduino Nicla Vision_ and the _Vision Module_.
 ![](../figs/vision.jpg)
 
+The Vision Module is a customized PCB that integrates the power management, the communication outlet with the main ESP board, and a power LED driver.
+View the PCB print of [the top layer here](https://github.com/LehighBlimpGroup/BlimpSwarm/blob/main/docs/figs/nicla_board_front.pdf), and [the bottom layer here](https://github.com/LehighBlimpGroup/BlimpSwarm/blob/main/docs/figs/nicla_board_back.pdf). We also provide the [Fusion 360 Electronics archive](https://github.com/LehighBlimpGroup/BlimpSwarm/blob/main/docs/figs/Blimp_nicla_standalone_IC.f3z), [the board design](https://github.com/LehighBlimpGroup/BlimpSwarm/blob/main/docs/figs/Blimp_nicla_standalone_IC.brd), [the scheme](https://github.com/LehighBlimpGroup/BlimpSwarm/blob/main/docs/figs/Blimp_nicla_standalone_IC.sch), and the [Assembly Files here](https://github.com/LehighBlimpGroup/BlimpSwarm/blob/main/docs/figs/Blimp_nicla_standalone%20v57_2024-03-01.zip).
+
 ## Installation
 1. Install _OpenMV IDE v4.1.5_ or latest from [here](https://openmv.io/pages/download)
 2. Download/Clone the Gihub repository [Blob-Detection-and-Tracking](https://github.com/LehighBlimpGroup/Blob-detection-and-Tracking/blob/main/Blob%20Detection.py)
