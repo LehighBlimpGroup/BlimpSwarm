@@ -7,6 +7,10 @@ title: Firmware: How to start
 ## 0. Before starting
 Follow the instructions to assemble the robot [here](https://rhinestone-star-fa9.notion.site/Robot-Assembly-f31e5685cc46427f9f4b832dc4a56b95). Do not install the propellers.
 
+The main board is a customized PCB that integrates the power management for the ESP32 and for the servo motors, the power outlet to the brushless ESC, the communication outlet with the vision board, and the I2C bus for the sensors.
+View the PCB print of [the top layer here](https://github.com/LehighBlimpGroup/BlimpSwarm/blob/main/docs/figs/esp_board_front.pdf), and [the bottom layer here](https://github.com/LehighBlimpGroup/BlimpSwarm/blob/main/docs/figs/esp_board_back.pdf). We also provide the [Fusion 360 Electronics archive](https://github.com/LehighBlimpGroup/BlimpSwarm/blob/main/docs/figs/Blimp_ESP_board_standalone_IC_power.f3z), [the board design](https://github.com/LehighBlimpGroup/BlimpSwarm/blob/main/docs/figs/Blimp_ESP_board_standalone_IC_power.brd), [the scheme](https://github.com/LehighBlimpGroup/BlimpSwarm/blob/main/docs/figs/Blimp_ESP_board_standalone_IC_power.sch), and the [Assembly Files here](https://github.com/LehighBlimpGroup/BlimpSwarm/blob/main/docs/figs/Blimp_ESP_board_standalone_IC_power%20v94_2024-10-04.zip).
+
+
 ## 1. Install the robot firmware
 For this part, you must have two ESP32 microchips (one with pins and one without pins). The setup looks like the following fitgure
 ![](https://github.com/LehighBlimpGroup/BlimpSwarm/raw/main/doc/figures/setup.png)
