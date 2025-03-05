@@ -20,6 +20,8 @@ class ManualState : public NiclaState {
          */
         ManualState();
     protected:
+        float maintained_height;
+        float maintained_yaw;
         
         /**
          * @copydoc NiclaState::statetransitions()

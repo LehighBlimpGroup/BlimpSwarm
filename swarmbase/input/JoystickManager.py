@@ -42,9 +42,11 @@ class JoystickManager:
             b = self.joystick.get_button(1)
             x = self.joystick.get_button(2)
             y = self.joystick.get_button(3)
-            return [a, b, x, y]
+            l_bumper = self.joystick.get_button(4)
+            r_bumper = self.joystick.get_button(5)
+            return [a, b, x, y, l_bumper, r_bumper]
         else:
-            return [0, 0, 0, 0]
+            return [0, 0, 0, 0, 0, 0]
 
 
     def getJoystickInputs(self):

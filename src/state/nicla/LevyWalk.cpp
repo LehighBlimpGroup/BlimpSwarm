@@ -103,7 +103,7 @@ void LevyWalk::behavior(float sensors[], float controls[], float outControls[]) 
             }
             lastSpinTime = currentTime;
             yawRate = 0.5;
-            exploreDuration = random(0, 5000);
+            exploreDuration = random(5000, 10000);
             spiralDuration = random(15000, 20000); // TODO: change so that the percent spiral makes a spiral duration
 
             currentYaw = sensors[5] + random(30, 90)/180.0f * 3.14;

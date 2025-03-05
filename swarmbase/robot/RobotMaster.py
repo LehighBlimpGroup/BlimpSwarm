@@ -4,7 +4,7 @@ from user_parameters import ROBOT_MACS,  SERIAL_PORT
 import time
 
 CALIBRATE = False
-PRINT_JOYSTICK = False
+PRINT_JOYSTICK = True
 
 """Class that takes in input and sends it to the correct agent in the swarm
 
@@ -107,17 +107,9 @@ class RobotMaster:
         # Update old button states
         self.buttons = buttons[:]
 
-        if self.ready[self.current_robot_index] != 5:
-            # Control inputs to the robot
-            self.height += -axis[0] * self.dt if abs(axis[0]) >= 0.15 else 0
-            self.height = max(min(self.height, 15), -10)
-            self.tz += -axis[4] * 1.2 * self.dt if abs(axis[4]) >= 0.15 else 0
-        else:
-            # Control inputs to the robot
-            self.height = -axis[0] * .5 * self.dt if abs(axis[0]) >= 0.15 else 0
-            self.tz = -axis[4] * .5 * self.dt if abs(axis[4]) >= 0.15 else 0
-        fx_ave = (-axis[2] + axis[5]) * 0.65
-        # fx_ave = fx_ave * 0.67 + fx * 0.33
+        fz = -axis[0] * self.dt if abs(axis[0]) >= 0.15 else 0
+        tz = -axis[4] * self.dt if abs(axis[4]) >= 0.15 else 0
+        fx_ave = (-axis[2] + axis[5])
 
         # send control parameters
         
@@ -125,7 +117,7 @@ class RobotMaster:
         currState = self.ready[self.current_robot_index]
         self.updateGui(self.height, self.tz, print)
 
-        self.serial.send_control_params(currRobot, (currState, fx_ave, self.height, 0, self.tz, -buttons[2], 1, 0, 0, 0, 0, 0, 0))
+        self.serial.send_control_params(currRobot, (currState, fx_ave, fz, 0, tz, buttons[5]-buttons[4], 1, 0, 0, 0, 0, 0, 0))
 
 
     def functionFactory(self, c, func, verbose=""):
@@ -161,8 +153,6 @@ class RobotMaster:
                 self.ready[index] = newState
             else:
                 self.serial.send_control_params(self.robots[index], (self.ready[index],0,0,0, 0, 0, 0, 0, 0, 0, 0, 1, 0))
-
-PRINT_JOYSTICK = False
 
 def stopOne(serial, robot):
     serial.send_control_params(robot, (5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0))

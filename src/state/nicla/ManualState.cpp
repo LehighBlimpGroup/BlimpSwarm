@@ -34,11 +34,23 @@ RobotState* ManualState::statetransitions(float sensors[], float controls[]) {
 }
 
 void ManualState::behavior(float sensors[], float controls[], float outControls[]) {
+    if(controls[2] != 0) {
+        maintained_height = sensors[1];
+        outControls[2] = sensors[1] + controls[2]*5;
+    } else {
+        outControls[2] = maintained_height;
+    }
+
+    if(controls[4] != 0) {
+        maintained_yaw = sensors[5];
+        outControls[4] = sensors[5] + controls[4]*5;
+    } else {
+        outControls[4] = maintained_yaw;
+    }
     outControls[0] = controls[0]; //ready
     outControls[1] = controls[1]; //fx
-    outControls[2] = controls[2]; //fz
     outControls[3] = controls[3]; //tx
-    outControls[4] = controls[4]; //tz
+    outControls[5] = controls[5];
 }
 
 

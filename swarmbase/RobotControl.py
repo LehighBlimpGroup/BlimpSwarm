@@ -8,11 +8,11 @@ import importlib
 
 PRINT_JOYSTICK = False
         
-def startAutonomous(serial, robot, args):
+def startAutonomousBall(serial, robot, args):
     serial.send_control_params(robot, (3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0))
-    time.sleep(.1)
+    time.sleep(.2)
     serial.send_control_params(robot, (2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0))
-    time.sleep(.05)
+    time.sleep(.2)
     return 2
 
 def stopOne(serial, robot, args):
@@ -23,8 +23,10 @@ def stopOne(serial, robot, args):
     return 0
 
 def startOne(serial, robot, args):
-    serial.send_control_params(robot, (2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0))
+    serial.send_control_params(robot, (4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0))
     time.sleep(.05)
+    serial.send_control_params(robot, (2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0))
+    time.sleep(.2)
     return 2
 
 def sendCalibrate(serial, robot, args):
@@ -40,10 +42,53 @@ def setHeight(serial, robot, args):
     time.sleep(.05)
     return 1
 
+
 def sendPreferences(serial, robot, args):
     importlib.reload(Preferences)
 
     for pref in Preferences.PREFERENCES["ff:ff:ff:ff:ff:ff"]:
+        serial.send_preference(robot, pref["data_type"], pref["key"], pref["value"])
+    if robot not in Preferences.PREFERENCES:
+        serial.send_control_params(robot, (0,0,0,0, 0, 0, 0, 0, 0, 0, 0, 1, 0))
+        return -1
+    prefer = Preferences.PREFERENCES[robot]
+    for pref in prefer:
+        serial.send_preference(robot, pref["data_type"], pref["key"], pref["value"])
+    serial.send_control_params(robot, (0,0,0,0, 0, 0, 0, 0, 0, 0, 0, 1, 0))
+    return -1
+
+def sendOrangePreferences(serial, robot, args):
+    importlib.reload(Preferences)
+
+    for pref in Preferences.PREFERENCES["orange"]:
+        serial.send_preference(robot, pref["data_type"], pref["key"], pref["value"])
+    if robot not in Preferences.PREFERENCES:
+        serial.send_control_params(robot, (0,0,0,0, 0, 0, 0, 0, 0, 0, 0, 1, 0))
+        return -1
+    prefer = Preferences.PREFERENCES[robot]
+    for pref in prefer:
+        serial.send_preference(robot, pref["data_type"], pref["key"], pref["value"])
+    serial.send_control_params(robot, (0,0,0,0, 0, 0, 0, 0, 0, 0, 0, 1, 0))
+    return -1
+
+def sendDefenderPreferences(serial, robot, args):
+    importlib.reload(Preferences)
+
+    for pref in Preferences.PREFERENCES["defender"]:
+        serial.send_preference(robot, pref["data_type"], pref["key"], pref["value"])
+    if robot not in Preferences.PREFERENCES:
+        serial.send_control_params(robot, (0,0,0,0, 0, 0, 0, 0, 0, 0, 0, 1, 0))
+        return -1
+    prefer = Preferences.PREFERENCES[robot]
+    for pref in prefer:
+        serial.send_preference(robot, pref["data_type"], pref["key"], pref["value"])
+    serial.send_control_params(robot, (0,0,0,0, 0, 0, 0, 0, 0, 0, 0, 1, 0))
+    return -1
+
+def sendAttackerPreferences(serial, robot, args):
+    importlib.reload(Preferences)
+
+    for pref in Preferences.PREFERENCES["attacker"]:
         serial.send_preference(robot, pref["data_type"], pref["key"], pref["value"])
     if robot not in Preferences.PREFERENCES:
         serial.send_control_params(robot, (0,0,0,0, 0, 0, 0, 0, 0, 0, 0, 1, 0))
@@ -59,18 +104,20 @@ def main():
         robot_master = RobotMaster(0.3)
         joystick = JoystickManager()
         robot_master.setup(ROBOT_MACS, "nicla")
-        followers = [ROBOT_MACS[len(ROBOT_MACS)-3], ROBOT_MACS[len(ROBOT_MACS)-2]]
+        followers = []
 
         robot_master.functionFactory('s', stopOne, "Stop")
-        robot_master.functionFactory('g', startOne, "Start")
-        robot_master.functionFactory('a', startAutonomous, "Auto")
+        robot_master.functionFactory('a', startAutonomousBall, "Auto")
         robot_master.functionFactory('c', sendCalibrate, "Calibrate")
         robot_master.functionFactory('p', sendPreferences, "Send Preferences")
+        robot_master.functionFactory('m', sendAttackerPreferences, "Send Attacker Preferences")
+        robot_master.functionFactory(',', sendDefenderPreferences, "Send Defender Preferences")
         robot_master.functionFactory('h', setHeight, "Set Height")
+        robot_master.functionFactory('g', startOne, "Start goal")
         index = "0"
         power = 0
         angle = 0
-        dt_p = 0.05
+        dt_p = 0.1
         dt_a = 5
 
         while True:
@@ -105,28 +152,30 @@ def main():
                 elif key_pressed == 'q':
                     break
                 elif key_pressed == '[':
-                    power -= dt_p
+                    angle = 0
+                    power = 0
                     for i in followers:
                         robot_master.runFunction('h', i, power, angle)
-                    print(power, angle)
+                    print(power, angle, "close")
                 elif key_pressed == ']':
-                    power += dt_p
+                    angle = 47
+                    power = .3
                     for i in followers:
                         robot_master.runFunction('h', i, power, angle)
-                    print(power, angle)
+                    print(power, angle, "open")
                 elif key_pressed == ';':
-                    angle -= dt_a
+                    power -= 0.05
                     for i in followers:
                         robot_master.runFunction('h', i, power, angle)
                     print(power, angle)
                 elif key_pressed == "'":
-                    angle += dt_a
+                    power += 0.05
                     for i in followers:
                         robot_master.runFunction('h', i, power, angle)
                     print(power, angle)
                 elif key_pressed == 's':
                     power = 0
-                    angle = 0
+                    angle = 45
                     i = int(index)
                     robot_master.runFunction(key_pressed, i)
                     index = "0"
@@ -142,8 +191,6 @@ def main():
     except Exception as e:
         print(e)
         return
-    finally:
-        robot_master.runFunction('s')
     
 
 if __name__ == "__main__":

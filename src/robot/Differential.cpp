@@ -54,7 +54,7 @@ void Differential::control(float sensors[MAX_SENSORS], float controls[], int siz
         // Converting values to a more stable form
         // float servoBottom = 90.0f - PDterms.servoRange/2.0f; // bottom limit of servo in degrees
         // float servoTop = 90.0f + PDterms.servoRange/2.0f; // top limit of servo in degrees
-        outputs[2] = clamp((t1) * 180.0f / PI + PDterms.servoBeta, 0.0f, PDterms.servoRange) * 180.0f / PDterms.servoRange;
+        outputs[2] = controls[5]*90+90;//180.0f - clamp((t2) * 180.0f / PI + PDterms.servoBeta, 0.0f, PDterms.servoRange) * 180.0f / PDterms.servoRange;
         outputs[3] = 180.0f - clamp((t2) * 180.0f / PI + PDterms.servoBeta, 0.0f, PDterms.servoRange) * 180.0f / PDterms.servoRange;
         outputs[4] = 0;
 
@@ -64,8 +64,9 @@ void Differential::control(float sensors[MAX_SENSORS], float controls[], int siz
     float feedbackControls[5];
     Differential::addFeedback(sensors, controls, feedbackControls);
 
-    outputs[4] = 1;
+    
     Differential::getOutputs(sensors, feedbackControls, outputs);
+    outputs[2] = controls[5]*90+90;
     RawBicopter::actuate(outputs, size);
 }
 
@@ -303,19 +304,9 @@ void Differential::getOutputs(float sensors[MAX_SENSORS], float controls[], floa
     // Converting values to a more stable form
     // float servoBottom = 90.0f - PDterms.servoRange/2.0f; // bottom limit of servo in degrees
     // float servoTop = 90.0f + PDterms.servoRange/2.0f; // top limit of servo in degrees
-    out[2] = 180.0f - clamp((theta) * 180.0f / PI + PDterms.servoBeta, 0.0f, PDterms.servoRange) * 180.0f / PDterms.servoRange;
     out[3] = 180.0f - clamp((theta) * 180.0f / PI + PDterms.servoBeta, 0.0f, PDterms.servoRange) * 180.0f / PDterms.servoRange;
     out[0] = clamp(f1, 0.025, 1); // Cap f1 at a minimum of 0.025
     out[1] = clamp(f2, 0.025, 1); // Cap f2 at a minimum of 0.025
-
-    if (abs(out[2] - servo_old1) < PDterms.servo_move_min)
-    {
-        out[2] = servo_old1;
-    }
-    else
-    {
-        servo_old1 = out[2];
-    }
 
     if (abs(out[3] - servo_old2) < PDterms.servo_move_min)
     {
