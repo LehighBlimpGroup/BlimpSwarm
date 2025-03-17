@@ -18,16 +18,17 @@ class LevyWalk : public NiclaState {
          */
         LevyWalk();
     protected:
-        unsigned long spiralTimer = 0;
-        unsigned long spiralDuration = 0;
         float yawCurr = 0;
         bool levy = false;
 
-        unsigned long lastSpinTime = 0; // Timer for spinning
-        unsigned long exploreDuration = 0; // Duration for a full 360 spin in milliseconds
+        unsigned long explore_duration = 0;
 
-        float angleProgress, yawRate = 0.0;
-        float currentYaw = 0;  // Current yaw in action
+        float angleProgress, yaw_rate = 0.0;
+        float current_desired_yaw = 0;  // Current yaw in action
+        float final_desired_yaw;
+        long initial_time;
+        float total_yaw;
+        float previous_yaw;
         
         /**
          * @copydoc NiclaState::statetransitions()
@@ -47,6 +48,7 @@ class LevyWalk : public NiclaState {
 
     private:
         bool wallDetected = false;
-        float turnStartYaw = 0;
+        float turn_start_yaw = 0;
         float forward_force = 0;
+        bool spiral_completed;
 };
