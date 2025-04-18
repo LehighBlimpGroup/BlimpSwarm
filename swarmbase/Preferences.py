@@ -38,7 +38,7 @@ preferences = {
 		{"data_type": DataType_Float, "key": "pitchOffset", "value": 0},
 		{"data_type": DataType_Float, "key": "pitchInvert", "value": -1},
 		
-		{"data_type": DataType_Int, "key": "num_charges", "value": 3}, # Number of charges before switching to the next mode
+		{"data_type": DataType_Int, "key": "num_charges", "value": 1}, # Number of charges before switching to the next mode
 		{"data_type": DataType_Int, "key": "time_in_mode", "value": 300}, # Time(s) that a robot will continue searching before switching to another mode
 		{"data_type": DataType_Int, "key": "charge_time", "value": 10}, # Number of seconds that a robot will charge
         {"data_type": DataType_Int, "key": "target_color", "value": 0x80}, # Target color for the goal, 0x80 = yellow, 0x81 = orange
@@ -48,8 +48,8 @@ preferences = {
 
 		{"data_type": DataType_Float, "key": "y_thresh", "value": 0.6}, # Camera will try to align the center of target to this threshold, higher means robot will try to be below target
 		{"data_type": DataType_Float, "key": "y_strength", "value": 2.0}, # How sensitive the robot will be to height difference of the target
-		{"data_type": DataType_Float, "key": "x_strength", "value": 1.4}, # How sensitive the robot will be to the yaw difference of the target
-		{"data_type": DataType_Float, "key": "fx_togoal", "value": 0.2}, # Speed at which robot approaches the goal
+		{"data_type": DataType_Float, "key": "x_strength", "value": 1}, # How sensitive the robot will be to the yaw difference of the target
+		{"data_type": DataType_Float, "key": "fx_togoal", "value": 0.3}, # Speed at which robot approaches the goal
 		{"data_type": DataType_Float, "key": "fx_charge", "value": 0.6}, # Speed at which robot charges at the goal
         
 
@@ -58,30 +58,30 @@ preferences = {
 
 		{"data_type": DataType_Int, "key": "n_max_x", "value": 240}, # Max number of pixels in the x-direction for the camera
 		{"data_type": DataType_Int, "key": "n_max_y", "value": 160}, # Max number of pixels in the y-direction for the camera
-		{"data_type": DataType_Float, "key": "h_ratio", "value": 0.9}, # Value that determines the threshold before charging
+		{"data_type": DataType_Float, "key": "h_ratio", "value": 0.8}, # Value that determines the threshold before charging
 		{"data_type": DataType_Float, "key": "range_for_forward", "value": 0.16}, # Determines how centered the target must be before approaching target
 		
-		{"data_type": DataType_Int, "key": "bnum_charges", "value": 5},
+		{"data_type": DataType_Int, "key": "bnum_charges", "value": 1},
 		{"data_type": DataType_Int, "key": "btime_in_mode", "value": 120},
 		{"data_type": DataType_Int, "key": "bcharge_time", "value": 6},
         {"data_type": DataType_Int, "key": "btarget_color", "value": 0x40},
-		{"data_type": DataType_Float, "key": "bdefault_height", "value": 3},
-		{"data_type": DataType_Float, "key": "bheight_range", "value": 3},
+		{"data_type": DataType_Float, "key": "bdefault_height", "value": 2},
+		{"data_type": DataType_Float, "key": "bheight_range", "value": 2},
 		{"data_type": DataType_Float, "key": "bwall_thresh", "value": 250},
 		
-		{"data_type": DataType_Float, "key": "by_thresh", "value": 0.48},
-		{"data_type": DataType_Float, "key": "by_strength", "value": 1.9},
-		{"data_type": DataType_Float, "key": "bx_strength", "value": 1.5},
-		{"data_type": DataType_Float, "key": "bfx_togoal", "value": 0.3},
+		{"data_type": DataType_Float, "key": "by_thresh", "value": 0.47},
+		{"data_type": DataType_Float, "key": "by_strength", "value": 1},
+		{"data_type": DataType_Float, "key": "bx_strength", "value": 1},
+		{"data_type": DataType_Float, "key": "bfx_togoal", "value": 0.4},
 		{"data_type": DataType_Float, "key": "bfx_charge", "value": 0.7},
         
 
-		{"data_type": DataType_Float, "key": "bfx_levy", "value": 0.5},
+		{"data_type": DataType_Float, "key": "bfx_levy", "value": 0.3},
 		{"data_type": DataType_Float, "key": "bfz_levy", "value": 1.5},
 
 		{"data_type": DataType_Int, "key": "bn_max_x", "value": 240},
 		{"data_type": DataType_Int, "key": "bn_max_y", "value": 160},
-		{"data_type": DataType_Float, "key": "bh_ratio", "value": 0.47},
+		{"data_type": DataType_Float, "key": "bh_ratio", "value": 0.6},
 		{"data_type": DataType_Float, "key": "brange_for_forward", "value": 0.12}
     ],
     

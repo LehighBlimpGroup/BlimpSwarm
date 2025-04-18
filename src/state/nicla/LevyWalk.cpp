@@ -49,7 +49,12 @@ RobotState* LevyWalk::statetransitions(float sensors[], float controls[]) {
         
         RobotState* moveToGoal = new MoveToGoal();
         return moveToGoal;
-    } else if (hist->start_ball_time > terms.time_in_mode * 1000) {
+    } else if (sensors[11] < terms.wall_thresh) {
+        // Wall detected, initiate turn
+        wallDetected = true;
+        turn_start_yaw = sensors[5]; // Store current yaw
+        return this; // Stay in LevyWalk state, but with wall avoidance active
+    } else if (millis() - hist->start_ball_time > terms.time_in_mode * 1000) {
         // If the robot has been in LevyWalk state for more than the designated time
         hist->num_captures = 0;
         hist->nicla_desired = !hist->nicla_desired;
