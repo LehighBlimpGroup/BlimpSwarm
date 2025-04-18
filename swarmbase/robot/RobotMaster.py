@@ -68,8 +68,8 @@ class RobotMaster:
                     sensors = [0] * self.numSensors
                 currRobot = self.robots[self.current_robot_index]
                 currState = self.ready[self.current_robot_index]
-                self.serial.send_control_params(currRobot, (5, 0, sensors[0], 0, sensors[1], 0, 0, 0, 0, 0, 0, 0, 0))
-                self.serial.send_control_params(currRobot, (currState, 0, sensors[0], 0, sensors[1], 0, 0, 0, 0, 0, 0, 0, 0))
+                self.serial.send_control_params(currRobot, (5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0))
+                self.serial.send_control_params(currRobot, (currState, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0))
                 self.current_robot_index = index-1
                 if self.current_robot_index != -1:
                     currRobot = self.robots[self.current_robot_index]
@@ -134,11 +134,8 @@ class RobotMaster:
             return
         
         if index <= -1:
-            i = 1
-            for robot in self.robots:
-                print(verbose, ":", i, "-",  robot)
-                i += 1
-                newState = func(self.serial, robot, args)
+            print(verbose, ":",  "ff:ff:ff:ff:ff:ff")
+            newState = func(self.serial, "ff:ff:ff:ff:ff:ff", args)
             if newState != -1:
                 self.ready = [newState for _ in self.ready]
                 self.current_robot_index = -1

@@ -1,6 +1,6 @@
 from comm.Serial import DataType_Boolean
 from input.JoystickManager import JoystickManager
-from user_parameters import ROBOT_MACS
+from user_parameters import ROBOT_MACS, TENSILE_MASTER, TENSILE_FOLLOWERS, DEFENDER_MACS
 from robot.RobotMaster import RobotMaster
 import Preferences
 import time
@@ -103,8 +103,9 @@ def main():
     try:
         robot_master = RobotMaster(0.3)
         joystick = JoystickManager()
-        robot_master.setup(ROBOT_MACS, "nicla")
-        followers = []
+        macs = ROBOT_MACS + DEFENDER_MACS + TENSILE_MASTER + TENSILE_FOLLOWERS
+        robot_master.setup(macs, "nicla")
+        followers = macs[-len(TENSILE_FOLLOWERS):]
 
         robot_master.functionFactory('s', stopOne, "Stop")
         robot_master.functionFactory('a', startAutonomousBall, "Auto")
@@ -117,8 +118,6 @@ def main():
         index = "0"
         power = 0
         angle = 0
-        dt_p = 0.1
-        dt_a = 5
 
         while True:
             time.sleep(0.2)
@@ -158,8 +157,8 @@ def main():
                         robot_master.runFunction('h', i, power, angle)
                     print(power, angle, "close")
                 elif key_pressed == ']':
-                    angle = 47
-                    power = .3
+                    angle = 45
+                    power = .45
                     for i in followers:
                         robot_master.runFunction('h', i, power, angle)
                     print(power, angle, "open")

@@ -1,23 +1,22 @@
 ##### Insert your robot's MAC ADDRESS here ####
 ## (you can get it by running your arduino and looking at the serial monitor for your flying drone) ##
 
+robot_macs = ["34:85:18:91:c1:2c", "dc:da:0c:57:ae:2c"]
+tensile_masters = ""
+tensile_followers = []
+defender_macs = []
 
-
-
-ROBOT_MAC ="30:30:F9:34:66:FC"#"DC:DA:0C:57:4B:94" # "30:30:F9:34:66:FC" #, "34:85:18:ab:fe:68"
-robot_macs = ["30:30:F9:34:66:FC", "DC:DA:0C:57:4B:94","34:85:18:91:CE:FC"]### Insert your SERIAL PORT here ###
 ROBOT_MACS = [str.lower(robot) for robot in robot_macs]
+TENSILE_MASTER = [str.lower(robot) for robot in tensile_masters]
+TENSILE_FOLLOWERS = [str.lower(robot) for robot in tensile_followers]
+DEFENDER_MACS = [str.lower(robot) for robot in defender_macs]
 
-#"34:85:18:91:b7:4c", "34:85:18:ab:fe:68", "34:85:18:91:ce:fc",
+
+
 ## may look like "COM5" in windows or "/dev/tty.usbmodem14301" in mac  #
 ## look in arduino for the port that your specific transeiver is connected to  ##
 ## Note: make sure that your serial monitor is OFF in arduino or else you will get "access is denied" error. ##
-
-SERIAL_PORT = "/dev/cu.usbmodem21401"
-
-#D2: 30:30:F9:34:66:FC    d4:  DC:DA:0C:57:4B:94   d3: 34:85:18:91:CE:FC
-
-PUMP_MAC = "48:27:E2:E6:E6:44"
+SERIAL_PORT = "COM22"
 
 
 
@@ -73,4 +72,4 @@ FullBicopterNicla notes:
 		fx_togoal, fx_charge, fxlevy: used in my statemachine (only used for state machine)
 		n_max_x, n_max_y: the length and width in pixels of the nicla frame (HQVGA is 240,160)
 		h_ratio: used in statemachine to determine when the robot is too close to goal (should be >.7)
-"""
+"""	

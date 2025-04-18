@@ -40,8 +40,6 @@ void NiclaConfig::loadConfiguration() {
     configData.fx_charge = preferences.getFloat("fx_charge", -0.4f);
     configData.fx_levy = preferences.getFloat("fx_levy", -0.1f);
     configData.fz_levy = preferences.getFloat("fz_levy", 0.1f);
-    configData.levy_yaw = preferences.getFloat("levy_yaw", 0.02f);
-    configData.percent_spiral = preferences.getFloat("percent_spiral", 0.5f);
 
     configData.n_max_x = preferences.getInt("n_max_x", 240);
     configData.n_max_y = preferences.getInt("n_max_y", 160);
@@ -66,8 +64,6 @@ void NiclaConfig::loadConfiguration() {
     configDatab.fx_charge = preferences.getFloat("bfx_charge", -0.4f);
     configDatab.fx_levy = preferences.getFloat("bfx_levy", -0.1f);
     configDatab.fz_levy = preferences.getFloat("bfz_levy", 0.1f);
-    configDatab.levy_yaw = preferences.getFloat("blevy_yaw", 0.02f);
-    configDatab.percent_spiral = preferences.getFloat("bpercent_spiral", 0.5f);
 
     configDatab.n_max_x = preferences.getInt("bn_max_x", 240);
     configDatab.n_max_y = preferences.getInt("bn_max_y", 160);

@@ -32,6 +32,7 @@ const int MAX_RECEIVERS = 15;
 const int MAC_LENGTH = 6;          
 
 uint8_t slaveAddresses[MAX_RECEIVERS][MAC_LENGTH] = {};
+uint8_t BROADCAST_MAC[MAC_LENGTH] = {0xff, 0xff, 0xff, 0xff, 0xff, 0xff};
 
 // Function declarations
 void onDataReceive(const uint8_t *mac, const uint8_t *incomingData, int len);
@@ -57,8 +58,12 @@ void setup() {
     Serial.println("ESP-NOW initialized");
   }
 
+
+
   esp_now_register_send_cb(onDataSend);
   esp_now_register_recv_cb(onDataReceive);
+
+  addPeer(BROADCAST_MAC);
 }
 
 void loop() {

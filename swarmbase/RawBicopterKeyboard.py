@@ -3,10 +3,10 @@ from comm.Serial import SerialController, DataType_Int, DataType_Float
 # Make sure to import KeyboardManager from its location in your project
 from input.KeyboardManager import KeyboardManager
 from gui.simpleGUI import SimpleGUI
-from user_parameters import ROBOT_MAC, SERIAL_PORT, PRINT_JOYSTICK
+from user_parameters import ROBOT_MACS, SERIAL_PORT, PRINT_JOYSTICK
 import time
 
-
+ROBOT_MAC = ROBOT_MACS[0]
 
 
 

@@ -115,9 +115,9 @@ typedef struct {
     bool state;
     int n_max_x, n_max_y;
     float fx_togoal, fx_charge, range_for_forward;
-    float fx_levy, fz_levy, levy_yaw, wall_thresh, percent_spiral;
+    float fx_levy, fz_levy, max_spirals, wall_thresh;
     float h_ratio, y_thresh, y_strength, x_strength;
-    int num_charges, time_in_mode, charge_time, target_color;
+    int num_charges, time_in_mode, charge_time, target_color, explore_duration;
     float default_height, height_range;
 } nicla_t;
 

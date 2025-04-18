@@ -5,12 +5,12 @@ from input.JoystickManager import JoystickManager
 from gui.simpleGUI import SimpleGUI
 import time
 
-from user_parameters import ROBOT_MAC, SERIAL_PORT, PRINT_JOYSTICK
+from user_parameters import ROBOT_MACS, SERIAL_PORT, PRINT_JOYSTICK
 
 
 
 BaseStationAddress = "" # you do not need this, just make sure your DroneMacAddress is not your base station mac address
-
+ROBOT_MAC = ROBOT_MACS[0]
 
 
 if __name__ == "__main__":
