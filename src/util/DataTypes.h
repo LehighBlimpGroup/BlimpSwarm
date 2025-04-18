@@ -138,7 +138,6 @@ typedef struct {
     int num_captures = 0;
     int goal_direction = 1;
     unsigned long start_ball_time;
-    bool goForward = true;
 } hist_t;
 
 //
