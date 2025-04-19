@@ -105,7 +105,7 @@ def main():
         joystick = JoystickManager()
         macs = ROBOT_MACS + DEFENDER_MACS + TENSILE_MASTER + TENSILE_FOLLOWERS
         robot_master.setup(macs, "nicla")
-        followers = macs[-len(TENSILE_FOLLOWERS):]
+        followers = [i + 1 for i in list(range(len(macs) - len(TENSILE_FOLLOWERS), len(macs)))]
 
         robot_master.functionFactory('s', stopOne, "Stop")
         robot_master.functionFactory('a', startAutonomousBall, "Auto")
