@@ -46,14 +46,14 @@ preferences = {
 		{"data_type": DataType_Float, "key": "height_range", "value": 2}, # Height bounds Ex. default_height = 9, height_range = 2, 7 < height < 11
 		{"data_type": DataType_Float, "key": "wall_thresh", "value": 250}, # Threshold before wall avoidance is triggered
 
-		{"data_type": DataType_Float, "key": "y_thresh", "value": 0.6}, # Camera will try to align the center of target to this threshold, higher means robot will try to be below target
-		{"data_type": DataType_Float, "key": "y_strength", "value": 2.0}, # How sensitive the robot will be to height difference of the target
-		{"data_type": DataType_Float, "key": "x_strength", "value": 1}, # How sensitive the robot will be to the yaw difference of the target
+		{"data_type": DataType_Float, "key": "y_thresh", "value": 0.65}, # Camera will try to align the center of target to this threshold, higher means robot will try to be below target
+		{"data_type": DataType_Float, "key": "y_strength", "value": 0.7}, # How sensitive the robot will be to height difference of the target
+		{"data_type": DataType_Float, "key": "x_strength", "value": 2}, # How sensitive the robot will be to the yaw difference of the target
 		{"data_type": DataType_Float, "key": "fx_togoal", "value": 0.3}, # Speed at which robot approaches the goal
 		{"data_type": DataType_Float, "key": "fx_charge", "value": 0.6}, # Speed at which robot charges at the goal
         
 
-		{"data_type": DataType_Float, "key": "fx_levy", "value": 0.3}, # Speed at which the robot will search
+		{"data_type": DataType_Float, "key": "fx_levy", "value": 0.2}, # Speed at which the robot will search
 		{"data_type": DataType_Float, "key": "fz_levy", "value": 0.5}, # Range of height that the robot can randomly choose during levy spiral        
 
 		{"data_type": DataType_Int, "key": "n_max_x", "value": 240}, # Max number of pixels in the x-direction for the camera
@@ -66,13 +66,13 @@ preferences = {
 		{"data_type": DataType_Int, "key": "bcharge_time", "value": 6},
         {"data_type": DataType_Int, "key": "btarget_color", "value": 0x40},
 		{"data_type": DataType_Float, "key": "bdefault_height", "value": 2},
-		{"data_type": DataType_Float, "key": "bheight_range", "value": 2},
+		{"data_type": DataType_Float, "key": "bheight_range", "value": 3},
 		{"data_type": DataType_Float, "key": "bwall_thresh", "value": 250},
 		
-		{"data_type": DataType_Float, "key": "by_thresh", "value": 0.47},
+		{"data_type": DataType_Float, "key": "by_thresh", "value": 0.30},
 		{"data_type": DataType_Float, "key": "by_strength", "value": 1},
 		{"data_type": DataType_Float, "key": "bx_strength", "value": 1},
-		{"data_type": DataType_Float, "key": "bfx_togoal", "value": 0.4},
+		{"data_type": DataType_Float, "key": "bfx_togoal", "value": 0.2},
 		{"data_type": DataType_Float, "key": "bfx_charge", "value": 0.7},
         
 
@@ -81,7 +81,7 @@ preferences = {
 
 		{"data_type": DataType_Int, "key": "bn_max_x", "value": 240},
 		{"data_type": DataType_Int, "key": "bn_max_y", "value": 160},
-		{"data_type": DataType_Float, "key": "bh_ratio", "value": 0.6},
+		{"data_type": DataType_Float, "key": "bh_ratio", "value": 0.5},
 		{"data_type": DataType_Float, "key": "brange_for_forward", "value": 0.12}
     ],
     

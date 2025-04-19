@@ -11,40 +11,33 @@
 
 #include "Differential.h"
 
-Differential::Differential()
-{
-}
+Differential::Differential() {}
 
-void Differential::startup()
-{
+void Differential::startup() {
     RawBicopter::startup(); // Initializes the servos and motors
     sensorsuite.startup();  // Initializes the Nicla and the other sensors
     float senses[MAX_SENSORS];
     Differential::sense(senses);
 }
 
-int Differential::sense(float sensors[MAX_SENSORS])
-{
+int Differential::sense(float sensors[MAX_SENSORS]) {
     sensorsuite.update();
     int numSenses = 0;
     //(temperature, altitude, velocityAltitude, roll, pitch, yaw, rollrate, pitchrate, yawrate, batteryVoltage)
 
     float *sensorsValues = sensorsuite.readValues(numSenses);
-    for (int i = 0; i < numSenses; i++)
-    {
+    for (int i = 0; i < numSenses; i++) {
         sensors[i] = sensorsValues[i];
     }
     return numSenses;
 }
 
 // Controls [Ready, Fx, height/Fz, Tz, Tx]
-void Differential::control(float sensors[MAX_SENSORS], float controls[], int size)
-{
+void Differential::control(float sensors[MAX_SENSORS], float controls[], int size) {
     float outputs[5];
 
     // When control[0] == 0, the robot stops its motors and sets servos to facing vertically upward
-    if (controls[0] == 0)
-    {
+    if (controls[0] == 0) {
         outputs[0] = 0;
         outputs[1] = 0;
         // Checking for full rotations and adjusting t1 and t2
@@ -54,7 +47,8 @@ void Differential::control(float sensors[MAX_SENSORS], float controls[], int siz
         // Converting values to a more stable form
         // float servoBottom = 90.0f - PDterms.servoRange/2.0f; // bottom limit of servo in degrees
         // float servoTop = 90.0f + PDterms.servoRange/2.0f; // top limit of servo in degrees
-        outputs[2] = controls[5]*90+90;//180.0f - clamp((t2) * 180.0f / PI + PDterms.servoBeta, 0.0f, PDterms.servoRange) * 180.0f / PDterms.servoRange;
+        outputs[2] =
+            controls[5] * 90 + 90; // 180.0f - clamp((t2) * 180.0f / PI + PDterms.servoBeta, 0.0f, PDterms.servoRange) * 180.0f / PDterms.servoRange;
         outputs[3] = 180.0f - clamp((t2) * 180.0f / PI + PDterms.servoBeta, 0.0f, PDterms.servoRange) * 180.0f / PDterms.servoRange;
         outputs[4] = 0;
 
@@ -64,14 +58,12 @@ void Differential::control(float sensors[MAX_SENSORS], float controls[], int siz
     float feedbackControls[5];
     Differential::addFeedback(sensors, controls, feedbackControls);
 
-    
     Differential::getOutputs(sensors, feedbackControls, outputs);
-    outputs[2] = controls[5]*90+90;
+    outputs[2] = controls[5] * 90 + 90;
     RawBicopter::actuate(outputs, size);
 }
 
-void Differential::getPreferences()
-{
+void Differential::getPreferences() {
     // calls the getPreferences of the superclass object to reduce the number of getPreferences calls
     RawBicopter::getPreferences();
     sensorsuite.getPreferences();
@@ -117,8 +109,7 @@ void Differential::getPreferences()
     preferences.end();
 }
 
-void Differential::addFeedback(float sensors[MAX_SENSORS], float controls[], float feedbackControls[])
-{
+void Differential::addFeedback(float sensors[MAX_SENSORS], float controls[], float feedbackControls[]) {
 
     float fx = controls[1]; // Fx
     float fz = controls[2]; // Fz/height
@@ -128,8 +119,7 @@ void Differential::addFeedback(float sensors[MAX_SENSORS], float controls[], flo
     int dt = 4000;
 
     // Z feedback
-    if (PDterms.zEn)
-    {
+    if (PDterms.zEn) {
         // Integral in Z
         z_integral += (controls[2] - (sensors[1])) * ((float)dt) / 1000000.0f * PDterms.kiz;
         z_integral = clamp(z_integral, PDterms.z_int_low, PDterms.z_int_high);
@@ -142,8 +132,7 @@ void Differential::addFeedback(float sensors[MAX_SENSORS], float controls[], flo
     //      this means that there is a separate PID for both absolute yaw and yawrate which are combined
     //      what this basically means is that the D term for the absolute yaw is replaced with the yawrate PI
     //          the D term in yaw is equivalent to the P term in yawrate
-    if (PDterms.yawEn)
-    {
+    if (PDterms.yawEn) {
         float kpyaw_max_increase = 0.04f; // Maximum increase in kpyaw
         float kdyaw_max_increase = 0.04f; // Maximum increase in kdyaw (D-term adjustment)
 
@@ -178,20 +167,18 @@ void Differential::addFeedback(float sensors[MAX_SENSORS], float controls[], flo
     }
 
     // Pitch feedback
-    if (PDterms.pitchEn)
-    {
+    if (PDterms.pitchEn) {
         // Serial.println("roll feedback");
         fx = fx - sensors[3] * PDterms.kppitch - sensors[6] * PDterms.kdpitch; // Pitch - PitchRate
     }
     // Roll feedback
-    if (PDterms.rollEn)
-    {
+    if (PDterms.rollEn) {
         // Serial.println("roll feedback");
-        tx = tx - constrain(sensors[4] * PDterms.kproll - sensors[7] * PDterms.kdroll, -fz * PDterms.lx * .9, fz * PDterms.lx * .9); // Roll - RollRate
+        tx =
+            tx - constrain(sensors[4] * PDterms.kproll - sensors[7] * PDterms.kdroll, -fz * PDterms.lx * .9, fz * PDterms.lx * .9); // Roll - RollRate
     }
     // Roll and pitch rotation state feedback
-    if (PDterms.rotateEn)
-    {
+    if (PDterms.rotateEn) {
         // Serial.println("rotate feedback");
         float cosp = cos(sensors[4]); // Pitch
         float sinp = sin(sensors[4]); // Pitch
@@ -207,8 +194,7 @@ void Differential::addFeedback(float sensors[MAX_SENSORS], float controls[], flo
     feedbackControls[4] = 1;
 }
 
-void Differential::getOutputs(float sensors[MAX_SENSORS], float controls[], float out[])
-{
+void Differential::getOutputs(float sensors[MAX_SENSORS], float controls[], float out[]) {
     // Assuming PDterms, kf1, kf2, servo1offset, servo2offset, and feedbackPD.pitch are defined elsewhere
     float theta_ema = 0.0f; // Exponential moving average of theta
     float alpha = 0.95f;    // Smaller values will smooth more, larger values will be more responsive
@@ -256,21 +242,24 @@ void Differential::getOutputs(float sensors[MAX_SENSORS], float controls[], floa
     // // Store previous theta for the next iteration
     // previous_theta = theta;
 
-    if (F_mag != 0)
-    {
+    if (F_mag != 0) {
 
-        if (fabs(fx) == 0.0)
-        {
+        if (fabs(fx) == 0.0) {
             fx = 10 * fabs(tauz);
             theta = atan2(fz, fabs(tauz * 10));
         }
 
-        if (fabs(tauz / fx) > 0.1)
-        {
+        if (fabs(tauz / fx) > 0.1) {
             fx *= 2;
             float scaled_tauz = tauz * fabs(fx);
             tauz = scaled_tauz;
             theta = atan2(fz, fx);
+        }
+
+        if (fx < 0) {
+            // fz = -0.1 * fx;
+            // theta = atan2(fz, fx);
+            theta = PI - 0.01;
         }
 
         // else
@@ -290,8 +279,7 @@ void Differential::getOutputs(float sensors[MAX_SENSORS], float controls[], floa
     }
 
     // Adds the pitch to the servo to accomodate for swinging behavior
-    if (PDterms.pitchEn)
-    {
+    if (PDterms.pitchEn) {
         theta += sensors[3] * PDterms.pitchInvert + PDterms.pitchOffset / 180 * PI; // Pitch
     }
 
@@ -308,12 +296,9 @@ void Differential::getOutputs(float sensors[MAX_SENSORS], float controls[], floa
     out[0] = clamp(f1, 0.025, 1); // Cap f1 at a minimum of 0.025
     out[1] = clamp(f2, 0.025, 1); // Cap f2 at a minimum of 0.025
 
-    if (abs(out[3] - servo_old2) < PDterms.servo_move_min)
-    {
+    if (abs(out[3] - servo_old2) < PDterms.servo_move_min) {
         out[3] = servo_old2;
-    }
-    else
-    {
+    } else {
         servo_old2 = out[3];
     }
     // // Adjust servo positions if motor speeds are too low
