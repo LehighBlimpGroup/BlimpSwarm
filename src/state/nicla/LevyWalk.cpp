@@ -71,7 +71,7 @@ void LevyWalk::behavior(float sensors[], float controls[], float outControls[]) 
     current_fx = terms.fx_levy;
     if (wallDetected) {
         // Calculate the target yaw (90 degrees turn)
-        final_desired_yaw = turn_start_yaw + M_PI / 2.0; // Add 90 degrees (in radians)
+        final_desired_yaw = turn_start_yaw + (3 * M_PI) / 4.0; // Add 135 degrees (in radians)
 
         // Normalize the target yaw to be between -π and π
         while (final_desired_yaw > M_PI)
@@ -90,7 +90,7 @@ void LevyWalk::behavior(float sensors[], float controls[], float outControls[]) 
 
         // If we're close to the target yaw, stop turning
         if (abs(yaw_diff) < 0.5) { // 0.1 radians is about 5.7 degrees
-            explore_duration = 5000;
+            explore_duration = 10000;
             initial_time = current_time;
             wallDetected = false;
         } else {
@@ -98,7 +98,8 @@ void LevyWalk::behavior(float sensors[], float controls[], float outControls[]) 
         }
     } else {
         unsigned long elapsed_time = current_time - initial_time;
-        if (elapsed_time >= explore_duration && spiral_completed) {
+        if (elapsed_time >= explore_duration) {
+            initial_time = current_time;
             float additional_loops = (random(0, 1000) / 1000.0) * (4 * M_PI);
             final_desired_yaw = 2 * M_PI + additional_loops;
 
@@ -106,7 +107,6 @@ void LevyWalk::behavior(float sensors[], float controls[], float outControls[]) 
 
             float random_height = terms.fz_levy * random(-10000, 10000) / 10000.0;
             hist->z_estimator = sensors[1] + random_height;
-            spiral_completed = false;
             total_yaw = 0;
             previous_yaw = current_yaw;
         } else if (total_yaw < final_desired_yaw) {

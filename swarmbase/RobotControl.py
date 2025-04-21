@@ -15,19 +15,19 @@ def startAutonomousBall(serial, robot, args):
     time.sleep(.2)
     return 2
 
+def startAutonomousGoal(serial, robot, args):
+    serial.send_control_params(robot, (4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0))
+    time.sleep(.2)
+    serial.send_control_params(robot, (2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0))
+    time.sleep(.2)
+    return 2
+
 def stopOne(serial, robot, args):
     serial.send_control_params(robot, (5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0))
     time.sleep(.05)
     serial.send_control_params(robot, (0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0))
     time.sleep(.05)
     return 0
-
-def startOne(serial, robot, args):
-    serial.send_control_params(robot, (4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0))
-    time.sleep(.05)
-    serial.send_control_params(robot, (2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0))
-    time.sleep(.2)
-    return 2
 
 def sendCalibrate(serial, robot, args):
     serial.send_control_params(robot, (5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0))
@@ -36,8 +36,7 @@ def sendCalibrate(serial, robot, args):
     time.sleep(.05)
     return -1
 
-def setHeight(serial, robot, args):
-    print(args[0])
+def controlTensileFollowers(serial, robot, args):
     serial.send_control_params(robot, (args[0], args[0], args[1], args[1], 0, 0, 0, 0, 0, 0, 0, 0, 0))
     time.sleep(.05)
     return 1
@@ -61,6 +60,20 @@ def sendOrangePreferences(serial, robot, args):
     importlib.reload(Preferences)
 
     for pref in Preferences.PREFERENCES["orange"]:
+        serial.send_preference(robot, pref["data_type"], pref["key"], pref["value"])
+    if robot not in Preferences.PREFERENCES:
+        serial.send_control_params(robot, (0,0,0,0, 0, 0, 0, 0, 0, 0, 0, 1, 0))
+        return -1
+    prefer = Preferences.PREFERENCES[robot]
+    for pref in prefer:
+        serial.send_preference(robot, pref["data_type"], pref["key"], pref["value"])
+    serial.send_control_params(robot, (0,0,0,0, 0, 0, 0, 0, 0, 0, 0, 1, 0))
+    return -1
+
+def sendYellowPreferences(serial, robot, args):
+    importlib.reload(Preferences)
+
+    for pref in Preferences.PREFERENCES["yellow"]:
         serial.send_preference(robot, pref["data_type"], pref["key"], pref["value"])
     if robot not in Preferences.PREFERENCES:
         serial.send_control_params(robot, (0,0,0,0, 0, 0, 0, 0, 0, 0, 0, 1, 0))
@@ -108,22 +121,24 @@ def main():
         followers = [i + 1 for i in list(range(len(macs) - len(TENSILE_FOLLOWERS), len(macs)))]
 
         robot_master.functionFactory('s', stopOne, "Stop")
-        robot_master.functionFactory('a', startAutonomousBall, "Auto")
+        robot_master.functionFactory('b', startAutonomousBall, "Auto")
         robot_master.functionFactory('c', sendCalibrate, "Calibrate")
         robot_master.functionFactory('p', sendPreferences, "Send Preferences")
-        robot_master.functionFactory('m', sendAttackerPreferences, "Send Attacker Preferences")
-        robot_master.functionFactory(',', sendDefenderPreferences, "Send Defender Preferences")
-        robot_master.functionFactory('h', setHeight, "Set Height")
-        robot_master.functionFactory('g', startOne, "Start goal")
+        robot_master.functionFactory('a', sendAttackerPreferences, "Send Attacker Preferences")
+        robot_master.functionFactory('d', sendDefenderPreferences, "Send Defender Preferences")
+        robot_master.functionFactory('f', controlTensileFollowers, "Controlling Follower")
+        robot_master.functionFactory('y', sendYellowPreferences, "Send Yellow Preferences")
+        robot_master.functionFactory('o', sendOrangePreferences, "Send Orange Preferences")
+
         index = "0"
-        power = 0
-        angle = 0
+        power = 0.45
+        angle = 45
 
         while True:
             time.sleep(0.2)
             keys = robot_master.get_last_n_keys(1)
             axis, buttons = joystick.getJoystickInputs()
-            robot_master.processManual(axis, buttons, print=True)
+            robot_master.processManual(axis, buttons, print_vals=False)
 
             power = min(1, max(0, power))
             angle = min(180, max(-180, angle))
@@ -145,33 +160,28 @@ def main():
             elif len(key_pressed) == 1 and 32 <= ord(key_pressed) <= 127:
                 if '0' <= key_pressed <= '9':
                     index += key_pressed
-                elif key_pressed == 'd':
-                    index = "0"
-                    print("Cleared index")
-                elif key_pressed == 'q':
-                    break
                 elif key_pressed == '[':
-                    angle = 0
-                    power = 0
                     for i in followers:
-                        robot_master.runFunction('h', i, power, angle)
-                    print(power, angle, "close")
+                        robot_master.runFunction('f', i, 0, 0)
                 elif key_pressed == ']':
-                    angle = 45
-                    power = .45
                     for i in followers:
-                        robot_master.runFunction('h', i, power, angle)
-                    print(power, angle, "open")
+                        robot_master.runFunction('f', i, power, angle)
+                elif key_pressed == '=':
+                    angle += 5
+                    for i in followers:
+                        robot_master.runFunction('f', i, power, angle)
+                elif key_pressed == '-':
+                    angle -= 5
+                    for i in followers:
+                        robot_master.runFunction('f', i, power, angle)
                 elif key_pressed == ';':
                     power -= 0.05
                     for i in followers:
-                        robot_master.runFunction('h', i, power, angle)
-                    print(power, angle)
-                elif key_pressed == "'":
+                        robot_master.runFunction('f', i, power, angle)
+                elif key_pressed == '\'':
                     power += 0.05
                     for i in followers:
-                        robot_master.runFunction('h', i, power, angle)
-                    print(power, angle)
+                        robot_master.runFunction('f', i, power, angle)
                 elif key_pressed == 's':
                     power = 0
                     angle = 45

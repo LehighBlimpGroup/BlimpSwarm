@@ -1,9 +1,9 @@
 ##### Insert your robot's MAC ADDRESS here ####
 ## (you can get it by running your arduino and looking at the serial monitor for your flying drone) ##
 
-robot_macs = ["34:85:18:91:c1:2c", "dc:da:0c:57:ae:2c"]
-tensile_masters = ""
-tensile_followers = []
+robot_macs = []#["34:85:18:91:bc:94","34:85:18:91:c1:2c"]
+tensile_masters = ["34:85:18:91:bc:94"]
+tensile_followers = ["34:85:18:91:bd:b0","dc:da:0c:57:ad:a4"]
 defender_macs = []
 
 ROBOT_MACS = [str.lower(robot) for robot in robot_macs]
@@ -20,10 +20,8 @@ SERIAL_PORT = "COM22"
 
 
 
-
-
 # For debug purposes
-PRINT_JOYSTICK = False
+PRINT_JOYSTICK = True
 
 
 """

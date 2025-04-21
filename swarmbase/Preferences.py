@@ -82,7 +82,8 @@ preferences = {
 		{"data_type": DataType_Int, "key": "bn_max_x", "value": 240},
 		{"data_type": DataType_Int, "key": "bn_max_y", "value": 160},
 		{"data_type": DataType_Float, "key": "bh_ratio", "value": 0.5},
-		{"data_type": DataType_Float, "key": "brange_for_forward", "value": 0.12}
+		{"data_type": DataType_Float, "key": "brange_for_forward", "value": 0.12},
+        {"data_type": DataType_Float, "key": "reelSpeed", "value": 0.1}
     ],
     
     "attacker" : [		
@@ -135,6 +136,59 @@ preferences = {
         {"data_type": DataType_Float, "key": "h_ratio", "value": 0.8},
         {"data_type": DataType_Float, "key": "range_for_forward", "value": 0.16},
         {"data_type": DataType_Float, "key": "percent_spiral", "value": 0.5},
+	],
+    
+	"orange" : [
+        {"data_type": DataType_Int, "key": "num_charges", "value": 1},
+		{"data_type": DataType_Int, "key": "time_in_mode", "value": 300},
+		{"data_type": DataType_Int, "key": "charge_time", "value": 10},
+        {"data_type": DataType_Int, "key": "target_color", "value": 0x80},
+		{"data_type": DataType_Float, "key": "default_height", "value": 9},
+		{"data_type": DataType_Float, "key": "height_range", "value": 2},
+		{"data_type": DataType_Float, "key": "wall_thresh", "value": 250},
+
+		{"data_type": DataType_Float, "key": "y_thresh", "value": 0.65},
+		{"data_type": DataType_Float, "key": "y_strength", "value": 0.7},
+		{"data_type": DataType_Float, "key": "x_strength", "value": 2},
+		{"data_type": DataType_Float, "key": "fx_togoal", "value": 0.3},
+		{"data_type": DataType_Float, "key": "fx_charge", "value": 0.6},
+        
+
+		{"data_type": DataType_Float, "key": "fx_levy", "value": 0.2},
+		{"data_type": DataType_Float, "key": "fz_levy", "value": 0.5},      
+
+		{"data_type": DataType_Int, "key": "n_max_x", "value": 240},
+		{"data_type": DataType_Int, "key": "n_max_y", "value": 160},
+		{"data_type": DataType_Float, "key": "h_ratio", "value": 0.8},
+		{"data_type": DataType_Float, "key": "range_for_forward", "value": 0.16},
+        {"data_type": DataType_Int, "key": "target_color", "value": 0x81},
+	],
+    
+	"yellow" : 
+    [
+        {"data_type": DataType_Int, "key": "num_charges", "value": 1},
+		{"data_type": DataType_Int, "key": "time_in_mode", "value": 300},
+		{"data_type": DataType_Int, "key": "charge_time", "value": 10},
+        {"data_type": DataType_Int, "key": "target_color", "value": 0x80},
+		{"data_type": DataType_Float, "key": "default_height", "value": 9},
+		{"data_type": DataType_Float, "key": "height_range", "value": 2},
+		{"data_type": DataType_Float, "key": "wall_thresh", "value": 250},
+
+		{"data_type": DataType_Float, "key": "y_thresh", "value": 0.65},
+		{"data_type": DataType_Float, "key": "y_strength", "value": 0.7},
+		{"data_type": DataType_Float, "key": "x_strength", "value": 2},
+		{"data_type": DataType_Float, "key": "fx_togoal", "value": 0.3},
+		{"data_type": DataType_Float, "key": "fx_charge", "value": 0.6},
+        
+
+		{"data_type": DataType_Float, "key": "fx_levy", "value": 0.2},
+		{"data_type": DataType_Float, "key": "fz_levy", "value": 0.5},      
+
+		{"data_type": DataType_Int, "key": "n_max_x", "value": 240},
+		{"data_type": DataType_Int, "key": "n_max_y", "value": 160},
+		{"data_type": DataType_Float, "key": "h_ratio", "value": 0.8},
+		{"data_type": DataType_Float, "key": "range_for_forward", "value": 0.16},
+        {"data_type": DataType_Int, "key": "target_color", "value": 0x80},
 	],
     
 	}

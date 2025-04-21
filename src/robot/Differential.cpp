@@ -47,8 +47,7 @@ void Differential::control(float sensors[MAX_SENSORS], float controls[], int siz
         // Converting values to a more stable form
         // float servoBottom = 90.0f - PDterms.servoRange/2.0f; // bottom limit of servo in degrees
         // float servoTop = 90.0f + PDterms.servoRange/2.0f; // top limit of servo in degrees
-        outputs[2] =
-            controls[5] * 90 + 90; // 180.0f - clamp((t2) * 180.0f / PI + PDterms.servoBeta, 0.0f, PDterms.servoRange) * 180.0f / PDterms.servoRange;
+        outputs[2] = controls[5] * PDterms.reelSpeed * 90 + 90; // 180.0f - clamp((t2) * 180.0f / PI + PDterms.servoBeta, 0.0f, PDterms.servoRange) * 180.0f / PDterms.servoRange;
         outputs[3] = 180.0f - clamp((t2) * 180.0f / PI + PDterms.servoBeta, 0.0f, PDterms.servoRange) * 180.0f / PDterms.servoRange;
         outputs[4] = 0;
 
@@ -59,7 +58,7 @@ void Differential::control(float sensors[MAX_SENSORS], float controls[], int siz
     Differential::addFeedback(sensors, controls, feedbackControls);
 
     Differential::getOutputs(sensors, feedbackControls, outputs);
-    outputs[2] = controls[5] * 90 + 90;
+    outputs[2] = controls[5] * PDterms.reelSpeed * 90 + 90;
     RawBicopter::actuate(outputs, size);
 }
 
@@ -102,6 +101,7 @@ void Differential::getPreferences() {
     PDterms.z_int_low = preferences.getFloat("z_int_low", 0);
     PDterms.z_int_high = preferences.getFloat("z_int_high", 0);
     PDterms.yawRateIntRange = preferences.getFloat("yawRateIntRange", 0);
+    PDterms.reelSpeed = preferences.getFloat("reelSpeed", 0);
 
     // radius of the blimp
     PDterms.lx = preferences.getFloat("lx", .15);

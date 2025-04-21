@@ -85,7 +85,7 @@ class RobotMaster:
     
 
     
-    def processManual(self, axis, buttons, print=False):
+    def processManual(self, axis, buttons, print_vals=False):
         if self.current_robot_index == -1:
             self.updateGui()
             return
@@ -115,7 +115,8 @@ class RobotMaster:
         
         currRobot = self.robots[self.current_robot_index]
         currState = self.ready[self.current_robot_index]
-        self.updateGui(self.height, self.tz, print)
+        self.updateGui(self.height, self.tz, print_vals)
+
 
         self.serial.send_control_params(currRobot, (currState, fx_ave, fz, 0, tz, buttons[5]-buttons[4], 1, 0, 0, 0, 0, 0, 0))
 
@@ -144,7 +145,7 @@ class RobotMaster:
                     self.serial.send_control_params(self.robots[ind], (self.ready[ind],0,0,0, 0, 0, 0, 0, 0, 0, 0, 1, 0))
         else:
             robot = self.robots[index]
-            print(verbose, ":", index+1, "-", robot)
+            print(verbose, ":", index+1, "-", robot, ":", args)
             newState = func(self.serial, robot, args)
             if newState != -1:
                 self.ready[index] = newState
@@ -161,7 +162,7 @@ def stopOne(serial, robot):
 def main():
     try:
         robot_master = RobotMaster(0.3)
-        robot_master.setup(ROBOT_MACS, "openmv")
+        robot_master.setup(ROBOT_MACS, "nicla")
         robot_master.functionFactory('s', stopOne, "Stop")
         index = "0"
       

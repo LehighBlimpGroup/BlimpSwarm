@@ -86,7 +86,7 @@ typedef struct feedback_t {
     float kpz, kdz, kiz, z_int_low, z_int_high;
     float kproll, kdroll, kppitch, kdpitch;
     float servoBeta, servoRange, servo_move_min, botZlim, pitchOffset, pitchInvert;
-    float lx;
+    float lx, reelSpeed;
 } feedback_t;
 
 
