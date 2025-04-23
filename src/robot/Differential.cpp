@@ -250,7 +250,7 @@ void Differential::getOutputs(float sensors[MAX_SENSORS], float controls[], floa
         }
 
         if (fabs(tauz / fx) > 0.1) {
-            fx *= 2;
+            fx = 0.2;
             float scaled_tauz = tauz * fabs(fx);
             tauz = scaled_tauz;
             theta = atan2(fz, fx);

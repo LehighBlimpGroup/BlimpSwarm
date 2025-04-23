@@ -121,7 +121,8 @@ def main():
         followers = [i + 1 for i in list(range(len(macs) - len(TENSILE_FOLLOWERS), len(macs)))]
 
         robot_master.functionFactory('s', stopOne, "Stop")
-        robot_master.functionFactory('b', startAutonomousBall, "Auto")
+        robot_master.functionFactory('b', startAutonomousBall, "Auto Ball")
+        robot_master.functionFactory('g', startAutonomousGoal, "Auto Goal")
         robot_master.functionFactory('c', sendCalibrate, "Calibrate")
         robot_master.functionFactory('p', sendPreferences, "Send Preferences")
         robot_master.functionFactory('a', sendAttackerPreferences, "Send Attacker Preferences")
@@ -138,7 +139,7 @@ def main():
             time.sleep(0.2)
             keys = robot_master.get_last_n_keys(1)
             axis, buttons = joystick.getJoystickInputs()
-            robot_master.processManual(axis, buttons, print_vals=False)
+            robot_master.processManual(axis, buttons, print_vals=True)
 
             power = min(1, max(0, power))
             angle = min(180, max(-180, angle))
