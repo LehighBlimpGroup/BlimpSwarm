@@ -21,11 +21,11 @@
 /**
  * @brief Async callback function that handles the data received from fellow peers
  * 
- * @param mac_addr The mac address that sent the information
+ * @param info The information about the sender
  * @param data The data received from the address
  * @param data_len The length of the buffer
  */
-void OnDataRecv(const uint8_t *mac_addr, const uint8_t *data, int data_len);
+void OnDataRecv(const esp_now_recv_info_t* info, const uint8_t* data, int data_len);
 
 /**
  * @brief Async callback function that handles the data sent to fellow peers
@@ -33,7 +33,7 @@ void OnDataRecv(const uint8_t *mac_addr, const uint8_t *data, int data_len);
  * @param mac_addr The mac address to receive the information
  * @param status Status indicating whether the information was successfully sent
  */
-void OnDataSent(const uint8_t *mac_addr, esp_now_send_status_t status);
+void OnDataSent(const esp_now_send_info_t* info, esp_now_send_status_t status);
 
 class LLC_ESPNow : public LowLevelComm {
 public:

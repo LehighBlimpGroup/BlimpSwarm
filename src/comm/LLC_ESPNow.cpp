@@ -18,12 +18,13 @@ volatile unsigned long esp_time_now;
 ParamManager manager;
 int delayMS = 1000;
 
-void OnDataRecv(const uint8_t *mac_addr, const uint8_t *data, int data_len){
-
-    char macStr[18];
+void OnDataRecv(const esp_now_recv_info_t* info, const uint8_t* data, int data_len){
+    const uint8_t* peer_addr = info->src_addr;
+    const uint8_t* mac_addr = info->des_addr;
+    char mac_str[18];
     if (verbose) {
-        snprintf(macStr, sizeof(macStr), "%02x:%02x:%02x:%02x:%02x:%02x",
-                 mac_addr[0], mac_addr[1], mac_addr[2], mac_addr[3], mac_addr[4], mac_addr[5]);
+        snprintf(mac_str, sizeof(mac_str), "%02x:%02x:%02x:%02x:%02x:%02x",
+            mac_addr[0], mac_addr[1], mac_addr[2], mac_addr[3], mac_addr[4], mac_addr[5]);
     }
 
     // Time of the last received package
@@ -59,7 +60,7 @@ void OnDataRecv(const uint8_t *mac_addr, const uint8_t *data, int data_len){
     } 
 }
 
-void OnDataSent(const uint8_t *mac_addr, esp_now_send_status_t status) {
+void OnDataSent(const esp_now_send_info_t* info, esp_now_send_status_t status) {
     if (verbose) {
         Serial.print(" Status: ");
         Serial.println(status == ESP_NOW_SEND_SUCCESS ? "Delivery Success" : "Delivery Fail");
