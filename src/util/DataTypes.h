@@ -91,7 +91,7 @@ typedef struct feedback_t {
 
 
 // Flag for determining which type of data was received
-enum DataType : uint8_t {
+enum DataType {
     DataType_Int = 0x01,
     DataType_Float = 0x02,
     DataType_String = 0x03,

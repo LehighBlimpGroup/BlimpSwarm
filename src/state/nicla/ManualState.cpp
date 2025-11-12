@@ -51,6 +51,7 @@ void ManualState::behavior(float sensors[], float controls[], float outControls[
     outControls[1] = controls[1]; //fx
     outControls[3] = controls[3]; //tx
     outControls[5] = controls[5];
+    
 }
 
 

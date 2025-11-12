@@ -32,7 +32,7 @@ int Differential::sense(float sensors[MAX_SENSORS]) {
     return numSenses;
 }
 
-// Controls [Ready, Fx, height/Fz, Tz, Tx]
+// Controls [Ready, Fx, height, Tz, Tx]
 void Differential::control(float sensors[MAX_SENSORS], float controls[], int size) {
     float outputs[5];
 
@@ -47,11 +47,18 @@ void Differential::control(float sensors[MAX_SENSORS], float controls[], int siz
         // Converting values to a more stable form
         // float servoBottom = 90.0f - PDterms.servoRange/2.0f; // bottom limit of servo in degrees
         // float servoTop = 90.0f + PDterms.servoRange/2.0f; // top limit of servo in degrees
-        outputs[2] = controls[5] * PDterms.reelSpeed * 90 + 90; // 180.0f - clamp((t2) * 180.0f / PI + PDterms.servoBeta, 0.0f, PDterms.servoRange) * 180.0f / PDterms.servoRange;
+        outputs[2] = controls[5] * PDterms.reelSpeed * 90 +
+                     90; // 180.0f - clamp((t2) * 180.0f / PI + PDterms.servoBeta, 0.0f, PDterms.servoRange) * 180.0f / PDterms.servoRange;
         outputs[3] = 180.0f - clamp((t2) * 180.0f / PI + PDterms.servoBeta, 0.0f, PDterms.servoRange) * 180.0f / PDterms.servoRange;
         outputs[4] = 0;
 
         return Differential::actuate(outputs, size);
+    }
+
+    if (controls[5] > 0.5f) {
+        servo_lock_forward = true;
+    } else {
+        servo_lock_forward = false;
     }
 
     float feedbackControls[5];
@@ -115,7 +122,6 @@ void Differential::addFeedback(float sensors[MAX_SENSORS], float controls[], flo
     float fz = controls[2]; // Fz/height
     float tx = controls[3]; // tx
     float tz = controls[4]; // tz
-
     int dt = 4000;
 
     // Z feedback
@@ -201,7 +207,7 @@ void Differential::getOutputs(float sensors[MAX_SENSORS], float controls[], floa
 
     float l = PDterms.lx;
 
-    float fx = clamp(controls[0], -0.6, 0.6);
+    float fx = clamp(controls[0], -1.0, 1.0);
     float fz = controls[1];
     // if (fx > abs(fz)){
     fz = clamp(fz, -1, 1);
@@ -286,6 +292,11 @@ void Differential::getOutputs(float sensors[MAX_SENSORS], float controls[], floa
     // Smoothing theta using exponential rolling average
     theta_ema = alpha * theta + (1 - alpha) * theta_ema;
     theta = theta_ema; // Use smoothed theta for the rest of the calculations
+
+    if (servo_lock_forward) {
+        theta = 0.0f;
+    }
+
     // Checking for full rotations and adjusting t1 and t2
     // theta = adjustAngle(theta);
 

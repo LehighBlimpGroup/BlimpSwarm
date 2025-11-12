@@ -65,7 +65,7 @@ preferences = {
 		{"data_type": DataType_Int, "key": "btime_in_mode", "value": 120},
 		{"data_type": DataType_Int, "key": "bcharge_time", "value": 6},
         {"data_type": DataType_Int, "key": "btarget_color", "value": 0x40},
-		{"data_type": DataType_Float, "key": "bdefault_height", "value": 2},
+		{"data_type": DataType_Float, "key": "bdefault_height", "value": 3},
 		{"data_type": DataType_Float, "key": "bheight_range", "value": 3},
 		{"data_type": DataType_Float, "key": "bwall_thresh", "value": 250},
 		

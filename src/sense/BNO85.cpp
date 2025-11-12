@@ -4,9 +4,9 @@
  * @brief Implementation of BNO85.h
  * @version 0.1
  * @date 2024-07-15
- * 
+ *
  * @copyright Copyright (c) 2024
- * 
+ *
  */
 #include "BNO85.h"
 
@@ -19,12 +19,12 @@ BNO85::BNO85() {
 void BNO85::startup() {
     // if (bnoOn) return;
     BNO85::getPreferences();
-    if (bnoOn){
+    if (bnoOn) {
         return;
     }
     startTime = micros();
     Serial.println("BNO Initialization!");
-    Wire.begin(D4, D5); 
+    Wire.begin(D4, D5);
     delay(100);
     // Wire.setClock(400000);
     int tempcount = 0;
@@ -34,17 +34,17 @@ void BNO85::startup() {
         Serial.print("  connecting! ");
         connect = myIMU.isConnected();
         Serial.println(connect);
-        
+
         Serial.print("  ");
-        
+
         delay(50 + tempcount * 50);
-        
-    } else  {
+
+    } else {
         Serial.println("Ooops, no BNO085 detected ... Check your wiring or I2C ADDR!");
         startTime = micros();
         return;
     }
-    Wire.setClock(400000); //Increase I2C data rate to 400kHz
+    Wire.setClock(400000); // Increase I2C data rate to 400kHz
     Serial.print("  BNO started: ");
     connect = myIMU.isConnected();
     Serial.println(connect);
@@ -82,14 +82,13 @@ void BNO85::setReports() {
     // } else {
     //     Serial.println("    Could not enable gyro");
     // }
-    while(myIMU.wasReset()) {
+    while (myIMU.wasReset()) {
         delay(10);
     }
-    
 }
 
 // Conversion from quaternion to roll, pitch, yaw
-void quaternionToEuler(float qW, float qX, float qY, float qZ, float& roll, float& pitch, float& yaw) {
+void quaternionToEuler(float qW, float qX, float qY, float qZ, float &roll, float &pitch, float &yaw) {
     // Roll (x-axis rotation)
     double sinr_cosp = +2.0 * (qW * qX + qY * qZ);
     double cosr_cosp = +1.0 - 2.0 * (qX * qX + qY * qY);
@@ -107,7 +106,6 @@ void quaternionToEuler(float qW, float qX, float qY, float qZ, float& roll, floa
     double cosy_cosp = +1.0 - 2.0 * (qY * qY + qZ * qZ);
     yaw = atan2(siny_cosp, cosy_cosp);
 }
-
 
 bool BNO85::update() {
     if (micros() - startTime > restartLength) { // every 3 seconds try to reconnect.
@@ -145,14 +143,16 @@ bool BNO85::update() {
 
             // Normalize angles between -PI and PI
             for (int i = 0; i < 3; i++) {
-                while (sensorValues[i] > M_PI) sensorValues[i] -= 2 * M_PI;
-                while (sensorValues[i] < -M_PI) sensorValues[i] += 2 * M_PI;
+                while (sensorValues[i] > M_PI)
+                    sensorValues[i] -= 2 * M_PI;
+                while (sensorValues[i] < -M_PI)
+                    sensorValues[i] += 2 * M_PI;
             }
 
             // Get angular velocity directly from the sensor
-            sensorValues[3] = sensorValues[3] * pitchgamma + myIMU.getGyroIntegratedRVangVelX() * (1-pitchgamma);
-            sensorValues[4] = sensorValues[4] * rollgamma + myIMU.getGyroIntegratedRVangVelY() * (1-rollgamma);
-            sensorValues[5] = sensorValues[5] * yawgamma + myIMU.getGyroIntegratedRVangVelZ() * (1-yawgamma);
+            sensorValues[3] = sensorValues[3] * pitchgamma + myIMU.getGyroIntegratedRVangVelX() * (1 - pitchgamma);
+            sensorValues[4] = sensorValues[4] * rollgamma + myIMU.getGyroIntegratedRVangVelY() * (1 - rollgamma);
+            sensorValues[5] = sensorValues[5] * yawgamma + myIMU.getGyroIntegratedRVangVelZ() * (1 - yawgamma);
 
             break; // Since we are only looking for this event, break after handling
         }
@@ -162,19 +162,18 @@ bool BNO85::update() {
     return bevent; // Indicate successful update
 }
 
-float* BNO85::readValues(int& count) {
-    count = 6; // Indicate we are returning 6 values
+float *BNO85::readValues(int &count) {
+    count = 6;           // Indicate we are returning 6 values
     return sensorValues; // Return the pointer to the sensor values
 }
 
-void BNO85::getPreferences(){
+void BNO85::getPreferences() {
 
     // Implementation for reading values from non-volatile storage (NVS)
     // must manually enter keys and default values for every variable.
-    Preferences preferences; //initialize the preferences 
-    preferences.begin("params", true); //true means read-only
+    Preferences preferences;           // initialize the preferences
+    preferences.begin("params", true); // true means read-only
 
-    
     yawgamma = constrain(preferences.getFloat("yawrate_gamma", 0), 0, 1);
     rollgamma = constrain(preferences.getFloat("rollrate_gamma", 0), 0, 1);
     pitchgamma = constrain(preferences.getFloat("pitchrate_gamma", 0), 0, 1);
