@@ -33,6 +33,7 @@ int Differential::sense(float sensors[MAX_SENSORS]) {
 }
 
 // Controls [Ready, Fx, height, Tz, Tx]
+// outputs [motor1, motor2, xxx, servo ]
 void Differential::control(float sensors[MAX_SENSORS], float controls[], int size) {
     float outputs[5];
 
@@ -51,8 +52,9 @@ void Differential::control(float sensors[MAX_SENSORS], float controls[], int siz
                      90; // 180.0f - clamp((t2) * 180.0f / PI + PDterms.servoBeta, 0.0f, PDterms.servoRange) * 180.0f / PDterms.servoRange;
         outputs[3] = 180.0f - clamp((t2) * 180.0f / PI + PDterms.servoBeta, 0.0f, PDterms.servoRange) * 180.0f / PDterms.servoRange;
         outputs[4] = 0;
-
-        return Differential::actuate(outputs, size);
+        Differential::actuate(outputs, size);
+        memcpy(last_outputs, outputs, sizeof(last_outputs));
+        return;
     }
 
     if (controls[5] > 0.5f) {
@@ -320,3 +322,5 @@ void Differential::getOutputs(float sensors[MAX_SENSORS], float controls[], floa
     //     out[3] = 90;
     // }
 }
+
+void Differential::getLastOutputs(float out[5]) { memcpy(out, last_outputs, sizeof(last_outputs)); }

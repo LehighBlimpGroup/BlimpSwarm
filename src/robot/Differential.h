@@ -35,6 +35,8 @@ class Differential : public RawBicopter {
      */
     void getOutputs(float sensors[MAX_SENSORS], float controls[], float outputs[]);
 
+    float last_outputs[5] = {0, 0, 0, 0, 0};
+
   public:
     // Sensor interface
     NiclaSuite sensorsuite;
@@ -79,4 +81,6 @@ class Differential : public RawBicopter {
      *
      */
     void startup() override;
+
+    void getLastOutputs(float out[5]);
 };
