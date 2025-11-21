@@ -6,6 +6,7 @@ import Preferences
 import time
 import importlib
 import pickle as pkl
+import numpy as np
 from NatNetClient import NatNetClient
 from util import quaternion_to_euler
 
@@ -174,6 +175,9 @@ def main():
         index = "0"
         power = 0.45
         angle = 45
+        # Store data as list of tuples: (timestamp, sensor_array, mocap_array)
+        # sensor_array shape: (7,) - [height, roll, pitch, yaw, motor_1, motor_2, servo_angle_deg]
+        # mocap_array shape: (6,) - [pos_x, pos_y, pos_z, rot_roll, rot_pitch, rot_yaw]
         sensor_data_all = []
 
         # Mocap data
@@ -206,7 +210,16 @@ def main():
             mocap = positions[robot_id] + rotations[robot_id]
             if sensor_data != sensor_data_old and sensor_data is not None:
                 time_curr = time.time() - time_start
-                sensor_data_all.append((sensor_data, mocap, time_curr))
+                # Store data as numpy arrays for efficient numerical operations
+                # Format: (timestamp, sensor_array, mocap_array)
+                # sensor_array: [height, roll, pitch, yaw, motor_1, motor_2, servo_angle_deg]
+                # mocap_array: [pos_x, pos_y, pos_z, rot_roll, rot_pitch, rot_yaw]
+                data_entry = (
+                    time_curr,
+                    np.array(sensor_data, dtype=np.float32),
+                    np.array(mocap, dtype=np.float32)
+                )
+                sensor_data_all.append(data_entry)
                 # time_old = time.time()
             sensor_data_old = sensor_data
             power = min(1, max(0, power))
