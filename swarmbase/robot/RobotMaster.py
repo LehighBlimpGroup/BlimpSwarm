@@ -144,7 +144,7 @@ class RobotMaster:
 
         currRobot = self.robots[self.current_robot_index]
         currState = self.ready[self.current_robot_index]
-        self.updateGui(self.height, self.tz, print_vals)
+        # self.updateGui(self.height, self.tz, print_vals)
 
         self.serial.send_control_params(
             currRobot,

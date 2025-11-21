@@ -4,25 +4,25 @@
  * @brief Contains all datatypes used throughout the project
  * @version 0.1
  * @date 2024-01-01
- * 
+ *
  * @copyright Copyright (c) 2024
- * 
+ *
  */
 #ifndef __DATA_TYPES_H__
 #define __DATA_TYPES_H__
 //
-//typedef struct init_sensors_s {
+// typedef struct init_sensors_s {
 //    float Kacc, Kgyro, Kmag;
 //    bool baro;
 //    float eulerGamma, rateGamma, zGamma;
 //} init_sensors_t;
 //
 //
-//typedef struct robot_specs_s {
+// typedef struct robot_specs_s {
 //    int min_thrust, max_thrust;
 //} robot_specs_s;
 //
-//typedef struct nicla_tuning_s  {
+// typedef struct nicla_tuning_s  {
 //    float goal_theta_back;
 //    float goal_theta_front;
 //    float goal_dist_thresh;
@@ -32,24 +32,24 @@
 //
 //} nicla_tuning_s;
 //
-//typedef struct init_flags_s {
+// typedef struct init_flags_s {
 //    bool verbose, sensors, escarm, calibrate_esc, UDP, Ibus, ESPNOW, servo;
 //    int PORT, motor_type, mode, control;
 //} init_flags_t;
 //
-//typedef struct sensor_weights_t {
+// typedef struct sensor_weights_t {
 //    float eulerGamma;
 //    float rollRateGamma, yawRateGamma, pitchRateGamma;
 //    float zGamma, vzGamma;
 //} sensor_weights_t;
 //
-//typedef struct sensors_s {
+// typedef struct sensors_s {
 //    float roll, pitch, yaw;
 //    float rollrate, pitchrate, yawrate;
 //    float estimatedZ, velocityZ, groundZ;
 //} sensors_t;
 //
-//typedef struct controller_s {
+// typedef struct controller_s {
 //    float fx;
 //    float fy;
 //    float fz;
@@ -62,14 +62,14 @@
 //    int snapshot;
 //} controller_t;
 //
-//typedef struct raw_s {
+// typedef struct raw_s {
 //    float data[11];
 //    bool ready;
 //    int flag;
 //
 //} raw_t;
 //
-//typedef struct actuation_s {
+// typedef struct actuation_s {
 //    float m1;
 //    float m2;
 //    float s1;
@@ -89,7 +89,6 @@ typedef struct feedback_t {
     float lx, reelSpeed;
 } feedback_t;
 
-
 // Flag for determining which type of data was received
 enum DataType {
     DataType_Int = 0x01,
@@ -101,13 +100,13 @@ enum DataType {
 
 // float array containing all the input values
 typedef struct ControlInput {
-    float params[13]; //FIXME magic number
+    float params[13]; // FIXME magic number
 } ControlInput;
 
 // Structor for receiving data
 typedef struct ReceivedData {
     int flag;
-    float values[6];  //FIXME magic number
+    float values[7]; // FIXME magic number
 } ReceivedData;
 
 // Additional parameters for the Nicla Vision. Also stored in the esp32's flash memory
@@ -141,17 +140,16 @@ typedef struct {
 } hist_t;
 
 //
-//typedef struct RollPitchAdjustments {
+// typedef struct RollPitchAdjustments {
 //    bool rollPitchSwitch;
 //    float pitchSign, pitchOffset, rollSign, rollOffset;
 //} RollPitchAdjustments;
 //
-//typedef struct randomwalk_values_t {
+// typedef struct randomwalk_values_t {
 //    float forward_force, desired_z, desired_yaw, STEP_ZIG_ZAG;
 //    int min_distance, NUM_ZIGS, Z_LEVEL, SWITCH_TIME;
 //    int TIME_ROTATE, ANGLE_THRESH;
 //    bool randomWalk_enabled;
 //} randomwalk_values_t;
-
 
 #endif

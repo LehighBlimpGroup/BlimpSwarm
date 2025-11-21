@@ -33,6 +33,7 @@ int Differential::sense(float sensors[MAX_SENSORS]) {
 }
 
 // Controls [Ready, Fx, height, Tz, Tx]
+// outputs [motor1, motor2, xxx, servo ]
 void Differential::control(float sensors[MAX_SENSORS], float controls[], int size) {
     float outputs[5];
 
@@ -51,8 +52,8 @@ void Differential::control(float sensors[MAX_SENSORS], float controls[], int siz
                      90; // 180.0f - clamp((t2) * 180.0f / PI + PDterms.servoBeta, 0.0f, PDterms.servoRange) * 180.0f / PDterms.servoRange;
         outputs[3] = 180.0f - clamp((t2) * 180.0f / PI + PDterms.servoBeta, 0.0f, PDterms.servoRange) * 180.0f / PDterms.servoRange;
         outputs[4] = 0;
-
-        return Differential::actuate(outputs, size);
+        Differential::actuate(outputs, size);
+        return;
     }
 
     if (controls[5] > 0.5f) {
@@ -66,7 +67,17 @@ void Differential::control(float sensors[MAX_SENSORS], float controls[], int siz
 
     Differential::getOutputs(sensors, feedbackControls, outputs);
     outputs[2] = controls[5] * PDterms.reelSpeed * 90 + 90;
+
+    // // Debug print of outputs before actuating (active state)
+    // Serial.print("Outputs (active): ");
+    // for (int i = 0; i < 5; i++) {
+    //     Serial.print(outputs[i], 4);
+    //     if (i < 4)
+    //         Serial.print(", ");
+    // }
+    // Serial.println();
     RawBicopter::actuate(outputs, size);
+    memcpy(last_outputs, outputs, sizeof(last_outputs));
 }
 
 void Differential::getPreferences() {
@@ -312,6 +323,9 @@ void Differential::getOutputs(float sensors[MAX_SENSORS], float controls[], floa
     } else {
         servo_old2 = out[3];
     }
+    // for (int i = 0; i < 4; i++)
+    //     Serial.print(out[i]);
+    // Serial.println();
     // // Adjust servo positions if motor speeds are too low
     // if (out[0] < 0.02f) {
     //     out[2] = 90;
@@ -320,3 +334,5 @@ void Differential::getOutputs(float sensors[MAX_SENSORS], float controls[], floa
     //     out[3] = 90;
     // }
 }
+
+void Differential::getLastOutputs(float out[5]) { memcpy(out, last_outputs, sizeof(last_outputs)); }
