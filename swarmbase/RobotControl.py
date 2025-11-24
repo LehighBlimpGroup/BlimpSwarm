@@ -184,7 +184,7 @@ def main():
 
         clientAddress = "192.168.0.6"
         optitrackServerAddress = "192.168.0.4"
-        robot_id = 528
+        robot_id = 1
 
         # This will create a new NatNet client
         streaming_client = NatNetClient()
@@ -217,8 +217,9 @@ def main():
                 data_entry = (
                     time_curr,
                     np.array(sensor_data, dtype=np.float32),
-                    np.array(mocap, dtype=np.float32)
+                    np.array(mocap, dtype=np.float32),
                 )
+                print(sensor_data[2], mocap[4])  # Print pitch values for comparison
                 sensor_data_all.append(data_entry)
                 # time_old = time.time()
             sensor_data_old = sensor_data
@@ -277,7 +278,7 @@ def main():
                 print("Invalid button.")
     except KeyboardInterrupt:
         print("Stopping!")
-        pkl.dump(sensor_data_all, open(f"sensor_data.pkl", "wb"))
+        pkl.dump(sensor_data_all, open(f"sensor_data1.pkl", "wb"))
         return
     except Exception as e:
         print(e)
