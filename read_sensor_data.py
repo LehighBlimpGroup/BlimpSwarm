@@ -40,6 +40,10 @@ mocap_pitch = np.array(
     [entry[2][4] for entry in data]
 )  # pitch is at index 4 (assumed already degrees)
 
+# Extract motor data (motor_1 at index 4, motor_2 at index 5)
+motor_1 = np.array([entry[1][4] for entry in data])
+motor_2 = np.array([entry[1][5] for entry in data])
+
 # Filter out invalid angle values: anything outside [-180, 180] degrees or non-finite values
 # Both `sensor_pitch` and `mocap_pitch` are treated as degrees here. If your sensor
 # pitch were still in radians, you'd compare to np.pi instead.
@@ -87,3 +91,56 @@ ax2.grid(True, alpha=0.3)
 
 plt.tight_layout()
 plt.show()
+
+# Create distribution plots for motor data
+fig2, (ax3, ax4, ax5) = plt.subplots(1, 3, figsize=(15, 5))
+
+# Histogram for motor_1
+ax3.hist(motor_1, bins=50, alpha=0.7, color='blue', edgecolor='black')
+ax3.set_xlabel("Motor 1 Value", fontsize=12)
+ax3.set_ylabel("Frequency", fontsize=12)
+ax3.set_title("Motor 1 Distribution", fontsize=14, fontweight="bold")
+ax3.grid(True, alpha=0.3)
+ax3.axvline(np.mean(motor_1), color='red', linestyle='--', linewidth=2, label=f'Mean: {np.mean(motor_1):.3f}')
+ax3.axvline(np.median(motor_1), color='green', linestyle='--', linewidth=2, label=f'Median: {np.median(motor_1):.3f}')
+ax3.legend(fontsize=10)
+ax3.text(0.05, 0.95, f'Std: {np.std(motor_1):.3f}\nMin: {np.min(motor_1):.3f}\nMax: {np.max(motor_1):.3f}', 
+         transform=ax3.transAxes, fontsize=10, verticalalignment='top',
+         bbox=dict(boxstyle='round', facecolor='wheat', alpha=0.5))
+
+# Histogram for motor_2
+ax4.hist(motor_2, bins=50, alpha=0.7, color='orange', edgecolor='black')
+ax4.set_xlabel("Motor 2 Value", fontsize=12)
+ax4.set_ylabel("Frequency", fontsize=12)
+ax4.set_title("Motor 2 Distribution", fontsize=14, fontweight="bold")
+ax4.grid(True, alpha=0.3)
+ax4.axvline(np.mean(motor_2), color='red', linestyle='--', linewidth=2, label=f'Mean: {np.mean(motor_2):.3f}')
+ax4.axvline(np.median(motor_2), color='green', linestyle='--', linewidth=2, label=f'Median: {np.median(motor_2):.3f}')
+ax4.legend(fontsize=10)
+ax4.text(0.05, 0.95, f'Std: {np.std(motor_2):.3f}\nMin: {np.min(motor_2):.3f}\nMax: {np.max(motor_2):.3f}', 
+         transform=ax4.transAxes, fontsize=10, verticalalignment='top',
+         bbox=dict(boxstyle='round', facecolor='wheat', alpha=0.5))
+
+# Scatter plot comparing motor_1 vs motor_2
+ax5.scatter(motor_1, motor_2, alpha=0.5, s=10)
+ax5.set_xlabel("Motor 1 Value", fontsize=12)
+ax5.set_ylabel("Motor 2 Value", fontsize=12)
+ax5.set_title("Motor 1 vs Motor 2", fontsize=14, fontweight="bold")
+ax5.grid(True, alpha=0.3)
+# Add correlation coefficient
+correlation = np.corrcoef(motor_1, motor_2)[0, 1]
+ax5.text(0.05, 0.95, f'Correlation: {correlation:.3f}', 
+         transform=ax5.transAxes, fontsize=12, verticalalignment='top',
+         bbox=dict(boxstyle='round', facecolor='wheat', alpha=0.5))
+
+plt.tight_layout()
+plt.show()
+
+# Print summary statistics
+print("\n" + "="*60)
+print("Motor Data Summary Statistics")
+print("="*60)
+print(f"Motor 1 - Mean: {np.mean(motor_1):.4f}, Std: {np.std(motor_1):.4f}, Min: {np.min(motor_1):.4f}, Max: {np.max(motor_1):.4f}")
+print(f"Motor 2 - Mean: {np.mean(motor_2):.4f}, Std: {np.std(motor_2):.4f}, Min: {np.min(motor_2):.4f}, Max: {np.max(motor_2):.4f}")
+print(f"Correlation between Motor 1 and Motor 2: {correlation:.4f}")
+print("="*60)
