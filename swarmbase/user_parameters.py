@@ -44,7 +44,7 @@ DEFENDER_MACS = [str.lower(robot) for robot in defender_macs]
 ## may look like "COM5" in windows or "/dev/tty.usbmodem14301" in mac  #
 ## look in arduino for the port that your specific transeiver is connected to  ##
 ## Note: make sure that your serial monitor is OFF in arduino or else you will get "access is denied" error. ##
-SERIAL_PORT = "COM12"
+SERIAL_PORT = "COM7"
 
 
 # For debug purposes

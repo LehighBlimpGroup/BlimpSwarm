@@ -157,6 +157,7 @@ void onDataSend(const uint8_t *mac, esp_now_send_status_t status) {
 void onDataReceive(const uint8_t *mac, const uint8_t *incomingData, int data_len) {
     if (data_len == sizeof(ReceivedData)) {
         memcpy(&latestReceivedData, incomingData, data_len);
+        Serial.println("Rcvd data");
 
         if (latestReceivedData.flag >= 0 && latestReceivedData.flag < MAX_FLAGS) {
             for (int i = 0; i < 7; i++) {

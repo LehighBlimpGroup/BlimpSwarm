@@ -128,16 +128,16 @@ void loop() {
     }
     // print sensor values every second
     // senses => [temperature, altitude, veloctity in altitude, roll, pitch, yaw, rollrate, pitchrate, yawrate, null, battery]
-    // if (micros() - printTime > 515106) {
-    //     Serial.print(dt / 1000.0f);
-    //     Serial.print(",");
-    //     for (int i = 0; i < numSenses - 1; i++) {
-    //         Serial.print(senses[i]);
-    //         Serial.print(",");
-    //     }
-    //     Serial.println(senses[numSenses - 1]);
-    //     printTime = micros();
-    // }
+    if (micros() - printTime > 515106) {
+        Serial.print(dt / 1000.0f);
+        Serial.print(",");
+        for (int i = 0; i < numSenses - 1; i++) {
+            Serial.print(senses[i]);
+            Serial.print(",");
+        }
+        Serial.println(senses[numSenses - 1]);
+        printTime = micros();
+    }
 
     // adjusts the state based on several factors
     niclaStateChange((int)(cmd.params[0]));
