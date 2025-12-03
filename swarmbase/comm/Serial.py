@@ -83,7 +83,6 @@ class SerialController:
         self.serial.reset_input_buffer()
         self.serial.write(b"I")
         incoming = self.serial.readline()  # .decode().strip()
-        print(len(incoming))
 
         if len(incoming) >= 28:
             self.values = struct.unpack("<7f", incoming[0:28])
