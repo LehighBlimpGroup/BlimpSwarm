@@ -5,8 +5,26 @@ from robot.RobotMaster import RobotMaster
 import Preferences
 import time
 import importlib
+import pickle as pkl
+import numpy as np
+from NatNetClient import NatNetClient
+from util import quaternion_to_euler
+
 
 PRINT_JOYSTICK = False
+
+positions = {}
+rotations = {}
+
+
+# This is a callback function that gets connected to the NatNet client. It is called once per rigid body per frame
+def receive_rigid_body_frame(id, position, rotation_quaternion):
+    # Position and rotation received
+    positions[id] = position
+    # The rotation is in quaternion. We need to convert it to euler angles
+    rotx, roty, rotz = quaternion_to_euler(rotation_quaternion)
+    # Store the roll pitch and yaw angles
+    rotations[id] = (rotx, roty, rotz)
 
 
 def startAutonomousBall(serial, robot, args):
@@ -159,11 +177,59 @@ def main():
         power = 0.45
         angle = 45
 
+        sensor_data_all = []
+
+        clientAddress = "192.168.0.55"
+        optitrackServerAddress = "192.168.0.4"
+        robot_id = 525
+
+        # This will create a new NatNet client
+        streaming_client = NatNetClient()
+        streaming_client.set_client_address(clientAddress)
+        streaming_client.set_server_address(optitrackServerAddress)
+        streaming_client.set_use_multicast(True)
+        # Configure the streaming client to call our rigid body handler on the emulator to send data out.
+        streaming_client.rigid_body_listener = receive_rigid_body_frame
+
+        # Start up the streaming client now that the callbacks are set up.
+        # This will run perpetually, and operate on a separate thread.
+        is_running = streaming_client.run()
+
+        sensor_data_old = None
+        sensor_data = None
+        time_start = time.time()
+
         while True:
-            time.sleep(0.2)
+            # time.sleep(0.2)
             keys = robot_master.get_last_n_keys(1)
             axis, buttons = joystick.getJoystickInputs()
             robot_master.processManual(axis, buttons, print_vals=True)
+
+            sensor_data = robot_master.processManual(axis, buttons, print_vals=False)
+            mocap = positions[robot_id] + rotations[robot_id]
+
+            if sensor_data != sensor_data_old and sensor_data is not None:
+                time_curr = time.time() - time_start
+                # Store data as numpy arrays for efficient numerical operations
+                # Format: (timestamp, sensor_array, mocap_array)
+                # sensor_array: [height, pitch_body, roll_body, yaw_body, motor_1, motor_2, servo_angle_deg]
+                # mocap_array: [pos_x, pos_y, pos_z, rot_roll(abt global x), rot_pitch(abt global y), rot_yaw(about global z)]
+                data_entry = (
+                    time_curr,
+                    np.array(sensor_data, dtype=np.float32),
+                    np.array(mocap, dtype=np.float32),
+                )
+                print(
+                    "sensor pitch",
+                    np.degrees(sensor_data[1]),
+                    "sensor roll",
+                    np.degrees(sensor_data[2]),
+                    "sensor yaw",
+                    np.degrees(sensor_data[3]),
+                )  # Print pitch values for comparison
+                sensor_data_all.append(data_entry)
+                time_old = time.time()
+            sensor_data_old = sensor_data
 
             power = min(1, max(0, power))
             angle = min(180, max(-180, angle))
@@ -220,6 +286,11 @@ def main():
                 print("Invalid button.")
     except KeyboardInterrupt:
         print("Stopping!")
+        millis = int((time.time() * 1000) % 1000)
+        pkl.dump(
+            sensor_data_all,
+            open(f"sensor_data_{int(time_start)}_{millis:03d}.pkl", "wb"),
+        )
         return
     except Exception as e:
         print(e)
