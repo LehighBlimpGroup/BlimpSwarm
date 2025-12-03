@@ -1,9 +1,9 @@
 ##### Insert your robot's MAC ADDRESS here ####
 ## (you can get it by running your arduino and looking at the serial monitor for your flying drone) ##
 
-robot_macs = []#["34:85:18:91:bc:94","34:85:18:91:c1:2c"]
+robot_macs = ["48:27:e2:e6:e5:64"]  # ["34:85:18:91:bc:94","34:85:18:91:c1:2c"]
 tensile_masters = ["34:85:18:91:bc:94"]
-tensile_followers = ["34:85:18:91:bd:b0","dc:da:0c:57:ad:a4"]
+tensile_followers = ["34:85:18:91:bd:b0", "dc:da:0c:57:ad:a4"]
 defender_macs = []
 
 ROBOT_MACS = [str.lower(robot) for robot in robot_macs]
@@ -12,12 +12,10 @@ TENSILE_FOLLOWERS = [str.lower(robot) for robot in tensile_followers]
 DEFENDER_MACS = [str.lower(robot) for robot in defender_macs]
 
 
-
 ## may look like "COM5" in windows or "/dev/tty.usbmodem14301" in mac  #
 ## look in arduino for the port that your specific transeiver is connected to  ##
 ## Note: make sure that your serial monitor is OFF in arduino or else you will get "access is denied" error. ##
-SERIAL_PORT = "COM22"
-
+SERIAL_PORT = "COM6"
 
 
 # For debug purposes
@@ -70,4 +68,4 @@ FullBicopterNicla notes:
 		fx_togoal, fx_charge, fxlevy: used in my statemachine (only used for state machine)
 		n_max_x, n_max_y: the length and width in pixels of the nicla frame (HQVGA is 240,160)
 		h_ratio: used in statemachine to determine when the robot is too close to goal (should be >.7)
-"""	
+"""
