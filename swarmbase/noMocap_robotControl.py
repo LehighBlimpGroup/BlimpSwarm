@@ -207,6 +207,7 @@ def main():
             keys = robot_master.get_last_n_keys(1)
             axis, buttons = joystick.getJoystickInputs()
             sensor_data = robot_master.processManual(axis, buttons, print_vals=False)
+            print(sensor_data)
             # mocap = positions[robot_id] + rotations[robot_id]
             if sensor_data != sensor_data_old and sensor_data is not None:
                 time_curr = time.time() - time_start

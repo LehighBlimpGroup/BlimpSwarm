@@ -69,6 +69,12 @@ void BNO85::setReports() {
     } else {
         Serial.println("Could not enable gyro integrated rotation vector");
     }
+    if (myIMU.enableAccelerometer() == true) {
+        Serial.println(F("Accelerometer enabled"));
+        Serial.println(F("Output in form x, y, z in meters per second squared"));
+    } else {
+        Serial.println("Could not enable accelerometer");
+    }
     // Serial.println("  Setting desired reports");
     // if (myIMU.enableRotationVector() == true) {
     //     Serial.println(F("    Rotation vector enabled"));
@@ -154,8 +160,16 @@ bool BNO85::update() {
             sensorValues[4] = sensorValues[4] * rollgamma + myIMU.getGyroIntegratedRVangVelY() * (1 - rollgamma);
             sensorValues[5] = sensorValues[5] * yawgamma + myIMU.getGyroIntegratedRVangVelZ() * (1 - yawgamma);
 
-            break; // Since we are only looking for this event, break after handling
+            
         }
+
+        if (myIMU.getSensorEventID() == SENSOR_REPORTID_ACCELEROMETER) {
+            sensorValues[6] = myIMU.getAccelerometerX();
+            sensorValues[7] = myIMU.getAccelerometerY();
+            sensorValues[8] = myIMU.getAccelerometerZ();
+        }
+
+        break; // Since we are only looking for this event, break after handling
     }
 
     // This example assumes you have a way to return or use sensorValues
@@ -163,7 +177,7 @@ bool BNO85::update() {
 }
 
 float *BNO85::readValues(int &count) {
-    count = 6;           // Indicate we are returning 6 values
+    count = 9;           // Indicate we are returning 9 values
     return sensorValues; // Return the pointer to the sensor values
 }
 

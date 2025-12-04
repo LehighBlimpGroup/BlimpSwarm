@@ -121,18 +121,31 @@ void loop() {
         rcv.values[1] = senses[3];    // roll
         rcv.values[2] = senses[4];    // pitch
         rcv.values[3] = senses[5];    // yaw
-        rcv.values[4] = actuators[0]; // motor 1
-        rcv.values[5] = actuators[1]; // motor 2
-        rcv.values[6] = actuators[3]; // servo angle
+        rcv.values[4] = senses[6];    // rollrate
+        rcv.values[5] = senses[7];    // pitchrate
+        rcv.values[6] = senses[8];    // yawrate
+        rcv.values[7] = senses[9];    // x acceleration
+        rcv.values[8] = senses[10];   // y acceleration
+        rcv.values[9] = senses[11];   // z acceleration
+        rcv.values[10] = actuators[0]; // motor 1
+        rcv.values[11] = actuators[1]; // motor 2
+        rcv.values[12] = actuators[3]; // servo angle
         bool sent = baseComm->sendMeasurements(&rcv);
     }
+
+    Serial.print("x acceleration: ");
+    Serial.print(senses[9]);
+    Serial.print("y acceleration: ");
+    Serial.print(senses[10]);
+    Serial.print("z acceleration: ");
+    Serial.println(senses[11]);
     // print sensor values every second
     // senses => [temperature, altitude, veloctity in altitude, roll, pitch, yaw, rollrate, pitchrate, yawrate, null, battery]
     if (micros() - printTime > 515106) {
         Serial.print(dt / 1000.0f);
         Serial.print(",");
         for (int i = 0; i < numSenses - 1; i++) {
-            Serial.print(senses[i]);
+            Serial.print(rcv.values[i]);
             Serial.print(",");
         }
         Serial.println(senses[numSenses - 1]);

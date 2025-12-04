@@ -7,11 +7,11 @@ typedef struct ControlInput {
 
 typedef struct ReceivedData {
     int flag;
-    float values[7]; // FIXME magic number
+    float values[13]; // FIXME magic number
 } ReceivedData;
 
 #define MAX_FLAGS 6
-float storedData[MAX_FLAGS][7] = {0};   // Data storage
+float storedData[MAX_FLAGS][13] = {0};   // Data storage
 bool flagReceived[MAX_FLAGS] = {false}; // Keep track of received flags
 
 // Adjust these values as needed for your specific application
@@ -158,7 +158,7 @@ void onDataReceive(const uint8_t *mac, const uint8_t *incomingData, int data_len
         memcpy(&latestReceivedData, incomingData, data_len);
 
         if (latestReceivedData.flag >= 0 && latestReceivedData.flag < MAX_FLAGS) {
-            for (int i = 0; i < 7; i++) {
+            for (int i = 0; i < 13; i++) {
                 storedData[latestReceivedData.flag][i] = latestReceivedData.values[i];
             }
             flagReceived[latestReceivedData.flag] = true; // Mark this flag as received

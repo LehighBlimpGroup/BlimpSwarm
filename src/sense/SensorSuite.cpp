@@ -53,7 +53,7 @@ bool SensorSuite::update() {
             updated = true;
         }
     }
-    offset = 10;
+    offset = 13;
     if (batterySensor.update()) {
         float* batteryValues = batterySensor.readValues(tempCount);
         for(int i = 0; i < tempCount; ++i) {
@@ -62,7 +62,7 @@ bool SensorSuite::update() {
         offset += tempCount;
         updated = true;
     }
-    offset = 11; 
+    offset = 14; 
 
     if (ultrasonicSensor.readDistance() != 0xFFFF) {  // Check for valid reading
         sensorValues[offset] = ultrasonicSensor.readDistance();  // Store the distance value
