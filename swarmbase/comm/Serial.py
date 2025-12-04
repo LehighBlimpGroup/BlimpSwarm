@@ -79,10 +79,10 @@ class SerialController:
         self.wait_for_acknowledgement()
         print("Sending Preference: ", key, ":", value, ", len:", len(buffer))
 
-    def getSensorData(self):
+    def getSensorData(self): 
         self.serial.reset_input_buffer()
         self.serial.write(b"I")
-        incoming = self.serial.readline()  # .decode().strip()
+        incoming = self.serial.readline() #.decode().strip()
         print(len(incoming))
 
         if len(incoming) >= 28:
