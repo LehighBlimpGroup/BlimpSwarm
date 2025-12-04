@@ -109,7 +109,7 @@ void loop() {
             }
         } else if (type == 'I') { // retrieve data from ground station to use in python
             if (flagReceived[1]) {
-                for (int i = 0; i < 7; i++) {
+                for (int i = 0; i < 13; i++) {
                     Serial.write((uint8_t *)&storedData[1][i], sizeof(storedData[1][i]));
                 }
                 Serial.println(); // End of transmission for easier reading on Python side
@@ -158,7 +158,7 @@ void onDataReceive(const uint8_t *mac, const uint8_t *incomingData, int data_len
         memcpy(&latestReceivedData, incomingData, data_len);
 
         if (latestReceivedData.flag >= 0 && latestReceivedData.flag < MAX_FLAGS) {
-            for (int i = 0; i < 13; i++) {
+            for (int i = 0; i < 14; i++) {
                 storedData[latestReceivedData.flag][i] = latestReceivedData.values[i];
             }
             flagReceived[latestReceivedData.flag] = true; // Mark this flag as received

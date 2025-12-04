@@ -106,7 +106,7 @@ typedef struct ControlInput {
 // Structor for receiving data
 typedef struct ReceivedData {
     int flag;
-    float values[7]; // FIXME magic number
+    float values[13]; // FIXME magic number
 } ReceivedData;
 
 // Additional parameters for the Nicla Vision. Also stored in the esp32's flash memory

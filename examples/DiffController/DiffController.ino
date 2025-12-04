@@ -79,7 +79,14 @@ void loop() {
     int numSenses = myRobot->sense(senses);
 
     // send values to ground station
+    // DEBUG: Print cmd values to understand control flow
+    // Serial.print("DEBUG: cmd.params[0]=");
+    // Serial.print(cmd.params[0]);
+    // Serial.print(", cmd.params[6]=");
+    // Serial.println(cmd.params[6]);
+    
     if (cmd.params[0] == 5 && cmd.params[6] == 1) {
+        Serial.println("in if 1");
         float actuators[5];
         myRobot->getLastOutputs(actuators);
         rcv.flag = 1;
@@ -100,13 +107,15 @@ void loop() {
         cmd.params[2] = senses[1]; // set height to height
         cmd.params[4] = senses[5]; // set yaw to yaw
     } else if (cmd.params[0] == 5 && cmd.params[6] == 0) {
+        Serial.println("in if 2");
         rcv.flag = 0;
         Serial.println("Stopping Feedback");
         cmd.params[0] = 1;         // temp assign manual control with these new params for retaining stillness
         cmd.params[2] = senses[1]; // set height to height
         cmd.params[4] = senses[5]; // set yaw to yaw
 
-    } else if (cmd.params[6] == 1) { // manual mode
+    } else { //if (cmd.params[6] == 1) { // manual mode
+        Serial.println("in if 3");
         float actuators[5];
         myRobot->getLastOutputs(actuators);
 
@@ -130,27 +139,50 @@ void loop() {
         rcv.values[10] = actuators[0]; // motor 1
         rcv.values[11] = actuators[1]; // motor 2
         rcv.values[12] = actuators[3]; // servo angle
+
+        for (int i = 0; i < 13; i++) {
+            rcv.values[i] = i;
+            // Serial.print(",");
+        }
+
+        // sizeof returns size in BYTES, len would be number of ELEMENTS
+        // size_t sizeInBytes = sizeof(rcv.values);      // 13 floats × 4 bytes = 52 bytes
+        // size_t lengthInElements = sizeof(rcv.values) / sizeof(rcv.values[0]);  // 52 / 4 = 13 elements
+        
+        // Serial.print("sending measurements - size in bytes: ");
+        // Serial.print(sizeInBytes);
+        // Serial.print(", length (number of elements): ");
+        // Serial.println(lengthInElements);
+        
+
+
         bool sent = baseComm->sendMeasurements(&rcv);
     }
-
-    Serial.print("x acceleration: ");
-    Serial.print(senses[9]);
-    Serial.print("y acceleration: ");
-    Serial.print(senses[10]);
-    Serial.print("z acceleration: ");
-    Serial.println(senses[11]);
-    // print sensor values every second
-    // senses => [temperature, altitude, veloctity in altitude, roll, pitch, yaw, rollrate, pitchrate, yawrate, null, battery]
-    if (micros() - printTime > 515106) {
-        Serial.print(dt / 1000.0f);
+        
+    
+    for (int i = 0; i < 13; i++) {
+        Serial.print(rcv.values[i]);
         Serial.print(",");
-        for (int i = 0; i < numSenses - 1; i++) {
-            Serial.print(rcv.values[i]);
-            Serial.print(",");
-        }
-        Serial.println(senses[numSenses - 1]);
-        printTime = micros();
     }
+    Serial.println();
+    // Serial.print("new x acceleration: ");
+    // Serial.print(senses[9]);
+    // Serial.print("y acceleration: ");
+    // Serial.print(senses[10]);
+    // Serial.print("z acceleration: ");
+    // Serial.println(senses[11]);
+    // // print sensor values every second
+    // // senses => [temperature, altitude, veloctity in altitude, roll, pitch, yaw, rollrate, pitchrate, yawrate, null, battery]
+    // if (micros() - printTime > 515106) {
+    //     Serial.print(dt / 1000.0f);
+    //     Serial.print(",");
+    //     for (int i = 0; i < numSenses - 1; i++) {
+    //         Serial.print(rcv.values[i]);
+    //         Serial.print(",");
+    //     }
+    //     Serial.println(senses[numSenses - 1]);
+    //     printTime = micros();
+    // }
 
     // adjusts the state based on several factors
     niclaStateChange((int)(cmd.params[0]));

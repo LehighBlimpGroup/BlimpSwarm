@@ -85,8 +85,9 @@ class SerialController:
         incoming = self.serial.readline() #.decode().strip()
         print(len(incoming))
 
-        if len(incoming) >= 28:
-            self.values = struct.unpack("<7f", incoming[0:28])
+        # 13 floats × 4 bytes each = 52 bytes (receiving 54 bytes total, extra 2 bytes are newline)
+        if len(incoming) >= 52:
+            self.values = struct.unpack("<13f", incoming[0:52])
             # print("Sensor Data Received: ", self.values)
         else:
             # print("Invalid sensor data received.")

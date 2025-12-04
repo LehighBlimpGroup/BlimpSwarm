@@ -164,9 +164,9 @@ bool BNO85::update() {
         }
 
         if (myIMU.getSensorEventID() == SENSOR_REPORTID_ACCELEROMETER) {
-            sensorValues[6] = myIMU.getAccelerometerX();
-            sensorValues[7] = myIMU.getAccelerometerY();
-            sensorValues[8] = myIMU.getAccelerometerZ();
+            sensorValues[6] = myIMU.getAccelX();
+            sensorValues[7] = myIMU.getAccelY();
+            sensorValues[8] = myIMU.getAccelZ();
         }
 
         break; // Since we are only looking for this event, break after handling
