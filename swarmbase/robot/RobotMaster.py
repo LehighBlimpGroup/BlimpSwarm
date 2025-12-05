@@ -64,7 +64,7 @@ class RobotMaster:
                 y=sensors[3],
                 width=sensors[4],
                 height=sensors[4],
-                cur_yaw=sensors[1],
+                cur_yaw=sensors[3],
                 des_yaw=tz,
                 cur_height=sensors[0],
                 des_height=height,

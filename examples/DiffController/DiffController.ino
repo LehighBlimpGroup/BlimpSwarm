@@ -114,7 +114,7 @@ void loop() {
         cmd.params[2] = senses[1]; // set height to height
         cmd.params[4] = senses[5]; // set yaw to yaw
 
-    } else { //if (cmd.params[6] == 1) { // manual mode
+    } else { if (cmd.params[6] == 1) { // manual mode
         Serial.println("in if 3");
         float actuators[5];
         myRobot->getLastOutputs(actuators);
@@ -140,19 +140,29 @@ void loop() {
         rcv.values[11] = actuators[1]; // motor 2
         rcv.values[12] = actuators[3]; // servo angle
 
-        for (int i = 0; i < 13; i++) {
-            rcv.values[i] = i;
-            // Serial.print(",");
-        }
-
-        // sizeof returns size in BYTES, len would be number of ELEMENTS
-        // size_t sizeInBytes = sizeof(rcv.values);      // 13 floats × 4 bytes = 52 bytes
-        // size_t lengthInElements = sizeof(rcv.values) / sizeof(rcv.values[0]);  // 52 / 4 = 13 elements
         
-        // Serial.print("sending measurements - size in bytes: ");
-        // Serial.print(sizeInBytes);
-        // Serial.print(", length (number of elements): ");
-        // Serial.println(lengthInElements);
+
+        Serial.print("height: ");
+        Serial.println(senses[1]);
+
+        // Serial.print("roll rate: ");
+        // Serial.println(rcv.values[4]);
+        // Serial.print("pitch rate: ");
+        // Serial.println(rcv.values[5]);
+        // Serial.print("yaw rate: ");
+        // Serial.println(rcv.values[6]);
+        // Serial.print("x acceleration: ");
+        // Serial.println(rcv.values[7]);
+        // Serial.print("y acceleration: ");
+        // Serial.println(rcv.values[8]);
+        // Serial.print("z acceleration: ");
+        // Serial.println(rcv.values[9]);
+        // Serial.print("motor 1: ");
+        // Serial.println(rcv.values[10]);
+        // Serial.print("motor 2: ");
+        // Serial.println(rcv.values[11]);
+        // Serial.print("servo angle: ");
+        // Serial.println(rcv.values[12]);
         
 
 
@@ -160,11 +170,11 @@ void loop() {
     }
         
     
-    for (int i = 0; i < 13; i++) {
-        Serial.print(rcv.values[i]);
-        Serial.print(",");
-    }
-    Serial.println();
+    // for (int i = 0; i < 13; i++) {
+    //     Serial.print(rcv.values[i]);
+    //     Serial.print(",");
+    // }
+    // Serial.println();
     // Serial.print("new x acceleration: ");
     // Serial.print(senses[9]);
     // Serial.print("y acceleration: ");
@@ -182,7 +192,7 @@ void loop() {
     //     }
     //     Serial.println(senses[numSenses - 1]);
     //     printTime = micros();
-    // }
+    }
 
     // adjusts the state based on several factors
     niclaStateChange((int)(cmd.params[0]));

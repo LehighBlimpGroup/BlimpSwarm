@@ -182,9 +182,9 @@ def main():
 
         # Mocap data
 
-        clientAddress = "192.168.0.5"
+        clientAddress = "192.168.0.7"
         optitrackServerAddress = "192.168.0.4"
-        robot_id = 528
+        robot_id = 525
 
         # This will create a new NatNet client
         streaming_client = NatNetClient()
@@ -212,14 +212,22 @@ def main():
                 time_curr = time.time() - time_start
                 # Store data as numpy arrays for efficient numerical operations
                 # Format: (timestamp, sensor_array, mocap_array)
-                # sensor_array: [height, pitch_body, roll_body, yaw_body, motor_1, motor_2, servo_angle_deg]
+                # sensor_array: [height, pitch_body, - roll_body, yaw_body, pitch rate, - roll rate, yaw rate, y acceleration, - x acceleration, z acceleration, motor_1, motor_2, servo_angle_deg]
                 # mocap_array: [pos_x, pos_y, pos_z, rot_roll(abt global y), rot_pitch(abt global x), rot_yaw(about global z)]
                 data_entry = (
                     time_curr,
                     np.array(sensor_data, dtype=np.float32),
                     np.array(mocap, dtype=np.float32),
                 )
-                print("sensor pitch", sensor_data[1], "sensor roll", sensor_data[2], "sensor yaw", sensor_data[3], "mocap pitch", mocap[3], "mocap roll", mocap[4], "mocap yaw", mocap[5])  # Print pitch values for comparison
+                # acc x 
+                # print("sensor pitch", sensor_data[1], "sensor roll", sensor_data[2], "sensor yaw", sensor_data[3], 
+                # "sensor roll rate", sensor_data[4], "sensor pitch rate", sensor_data[5], "sensor yaw rate", sensor_data[6],
+                # "mocap pitch", mocap[3], "mocap roll", mocap[4], "mocap yaw", mocap[5], "Time: ", time_curr)  # Print pitch values for comparison
+
+                # print("sensor acc x", sensor_data[7], "sensor acc y", sensor_data[8], "sensor acc z", sensor_data[9])
+                # print("sensor pitch", sensor_data[1], "sensor roll", sensor_data[2], "sensor yaw", sensor_data[3], "pitch rate", sensor_data[4], "roll rate", sensor_data[5], "yaw rate", sensor_data[6])
+                # print("mocap pitch", mocap[3], "mocap roll", mocap[4], "mocap yaw", mocap[5])
+                # print("Time: ", time_curr)
                 sensor_data_all.append(data_entry)
                 # time_old = time.time()
             sensor_data_old = sensor_data

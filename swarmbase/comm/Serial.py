@@ -83,7 +83,7 @@ class SerialController:
         self.serial.reset_input_buffer()
         self.serial.write(b"I")
         incoming = self.serial.readline() #.decode().strip()
-        print(len(incoming))
+        # print(len(incoming))
 
         # 13 floats × 4 bytes each = 52 bytes (receiving 54 bytes total, extra 2 bytes are newline)
         if len(incoming) >= 52:
