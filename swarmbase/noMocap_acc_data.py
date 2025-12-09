@@ -210,7 +210,7 @@ def main():
             # print(sensor_data)
             # mocap = positions[robot_id] + rotations[robot_id]
             if sensor_data != sensor_data_old and sensor_data is not None:
-                
+
                 time_curr = time.time() - time_start
                 # Store data as numpy arrays for efficient numerical operations
                 # Format: (timestamp, sensor_array, mocap_array)
@@ -218,10 +218,17 @@ def main():
                 # mocap_array: [pos_x, pos_y, pos_z, rot_roll(abt global y), rot_pitch(abt global x), rot_yaw(about global z)]
                 data_entry = (
                     time_curr,
-                    np.array(sensor_data[7:9], dtype=np.float32)#,
+                    np.array(sensor_data[7:9], dtype=np.float32),  # ,
                     # np.array(mocap, dtype=np.float32),
                 )
-                print("X acceleration: ", sensor_data[7], "Y acceleration: ", sensor_data[8], "Time: ", time_curr)
+                print(
+                    "X acceleration: ",
+                    sensor_data[7],
+                    "Y acceleration: ",
+                    sensor_data[8],
+                    "Time: ",
+                    time_curr,
+                )
                 # print("sensor pitch", sensor_data[1], "sensor roll", sensor_data[2], "sensor yaw", sensor_data[3])#, "mocap pitch", mocap[3], "mocap roll", mocap[4], "mocap yaw", mocap[5])  # Print pitch values for comparison
                 sensor_data_all.append(data_entry)
                 # time_old = time.time()
@@ -281,7 +288,9 @@ def main():
                 print("Invalid button.")
     except KeyboardInterrupt:
         print("Stopping!")
-        pkl.dump(sensor_data_all, open(f"vincent_pushing_acc_data_{time.time()}.pkl", "wb"))
+        pkl.dump(
+            sensor_data_all, open(f"vincent_pushing_2_acc_data_{time.time()}.pkl", "wb")
+        )
         return
     except Exception as e:
         print(e)
