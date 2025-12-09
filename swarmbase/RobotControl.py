@@ -182,7 +182,7 @@ def main():
 
         # Mocap data
 
-        clientAddress = "192.168.0.7"
+        clientAddress = "192.168.0.21"
         optitrackServerAddress = "192.168.0.4"
         robot_id = 525
 
@@ -209,9 +209,11 @@ def main():
             axis, buttons = joystick.getJoystickInputs()
             sensor_data = robot_master.processManual(axis, buttons, print_vals=False)
             mocap = positions[robot_id] + rotations[robot_id]
-            if True:# or (sensor_data != sensor_data_old and sensor_data is not None) : #and time.time() - time_collected >= 0.05:
+            if (
+                True
+            ):  # or (sensor_data != sensor_data_old and sensor_data is not None) : #and time.time() - time_collected >= 0.05:
                 time_curr = time.time() - time_start
-                
+
                 # Store data as numpy arrays for efficient numerical operations
                 # Format: (timestamp, sensor_array, mocap_array)
                 # sensor_array: [height, pitch_body, - roll_body, yaw_body, pitch rate, - roll rate, yaw rate, y acceleration, - x acceleration, z acceleration, motor_1, motor_2, servo_angle_deg]
@@ -219,12 +221,11 @@ def main():
                 data_entry = (
                     time_curr,
                     np.array(sensor_data, dtype=np.float32),
-                    np.array(mocap, dtype=np.float32)
-
+                    np.array(mocap, dtype=np.float32),
                 )
                 time_collected = time.time()
-                # acc x 
-                # print("sensor pitch", sensor_data[1], "sensor roll", sensor_data[2], "sensor yaw", sensor_data[3], 
+                # acc x
+                # print("sensor pitch", sensor_data[1], "sensor roll", sensor_data[2], "sensor yaw", sensor_data[3],
                 # "sensor roll rate", sensor_data[4], "sensor pitch rate", sensor_data[5], "sensor yaw rate", sensor_data[6],
                 # "mocap pitch", mocap[3], "mocap roll", mocap[4], "mocap yaw", mocap[5], "Time: ", time_curr)  # Print pitch values for comparison
 
@@ -291,11 +292,15 @@ def main():
     except KeyboardInterrupt:
         print("Stopping!")
         timestamp = time.time()
-        pkl.dump(sensor_data_all, open(f"training_data_dupes/dupes_3_sleep_0.05_{timestamp}.pkl", "wb"))
+        pkl.dump(
+            sensor_data_all,
+            open(f"training_data_dupes/dupes_8_sleep_0.05_{timestamp}.pkl", "wb"),
+        )
         return
     except Exception as e:
         print(e)
         return
+
 
 if __name__ == "__main__":
     main()

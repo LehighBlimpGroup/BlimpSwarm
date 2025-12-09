@@ -10,7 +10,7 @@ robot_macs = [
     # "34:85:18:ab:ef:e8",
     "48:27:e2:e6:ed:24",
     "48:27:E2:E6:E6:D4",
-	"34:85:18:ab:ef:e8",
+    "34:85:18:ab:ef:e8",
 ]
 # Z:30:30:f9:34:64:94
 # BAllony/Lucas = 30:30:f9:34:77:30
@@ -45,7 +45,7 @@ DEFENDER_MACS = [str.lower(robot) for robot in defender_macs]
 ## may look like "COM5" in windows or "/dev/tty.usbmodem14301" in mac  #
 ## look in arduino for the port that your specific transeiver is connected to  ##
 ## Note: make sure that your serial monitor is OFF in arduino or else you will get "access is denied" error. ##
-SERIAL_PORT = "COM7"
+SERIAL_PORT = "COM12"
 
 
 # For debug purposes
