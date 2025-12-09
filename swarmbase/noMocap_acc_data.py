@@ -281,7 +281,7 @@ def main():
                 print("Invalid button.")
     except KeyboardInterrupt:
         print("Stopping!")
-        pkl.dump(sensor_data_all, open(f"acc_data_null.pkl", "wb"))
+        pkl.dump(sensor_data_all, open(f"vincent_pushing_acc_data_{time.time()}.pkl", "wb"))
         return
     except Exception as e:
         print(e)

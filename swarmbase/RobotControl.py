@@ -198,18 +198,20 @@ def main():
         # This will run perpetually, and operate on a separate thread.
         is_running = streaming_client.run()
 
+        time_collected = time.time()
         sensor_data_old = None
         sensor_data = None
         time_start = time.time()
 
         while True:
-            # time.sleep(0.02)
+            time.sleep(0.01)
             keys = robot_master.get_last_n_keys(1)
             axis, buttons = joystick.getJoystickInputs()
             sensor_data = robot_master.processManual(axis, buttons, print_vals=False)
             mocap = positions[robot_id] + rotations[robot_id]
-            if sensor_data != sensor_data_old and sensor_data is not None:
+            if True:# or (sensor_data != sensor_data_old and sensor_data is not None) : #and time.time() - time_collected >= 0.05:
                 time_curr = time.time() - time_start
+                
                 # Store data as numpy arrays for efficient numerical operations
                 # Format: (timestamp, sensor_array, mocap_array)
                 # sensor_array: [height, pitch_body, - roll_body, yaw_body, pitch rate, - roll rate, yaw rate, y acceleration, - x acceleration, z acceleration, motor_1, motor_2, servo_angle_deg]
@@ -217,8 +219,10 @@ def main():
                 data_entry = (
                     time_curr,
                     np.array(sensor_data, dtype=np.float32),
-                    np.array(mocap, dtype=np.float32),
+                    np.array(mocap, dtype=np.float32)
+
                 )
+                time_collected = time.time()
                 # acc x 
                 # print("sensor pitch", sensor_data[1], "sensor roll", sensor_data[2], "sensor yaw", sensor_data[3], 
                 # "sensor roll rate", sensor_data[4], "sensor pitch rate", sensor_data[5], "sensor yaw rate", sensor_data[6],
@@ -286,12 +290,12 @@ def main():
                 print("Invalid button.")
     except KeyboardInterrupt:
         print("Stopping!")
-        pkl.dump(sensor_data_all, open(f"training_data/in_circle_data_6.pkl", "wb"))
+        timestamp = time.time()
+        pkl.dump(sensor_data_all, open(f"training_data_dupes/dupes_3_sleep_0.05_{timestamp}.pkl", "wb"))
         return
     except Exception as e:
         print(e)
         return
-
 
 if __name__ == "__main__":
     main()
