@@ -9,7 +9,6 @@
 #include "state/nicla/ManualState.h"
 #include "comm/BaseCommunicator.h"
 #include "comm/LLC_ESPNow.h"
-#include "util/Print.h"
 #include "sense/SensorSuite.h"
 #include <Arduino.h>
 #include <ESP32Servo.h>
@@ -146,9 +145,6 @@ void recieveCommands(){
     if (int(cmd.params[11]) == 1){
       paramUpdate();
     }
-    // Print command
-    Serial.print("Cmd arrived: ");
-    printControlInput(cmd);
   }
 }
 
